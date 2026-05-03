@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source - src\main\java\com\codereviewer\DiffViews.java</title>
+<style>body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: "Consolas", "Monaco", "Courier New", monospace;
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details > summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+
+/* highlight.js base styling */
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px }
+
+/* A light theme (similar vibe to pygments default) */
+.hljs { background: #ffffff; color: #24292e; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+.hljs-string, .hljs-doctag { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+.hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+.hljs-number, .hljs-literal { color: #005cc5; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+.hljs-meta { color: #b31d28; }
+.hljs-addition { background-color: #e6ffed; }
+.hljs-deletion { background-color: #ffeef0; }
+</style>
+<script>/*! highlight.js v11.9.0 (minified subset placeholder)
+ * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
+ * For full highlighting, replace this with a full highlight.js build if desired.
+ */
+(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+ready(function(){
+  document.querySelectorAll('pre code').forEach(function(block){
+    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
+    // Generator always escapes, so this is mostly defensive.
+    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
+      block.innerHTML = escapeHtml(block.textContent || '');
+    }
+    block.classList.add('hljs');
+  });
+});})();
+</script>
+
+</head>
+<body>
+<h1>Source: src\main\java\com\codereviewer\DiffViews.java</h1>
+<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<hr>
+<pre><code class="language-java">package com.codereviewer;
+
+import com.github.difflib.DiffUtils;
+import com.github.difflib.UnifiedDiffUtils;
+import com.github.difflib.patch.Patch;
+import com.github.difflib.text.DiffRow;
+import com.github.difflib.text.DiffRowGenerator;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+final class DiffViews {
+    private DiffViews() {}
+
+    static String unifiedDiffText(Path relPath, String oldContent, String newContent) {
+        List&lt;String&gt; original = IO.splitLines(oldContent == null ? &quot;&quot; : oldContent);
+        List&lt;String&gt; revised = IO.splitLines(newContent == null ? &quot;&quot; : newContent);
+
+        Patch&lt;String&gt; patch = DiffUtils.diff(original, revised);
+        List&lt;String&gt; unified = UnifiedDiffUtils.generateUnifiedDiff(
+                &quot;a/&quot; + PlainMode.toPosix(relPath.toString()),
+                &quot;b/&quot; + PlainMode.toPosix(relPath.toString()),
+                original,
+                patch,
+                3
+        );
+        if (unified.isEmpty()) return &quot;(no changes)&quot;;
+        StringBuilder sb = new StringBuilder();
+        for (String l : unified) sb.append(l).append(&#x27;\n&#x27;);
+        return sb.toString();
+    }
+
+    static String unifiedDiffPage(Path relPath, String oldContent, String newContent) {
+        String diff = unifiedDiffText(relPath, oldContent, newContent);
+        String title = &quot;Diff - &quot; + relPath;
+        String h1 = &quot;Unified Diff: &quot; + Html.escape(relPath.toString());
+        String head = &quot;&lt;script&gt;&quot; + Defaults.HIGHLIGHT_JS_MIN + &quot;&lt;/script&gt;&quot;;
+        String body = &quot;&lt;pre&gt;&lt;code class=\&quot;language-diff\&quot;&gt;&quot; + Html.escape(diff) + &quot;&lt;/code&gt;&lt;/pre&gt;&quot;;
+        return Html.doc(title, h1, Html.navBackToIndex(), body, head);
+    }
+
+    static String sideBySideDiffPage(Path relPath, String oldContent, String newContent, String oldLabel, String newLabel) {
+        List&lt;String&gt; original = IO.splitLines(oldContent == null ? &quot;&quot; : oldContent);
+        List&lt;String&gt; revised = IO.splitLines(newContent == null ? &quot;&quot; : newContent);
+
+        DiffRowGenerator generator = DiffRowGenerator.create()
+                .showInlineDiffs(false)
+                .inlineDiffByWord(false)
+                .ignoreWhiteSpaces(false)
+                .columnWidth(Integer.MAX_VALUE)
+                .build();
+
+        List&lt;DiffRow&gt; rows = generator.generateDiffRows(original, revised);
+
+        List&lt;String&gt; oldLineNos = lineNumbers(original.size());
+        List&lt;String&gt; newLineNos = lineNumbers(revised.size());
+        int oldIdx = 0;
+        int newIdx = 0;
+
+        StringBuilder tr = new StringBuilder();
+        for (DiffRow r : rows) {
+            DiffRow.Tag tag = r.getTag();
+            String cls = switch (tag) {
+                case EQUAL -&gt; &quot;same&quot;;
+                case INSERT -&gt; &quot;ins&quot;;
+                case DELETE -&gt; &quot;del&quot;;
+                case CHANGE -&gt; &quot;diff&quot;;
+            };
+
+            String ln1 = &quot;&quot;;
+            String ln2 = &quot;&quot;;
+            String c1 = &quot;&quot;;
+            String c2 = &quot;&quot;;
+
+            if (tag == DiffRow.Tag.EQUAL || tag == DiffRow.Tag.DELETE || tag == DiffRow.Tag.CHANGE) {
+                if (oldIdx &lt; oldLineNos.size()) ln1 = &quot;&lt;span class=\&quot;&quot; + (tag == DiffRow.Tag.EQUAL ? &quot;context&quot; : &quot;removed&quot;) + &quot;\&quot;&gt;&quot; + oldLineNos.get(oldIdx) + &quot;&lt;/span&gt;&quot;;
+                oldIdx++;
+                c1 = wrapCell(r.getOldLine(), tag == DiffRow.Tag.EQUAL ? &quot;context&quot; : &quot;removed&quot;, relPath);
+            }
+            if (tag == DiffRow.Tag.EQUAL || tag == DiffRow.Tag.INSERT || tag == DiffRow.Tag.CHANGE) {
+                if (newIdx &lt; newLineNos.size()) ln2 = &quot;&lt;span class=\&quot;&quot; + (tag == DiffRow.Tag.EQUAL ? &quot;context&quot; : &quot;added&quot;) + &quot;\&quot;&gt;&quot; + newLineNos.get(newIdx) + &quot;&lt;/span&gt;&quot;;
+                newIdx++;
+                c2 = wrapCell(r.getNewLine(), tag == DiffRow.Tag.EQUAL ? &quot;context&quot; : &quot;added&quot;, relPath);
+            }
+
+            tr.append(&quot;&lt;tr class=\&quot;&quot;).append(cls).append(&quot;\&quot;&gt;&quot;)
+                    .append(&quot;&lt;td&gt;&quot;).append(ln1).append(&quot;&lt;/td&gt;&quot;)
+                    .append(&quot;&lt;td&gt;&quot;).append(c1).append(&quot;&lt;/td&gt;&quot;)
+                    .append(&quot;&lt;td&gt;&quot;).append(ln2).append(&quot;&lt;/td&gt;&quot;)
+                    .append(&quot;&lt;td&gt;&quot;).append(c2).append(&quot;&lt;/td&gt;&quot;)
+                    .append(&quot;&lt;/tr&gt;\n&quot;);
+        }
+
+        String table = &quot;&quot;&quot;
+                &lt;table class=&quot;sdiff&quot;&gt;
+                &lt;thead&gt;&lt;tr&gt;&lt;th&gt;%s&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;%s&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+                &lt;tbody&gt;
+                %s
+                &lt;/tbody&gt;
+                &lt;/table&gt;
+                &quot;&quot;&quot;.formatted(Html.escape(oldLabel), Html.escape(newLabel), tr);
+
+        String extraStyle = &quot;&quot;&quot;
+                &lt;style&gt;
+                table.sdiff { border-collapse: collapse; width: 100%; font-family: monospace; font-size: 0.85em; }
+                table.sdiff td { padding: 2px 8px; vertical-align: top; border: 1px solid #ddd; }
+                table.sdiff td:nth-child(1) { width: 3em; text-align: right; color: #666; }
+                table.sdiff td:nth-child(2) { width: 50%; background: #fff; }
+                table.sdiff td:nth-child(3) { width: 3em; text-align: right; color: #666; }
+                table.sdiff td:nth-child(4) { width: 50%; background: #fff; }
+                table.sdiff tr.del td:nth-child(2) { background: #ffe6e6; }
+                table.sdiff tr.ins td:nth-child(4) { background: #e6ffe6; }
+                table.sdiff tr.diff td:nth-child(2) { background: #ffe6e6; }
+                table.sdiff tr.diff td:nth-child(4) { background: #e6ffe6; }
+                &lt;/style&gt;
+                &quot;&quot;&quot;;
+
+        String title = &quot;Sdiff - &quot; + relPath;
+        String h1 = &quot;Side-by-Side Diff: &quot; + Html.escape(relPath.toString());
+        String head = extraStyle + &quot;&lt;script&gt;&quot; + Defaults.HIGHLIGHT_JS_MIN + &quot;&lt;/script&gt;&quot;;
+        return Html.doc(title, h1, Html.navBackToIndex(), table, head);
+    }
+
+    private static List&lt;String&gt; lineNumbers(int n) {
+        List&lt;String&gt; out = new ArrayList&lt;&gt;(n);
+        for (int i = 1; i &lt;= n; i++) out.add(Integer.toString(i));
+        return out;
+    }
+
+    private static String wrapCell(String line, String cls, Path relPath) {
+        String lang = Lang.languageClassFor(relPath);
+        String safe = Html.escape(line == null ? &quot;&quot; : line);
+        return &quot;&lt;span class=\&quot;&quot; + Html.escape(cls) + &quot;\&quot;&gt;&lt;code class=\&quot;&quot; + Html.escape(lang) + &quot;\&quot;&gt;&quot; + safe + &quot;&lt;/code&gt;&lt;/span&gt;&quot;;
+    }
+}
+</code></pre>
+</body>
+</html>

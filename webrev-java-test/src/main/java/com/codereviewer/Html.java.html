@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source - src\main\java\com\codereviewer\Html.java</title>
+<style>body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: "Consolas", "Monaco", "Courier New", monospace;
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details > summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+
+/* highlight.js base styling */
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px }
+
+/* A light theme (similar vibe to pygments default) */
+.hljs { background: #ffffff; color: #24292e; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+.hljs-string, .hljs-doctag { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+.hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+.hljs-number, .hljs-literal { color: #005cc5; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+.hljs-meta { color: #b31d28; }
+.hljs-addition { background-color: #e6ffed; }
+.hljs-deletion { background-color: #ffeef0; }
+</style>
+<script>/*! highlight.js v11.9.0 (minified subset placeholder)
+ * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
+ * For full highlighting, replace this with a full highlight.js build if desired.
+ */
+(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+ready(function(){
+  document.querySelectorAll('pre code').forEach(function(block){
+    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
+    // Generator always escapes, so this is mostly defensive.
+    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
+      block.innerHTML = escapeHtml(block.textContent || '');
+    }
+    block.classList.add('hljs');
+  });
+});})();
+</script>
+
+</head>
+<body>
+<h1>Source: src\main\java\com\codereviewer\Html.java</h1>
+<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<hr>
+<pre><code class="language-java">package com.codereviewer;
+
+import java.util.Map;
+
+final class Html {
+    private Html() {}
+
+    static String escape(String s) {
+        if (s == null) return &quot;&quot;;
+        StringBuilder sb = new StringBuilder(s.length() + 32);
+        for (int i = 0; i &lt; s.length(); i++) {
+            char c = s.charAt(i);
+            switch (c) {
+                case &#x27;&amp;&#x27; -&gt; sb.append(&quot;&amp;amp;&quot;);
+                case &#x27;&lt;&#x27; -&gt; sb.append(&quot;&amp;lt;&quot;);
+                case &#x27;&gt;&#x27; -&gt; sb.append(&quot;&amp;gt;&quot;);
+                case &#x27;&quot;&#x27; -&gt; sb.append(&quot;&amp;quot;&quot;);
+                case &#x27;\&#x27;&#x27; -&gt; sb.append(&quot;&amp;#x27;&quot;);
+                default -&gt; sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    static String doc(String title, String h1, String navHtml, String bodyHtml, String extraHeadHtml) {
+        return &quot;&quot;&quot;
+                &lt;!DOCTYPE html&gt;
+                &lt;html&gt;
+                &lt;head&gt;
+                &lt;meta charset=&quot;utf-8&quot;&gt;
+                &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+                &lt;title&gt;%s&lt;/title&gt;
+                &lt;style&gt;%s&lt;/style&gt;
+                %s
+                &lt;/head&gt;
+                &lt;body&gt;
+                &lt;h1&gt;%s&lt;/h1&gt;
+                %s
+                &lt;hr&gt;
+                %s
+                &lt;/body&gt;
+                &lt;/html&gt;
+                &quot;&quot;&quot;.formatted(escape(title), Defaults.STYLESHEET, extraHeadHtml == null ? &quot;&quot; : extraHeadHtml,
+                h1 == null ? &quot;&quot; : h1, navHtml == null ? &quot;&quot; : navHtml, bodyHtml == null ? &quot;&quot; : bodyHtml);
+    }
+
+    static String navBackToIndex() {
+        return &quot;&lt;div class=\&quot;nav\&quot;&gt;&lt;a href=\&quot;index.html\&quot;&gt;&amp;#8592; Back to index&lt;/a&gt;&lt;/div&gt;&quot;;
+    }
+
+    static String sourcePage(String displayPath, String titlePrefix, String code, String languageClass) {
+        String title = titlePrefix + &quot; - &quot; + displayPath;
+        String h1 = escape(titlePrefix) + &quot;: &quot; + escape(displayPath);
+        String head = &quot;&quot;&quot;
+                &lt;script&gt;%s&lt;/script&gt;
+                &quot;&quot;&quot;.formatted(Defaults.HIGHLIGHT_JS_MIN);
+        String codeHtml = &quot;&lt;pre&gt;&lt;code class=\&quot;%s\&quot;&gt;%s&lt;/code&gt;&lt;/pre&gt;&quot;
+                .formatted(escape(languageClass == null ? &quot;&quot; : languageClass), escape(code == null ? &quot;&quot; : code));
+        return doc(title, h1, navBackToIndex(), codeHtml, head);
+    }
+
+    static String tableIndex(String[] headers, String rowsHtml) {
+        StringBuilder th = new StringBuilder();
+        for (String h : headers) {
+            th.append(&quot;&lt;th&gt;&quot;).append(escape(h)).append(&quot;&lt;/th&gt;&quot;);
+        }
+        return &quot;&quot;&quot;
+                &lt;table class=&quot;index&quot;&gt;
+                &lt;thead&gt;&lt;tr&gt;%s&lt;/tr&gt;&lt;/thead&gt;
+                &lt;tbody&gt;
+                %s
+                &lt;/tbody&gt;
+                &lt;/table&gt;
+                &quot;&quot;&quot;.formatted(th, rowsHtml == null ? &quot;&quot; : rowsHtml);
+    }
+
+    static String badge(String status, String cls) {
+        return &quot;&lt;span class=\&quot;badge %s\&quot;&gt;%s&lt;/span&gt;&quot;.formatted(escape(cls), escape(status));
+    }
+
+    static String attrs(Map&lt;String, String&gt; attrs) {
+        if (attrs == null || attrs.isEmpty()) return &quot;&quot;;
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry&lt;String, String&gt; e : attrs.entrySet()) {
+            if (e.getKey() == null) continue;
+            sb.append(&quot; &quot;).append(escape(e.getKey())).append(&quot;=\&quot;&quot;).append(escape(e.getValue())).append(&quot;\&quot;&quot;);
+        }
+        return sb.toString();
+    }
+}
+</code></pre>
+</body>
+</html>

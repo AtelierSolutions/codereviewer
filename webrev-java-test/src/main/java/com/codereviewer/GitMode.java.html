@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source - src\main\java\com\codereviewer\GitMode.java</title>
+<style>body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: "Consolas", "Monaco", "Courier New", monospace;
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details > summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+
+/* highlight.js base styling */
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px }
+
+/* A light theme (similar vibe to pygments default) */
+.hljs { background: #ffffff; color: #24292e; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+.hljs-string, .hljs-doctag { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+.hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+.hljs-number, .hljs-literal { color: #005cc5; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+.hljs-meta { color: #b31d28; }
+.hljs-addition { background-color: #e6ffed; }
+.hljs-deletion { background-color: #ffeef0; }
+</style>
+<script>/*! highlight.js v11.9.0 (minified subset placeholder)
+ * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
+ * For full highlighting, replace this with a full highlight.js build if desired.
+ */
+(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+ready(function(){
+  document.querySelectorAll('pre code').forEach(function(block){
+    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
+    // Generator always escapes, so this is mostly defensive.
+    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
+      block.innerHTML = escapeHtml(block.textContent || '');
+    }
+    block.classList.add('hljs');
+  });
+});})();
+</script>
+
+</head>
+<body>
+<h1>Source: src\main\java\com\codereviewer\GitMode.java</h1>
+<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<hr>
+<pre><code class="language-java">package com.codereviewer;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+final class GitMode {
+    private GitMode() {}
+
+    static int run(Path root, Path outputDir, String baseArg, String headArg) {
+        try {
+            Path repoRoot = getRepoRoot(root);
+            if (repoRoot == null) {
+                System.err.println(&quot;Not a git repository. Use plain mode or specify a git directory.&quot;);
+                return 1;
+            }
+
+            String base = (baseArg == null || baseArg.isBlank()) ? &quot;HEAD~1&quot; : baseArg;
+            String head = (headArg == null || headArg.isBlank()) ? &quot;HEAD&quot; : headArg;
+
+            IO.mkdirs(outputDir);
+
+            List&lt;ChangedFile&gt; changed = getChangedFiles(repoRoot, base, head);
+            if (changed.isEmpty()) {
+                System.out.println(&quot;No changes found between revisions.&quot;);
+                return 0;
+            }
+
+            System.out.println(&quot;Processing &quot; + changed.size() + &quot; changed files...&quot;);
+
+            // changes.patch
+            IO.ExecResult patch = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, base + &quot;...&quot; + head), repoRoot);
+            if (patch.exitCode() == 0) {
+                IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patch.stdout());
+            }
+
+            List&lt;Map&lt;String, String&gt;&gt; indexEntries = new ArrayList&lt;&gt;();
+            for (ChangedFile cf : changed) {
+                if (cf.path == null || cf.path.isBlank() || &quot;/dev/null&quot;.equals(cf.path)) continue;
+                if (isBinaryLike(cf.path)) continue;
+
+                String oldContent = (!cf.status.startsWith(&quot;A&quot;)) ? getFileContent(repoRoot, base, cf.oldPath) : &quot;&quot;;
+                String newContent = (!cf.status.startsWith(&quot;D&quot;)) ? getFileContent(repoRoot, head, cf.path) : &quot;&quot;;
+
+                Path relPath = Path.of(cf.path);
+                String pathPosix = PlainMode.toPosix(relPath.toString());
+                Path outDirForFile = outputDir.resolve(relPath).getParent();
+                if (outDirForFile != null) IO.mkdirs(outDirForFile);
+
+                Map&lt;String, String&gt; entry = new HashMap&lt;&gt;();
+                entry.put(&quot;path&quot;, cf.path);
+                entry.put(&quot;status&quot;, cf.status);
+                entry.put(&quot;old_path&quot;, cf.oldPath);
+
+                if (!oldContent.isEmpty()) {
+                    String oldHtml = Html.sourcePage(relPath.toString(), &quot;Old (&quot; + base + &quot;)&quot;, oldContent, Lang.languageClassFor(relPath));
+                    IO.writeText(outputDir.resolve(pathPosix + &quot;-.html&quot;), oldHtml);
+                    entry.put(&quot;old&quot;, pathPosix + &quot;-.html&quot;);
+                }
+                if (!newContent.isEmpty()) {
+                    String newHtml = Html.sourcePage(relPath.toString(), &quot;New (&quot; + head + &quot;)&quot;, newContent, Lang.languageClassFor(relPath));
+                    IO.writeText(outputDir.resolve(pathPosix + &quot;.html&quot;), newHtml);
+                    entry.put(&quot;new&quot;, pathPosix + &quot;.html&quot;);
+                }
+                if (!oldContent.isEmpty() &amp;&amp; !newContent.isEmpty()) {
+                    String udiffHtml = DiffViews.unifiedDiffPage(relPath, oldContent, newContent);
+                    String sdiffHtml = DiffViews.sideBySideDiffPage(relPath, oldContent, newContent, base, head);
+                    IO.writeText(outputDir.resolve(pathPosix + &quot;.udiff.html&quot;), udiffHtml);
+                    IO.writeText(outputDir.resolve(pathPosix + &quot;.sdiff.html&quot;), sdiffHtml);
+                    entry.put(&quot;udiff&quot;, pathPosix + &quot;.udiff.html&quot;);
+                    entry.put(&quot;sdiff&quot;, pathPosix + &quot;.sdiff.html&quot;);
+                }
+
+                indexEntries.add(entry);
+                System.out.println(&quot;  &quot; + cf.path + &quot; (&quot; + cf.status + &quot;)&quot;);
+            }
+
+            String indexHtml = buildIndex(repoRoot.getFileName().toString(), base, head, indexEntries);
+            IO.writeText(outputDir.resolve(&quot;index.html&quot;), indexHtml);
+
+            System.out.println(&quot;\nDone. Output: &quot; + outputDir);
+            System.out.println(&quot;Open &quot; + outputDir.resolve(&quot;index.html&quot;) + &quot; in a browser.&quot;);
+            return 0;
+        } catch (Exception e) {
+            System.err.println(&quot;Error: &quot; + e.getMessage());
+            return 1;
+        }
+    }
+
+    private static String buildIndex(String repoName, String base, String head, List&lt;Map&lt;String, String&gt;&gt; entries) {
+        String summary = &quot;&quot;&quot;
+                &lt;div class=&quot;summary&quot;&gt;
+                &lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; %s &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; %s&lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; %d&lt;/p&gt;
+                &lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
+                &lt;/div&gt;
+                &quot;&quot;&quot;.formatted(Html.escape(base), Html.escape(head), entries.size());
+        String body = summary + TreeIndex.renderDiff(entries) + &quot;&lt;hr&gt;\n&quot;;
+        return Html.doc(&quot;Code Review - &quot; + repoName, &quot;Code Review: &quot; + Html.escape(repoName), &quot;&quot;, body, &quot;&quot;);
+    }
+
+    private static boolean isBinaryLike(String path) {
+        String p = path.toLowerCase();
+        for (String ext : Defaults.BINARY_EXTENSIONS) {
+            if (p.endsWith(ext)) return true;
+        }
+        return false;
+    }
+
+    private static Path getRepoRoot(Path path) throws Exception {
+        IO.ExecResult res = IO.exec(List.of(&quot;git&quot;, &quot;rev-parse&quot;, &quot;--show-toplevel&quot;), path);
+        if (res.exitCode() == 0) {
+            String s = res.stdout().trim();
+            if (!s.isEmpty()) return Path.of(s);
+        }
+        return null;
+    }
+
+    private static List&lt;ChangedFile&gt; getChangedFiles(Path repoRoot, String base, String head) throws Exception {
+        IO.ExecResult res = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, base + &quot;...&quot; + head), repoRoot);
+        if (res.exitCode() != 0) {
+            res = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, base, head), repoRoot);
+        }
+        if (res.exitCode() != 0) {
+            throw new RuntimeException(&quot;git diff failed: &quot; + res.stderr());
+        }
+
+        List&lt;ChangedFile&gt; out = new ArrayList&lt;&gt;();
+        for (String line : res.stdout().split(&quot;\\R&quot;)) {
+            if (line == null || line.isBlank()) continue;
+            String[] parts = line.split(&quot;\\t&quot;, 3);
+            String status = parts.length &gt; 0 ? parts[0] : &quot;&quot;;
+            if (status.startsWith(&quot;R&quot;) &amp;&amp; parts.length &gt; 2) {
+                out.add(new ChangedFile(parts[2], status, parts[1]));
+            } else {
+                String p = parts.length &gt; 1 ? parts[1] : &quot;&quot;;
+                out.add(new ChangedFile(p, status, p));
+            }
+        }
+        return out;
+    }
+
+    private static String getFileContent(Path repoRoot, String rev, String path) {
+        if (path == null || path.isBlank()) return &quot;&quot;;
+        try {
+            IO.ExecResult res = IO.exec(List.of(&quot;git&quot;, &quot;show&quot;, rev + &quot;:&quot; + path), repoRoot);
+            if (res.exitCode() == 0) return res.stdout();
+        } catch (Exception ignored) {
+        }
+        return &quot;&quot;;
+    }
+
+    private static final class ChangedFile {
+        final String path;
+        final String status;
+        final String oldPath;
+
+        ChangedFile(String path, String status, String oldPath) {
+            this.path = path;
+            this.status = status == null ? &quot;&quot; : status;
+            this.oldPath = oldPath == null ? (path == null ? &quot;&quot; : path) : oldPath;
+        }
+    }
+}
+</code></pre>
+</body>
+</html>

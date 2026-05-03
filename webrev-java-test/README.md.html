@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source - README.md</title>
+<style>body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: "Consolas", "Monaco", "Courier New", monospace;
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details > summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+
+/* highlight.js base styling */
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px }
+
+/* A light theme (similar vibe to pygments default) */
+.hljs { background: #ffffff; color: #24292e; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+.hljs-string, .hljs-doctag { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+.hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+.hljs-number, .hljs-literal { color: #005cc5; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+.hljs-meta { color: #b31d28; }
+.hljs-addition { background-color: #e6ffed; }
+.hljs-deletion { background-color: #ffeef0; }
+</style>
+<script>/*! highlight.js v11.9.0 (minified subset placeholder)
+ * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
+ * For full highlighting, replace this with a full highlight.js build if desired.
+ */
+(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+ready(function(){
+  document.querySelectorAll('pre code').forEach(function(block){
+    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
+    // Generator always escapes, so this is mostly defensive.
+    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
+      block.innerHTML = escapeHtml(block.textContent || '');
+    }
+    block.classList.add('hljs');
+  });
+});})();
+</script>
+
+</head>
+<body>
+<h1>Source: README.md</h1>
+<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<hr>
+<pre><code class="language-markdown"># Code Reviewer
+
+An offline tool for generating HTML code reviews with syntax highlighting. Supports offline review workflows and client migration efforts.
+
+## Features
+
+- **Plain directory mode**: Generate syntax-highlighted HTML for all code files in a directory
+- **Git support**: Generate diffs between commits with per-file old/new views and unified/side-by-side diffs
+- **Subversion support**: Generate diffs between revisions with the same per-file views
+- **Offline-friendly**: Self-contained HTML output—no server required; share as a zip or folder
+
+Note: the Java port keeps output self-contained; it ships with basic code styling and can be extended to full client-side syntax highlighting by swapping in a full `highlight.js` build in `Defaults.HIGHLIGHT_JS_MIN`.
+
+## Installation
+
+### Java (JDK 17)
+
+Build a runnable CLI JAR:
+
+```bash
+mvn -q -DskipTests package
+```
+
+Run it:
+
+```bash
+java -jar target/codereviewer-1.0.0-shaded.jar --help
+```
+
+### Python (original)
+
+```bash
+pip install -r requirements.txt
+```
+
+Or install Pygments directly:
+
+```bash
+pip install pygments
+```
+
+## Usage
+
+### Java CLI
+
+Plain directory mode:
+
+```bash
+java -jar target/codereviewer-1.0.0-shaded.jar ./myproject -o ./review
+```
+
+Git diff mode:
+
+```bash
+java -jar target/codereviewer-1.0.0-shaded.jar . -o ./review --base main --head feature-branch
+```
+
+SVN diff mode:
+
+```bash
+java -jar target/codereviewer-1.0.0-shaded.jar . -o ./review --base 1000 --head 1050
+```
+
+### Plain Directory (no VCS)
+
+Generate HTML versions of all code files with syntax highlighting:
+
+```bash
+python codereviewer.py ./myproject -o ./review
+```
+
+### Git Repository
+
+Compare two commits (base and head):
+
+```bash
+# Diff between main and feature branch
+python codereviewer.py ./myproject -o ./review --base main --head feature-branch
+
+# Diff between previous commit and HEAD
+python codereviewer.py . -o ./review --base HEAD~1 --head HEAD
+
+# Diff between two specific commits
+python codereviewer.py . -o ./review --base abc123 --head def456
+```
+
+### Subversion Repository
+
+Compare two revisions:
+
+```bash
+# Diff between revision 1000 and 1050
+python codereviewer.py ./myproject -o ./review --base 1000 --head 1050
+
+# Diff between BASE (working copy base) and HEAD (latest)
+python codereviewer.py . -o ./review --base BASE --head HEAD
+```
+
+### Force Plain Mode
+
+Ignore VCS and treat as plain directory:
+
+```bash
+python codereviewer.py ./git-repo -o ./review --plain
+```
+
+## Output Structure
+
+### Plain Mode
+
+- `index.html` — Index of all files with links to syntax-highlighted source
+- `path/to/file.py.html` — HTML version of each code file
+
+### Git/SVN Diff Mode
+
+- `index.html` — Summary with links to each changed file&#x27;s views
+- `changes.patch` — Full unified diff
+- Per-file:
+  - `path/to/file.py-.html` — Old version (syntax highlighted)
+  - `path/to/file.py.html` — New version (syntax highlighted)
+  - `path/to/file.py.udiff.html` — Unified diff view
+  - `path/to/file.py.sdiff.html` — Side-by-side diff view
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `directory` | Target directory (default: current) |
+| `-o`, `--output` | Output directory (default: `review`) |
+| `--base` | Base revision for diff (commit hash or SVN rev) |
+| `--head` | Head revision for diff |
+| `--plain` | Force plain mode, ignore VCS |
+| `--extensions` | File extensions for plain mode (space-separated) |
+
+## Supported File Types
+
+Plain mode includes common code extensions by default: `.py`, `.js`, `.ts`, `.java`, `.c`, `.cpp`, `.go`, `.rs`, `.rb`, `.php`, `.html`, `.css`, `.json`, `.yaml`, `.md`, and many more. Use `--extensions` to customize.
+
+## Requirements
+
+- Python 3.10+
+- Pygments (for syntax highlighting)
+- Git or Subversion (for diff mode; must be in PATH)
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,7 @@
+target/
+.mvn/
+.cursor/
+.venv/
+
+codereviewer.iml
+.idea/

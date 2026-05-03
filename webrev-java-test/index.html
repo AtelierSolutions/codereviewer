@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Review - codereviewer</title>
+<style>body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: "Consolas", "Monaco", "Courier New", monospace;
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details > summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+
+/* highlight.js base styling */
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px }
+
+/* A light theme (similar vibe to pygments default) */
+.hljs { background: #ffffff; color: #24292e; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+.hljs-string, .hljs-doctag { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+.hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+.hljs-number, .hljs-literal { color: #005cc5; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+.hljs-meta { color: #b31d28; }
+.hljs-addition { background-color: #e6ffed; }
+.hljs-deletion { background-color: #ffeef0; }
+</style>
+
+</head>
+<body>
+<h1>Code Review: codereviewer</h1>
+
+<hr>
+<p>Prepared for offline review. 13 files with syntax highlighting.</p>
+<div class="tree">
+  <div class="toolbar">
+  <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = true)">Expand all</button>
+  <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = false)">Collapse all</button>
+</div>
+
+  <div class="header"><div>File</div><div>Source</div></div>
+  <details open><summary>src/</summary>
+<details open><summary>main/</summary>
+<details open><summary>java/</summary>
+<details open><summary>com/</summary>
+<details open><summary>codereviewer/</summary>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/CodeReviewer.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/CodeReviewer.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Defaults.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Defaults.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/DiffViews.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/DiffViews.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/GitMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/GitMode.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Html.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Html.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/IO.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/IO.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Lang.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Lang.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/PlainMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/PlainMode.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/SvnMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/SvnMode.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/TreeIndex.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/TreeIndex.java.html">View</a></div></div>
+<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Vcs.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Vcs.java.html">View</a></div></div>
+</details>
+</details>
+</details>
+</details>
+</details>
+<div class="file-row"><div class="file-name">README.md</div><div class="file-links"><a href="README.md.html">View</a></div></div>
+<div class="file-row"><div class="file-name">codereviewer.py</div><div class="file-links"><a href="codereviewer.py.html">View</a></div></div>
+
+</div>
+<hr>
+
+</body>
+</html>

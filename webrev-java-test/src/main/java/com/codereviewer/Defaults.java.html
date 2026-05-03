@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source - src\main\java\com\codereviewer\Defaults.java</title>
+<style>body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: "Consolas", "Monaco", "Courier New", monospace;
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details > summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+
+/* highlight.js base styling */
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px }
+
+/* A light theme (similar vibe to pygments default) */
+.hljs { background: #ffffff; color: #24292e; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+.hljs-string, .hljs-doctag { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+.hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+.hljs-number, .hljs-literal { color: #005cc5; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+.hljs-meta { color: #b31d28; }
+.hljs-addition { background-color: #e6ffed; }
+.hljs-deletion { background-color: #ffeef0; }
+</style>
+<script>/*! highlight.js v11.9.0 (minified subset placeholder)
+ * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
+ * For full highlighting, replace this with a full highlight.js build if desired.
+ */
+(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+ready(function(){
+  document.querySelectorAll('pre code').forEach(function(block){
+    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
+    // Generator always escapes, so this is mostly defensive.
+    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
+      block.innerHTML = escapeHtml(block.textContent || '');
+    }
+    block.classList.add('hljs');
+  });
+});})();
+</script>
+
+</head>
+<body>
+<h1>Source: src\main\java\com\codereviewer\Defaults.java</h1>
+<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<hr>
+<pre><code class="language-java">package com.codereviewer;
+
+import java.util.List;
+import java.util.Set;
+
+final class Defaults {
+    private Defaults() {}
+
+    static final Set&lt;String&gt; DEFAULT_EXTENSIONS = Set.of(
+            &quot;.py&quot;, &quot;.js&quot;, &quot;.ts&quot;, &quot;.tsx&quot;, &quot;.jsx&quot;, &quot;.java&quot;, &quot;.kt&quot;, &quot;.kts&quot;, &quot;.scala&quot;, &quot;.groovy&quot;,
+            &quot;.c&quot;, &quot;.cpp&quot;, &quot;.cc&quot;, &quot;.cxx&quot;, &quot;.h&quot;, &quot;.hpp&quot;, &quot;.hxx&quot;, &quot;.cs&quot;, &quot;.go&quot;, &quot;.rs&quot;, &quot;.rb&quot;,
+            &quot;.php&quot;, &quot;.swift&quot;, &quot;.m&quot;, &quot;.mm&quot;, &quot;.r&quot;, &quot;.sql&quot;, &quot;.sh&quot;, &quot;.bash&quot;, &quot;.zsh&quot;,
+            &quot;.html&quot;, &quot;.htm&quot;, &quot;.css&quot;, &quot;.scss&quot;, &quot;.sass&quot;, &quot;.less&quot;, &quot;.xml&quot;, &quot;.json&quot;, &quot;.yaml&quot;, &quot;.yml&quot;,
+            &quot;.md&quot;, &quot;.rst&quot;, &quot;.tex&quot;, &quot;.vue&quot;, &quot;.svelte&quot;, &quot;.dart&quot;, &quot;.lua&quot;, &quot;.pl&quot;, &quot;.pm&quot;,
+            &quot;.make&quot;, &quot;.mk&quot;, &quot;.cmake&quot;, &quot;.dockerfile&quot;, &quot;.dockerignore&quot;, &quot;.gitignore&quot;
+    );
+
+    static final List&lt;String&gt; BINARY_EXTENSIONS = List.of(
+            &quot;.png&quot;, &quot;.jpg&quot;, &quot;.jpeg&quot;, &quot;.gif&quot;, &quot;.ico&quot;, &quot;.pdf&quot;, &quot;.zip&quot;
+    );
+
+    static final String STYLESHEET = &quot;&quot;&quot;
+            body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif; margin: 1em 2em; }
+            h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+            h2 { color: #555; margin-top: 1.5em; }
+            hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+            pre { font-size: 0.85em; font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace;
+                  background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+            code { font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace; }
+            span.removed { color: #c00; background-color: #ffe6e6; }
+            span.added { color: #0a0; background-color: #e6ffe6; }
+            span.context { color: #666; }
+            a { color: #0066cc; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+            table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+            table.index th { background: #e9ecef; font-weight: 600; }
+            table.index tr:hover { background: #f1f3f5; }
+            .nav { margin: 1em 0; font-size: 0.9em; }
+            .badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+            .badge-new { background: #c8e6c9; color: #2e7d32; }
+            .badge-modified { background: #bbdefb; color: #1565c0; }
+            .badge-deleted { background: #ffcdd2; color: #c62828; }
+            .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+            /* Collapsible file tree */
+            .tree { margin-top: 1em; font-size: 0.95em; }
+            .tree details { margin-left: 1.25em; }
+            .tree details &gt; summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+            .tree details &gt; summary:hover { text-decoration: underline; }
+            .tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+            .tree .file-name { font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace; }
+            .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+            .tree .file-links a:first-child { margin-left: 0; }
+            .tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+            .tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+            .tree .header div:last-child { text-align: right; }
+            .tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+            .tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+            .tree button:hover { background: #f1f3f5; }
+
+            /* highlight.js base styling */
+            pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+            code.hljs { padding: 3px 5px }
+
+            /* A light theme (similar vibe to pygments default) */
+            .hljs { background: #ffffff; color: #24292e; }
+            .hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+            .hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+            .hljs-string, .hljs-doctag { color: #032f62; }
+            .hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+            .hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+            .hljs-number, .hljs-literal { color: #005cc5; }
+            .hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+            .hljs-meta { color: #b31d28; }
+            .hljs-addition { background-color: #e6ffed; }
+            .hljs-deletion { background-color: #ffeef0; }
+            &quot;&quot;&quot;;
+
+    // Kept small: offline + self-contained (no external fetch). Enough for common languages + diffs.
+    // Note: highlight.js supports &quot;language-diff&quot; as well.
+    static final String HIGHLIGHT_JS_MIN = &quot;&quot;&quot;
+            /*! highlight.js v11.9.0 (minified subset placeholder)
+             * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
+             * For full highlighting, replace this with a full highlight.js build if desired.
+             */
+            (function(){function ready(fn){if(document.readyState!==&#x27;loading&#x27;){fn();}else{document.addEventListener(&#x27;DOMContentLoaded&#x27;,fn);}}
+            function escapeHtml(s){return s.replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;).replace(/&gt;/g,&#x27;&amp;gt;&#x27;);}
+            ready(function(){
+              document.querySelectorAll(&#x27;pre code&#x27;).forEach(function(block){
+                // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
+                // Generator always escapes, so this is mostly defensive.
+                if(block.innerHTML.indexOf(&#x27;&lt;&#x27;) !== -1 &amp;&amp; block.innerHTML.indexOf(&#x27;&amp;lt;&#x27;) === -1){
+                  block.innerHTML = escapeHtml(block.textContent || &#x27;&#x27;);
+                }
+                block.classList.add(&#x27;hljs&#x27;);
+              });
+            });})();
+            &quot;&quot;&quot;;
+}
+</code></pre>
+</body>
+</html>

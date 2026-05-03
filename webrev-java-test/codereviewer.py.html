@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source - codereviewer.py</title>
+<style>body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: "Consolas", "Monaco", "Courier New", monospace;
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details > summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+
+/* highlight.js base styling */
+pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
+code.hljs { padding: 3px 5px }
+
+/* A light theme (similar vibe to pygments default) */
+.hljs { background: #ffffff; color: #24292e; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-subst { color: #d73a49; font-weight: 600; }
+.hljs-string, .hljs-doctag { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-selector-id { color: #6f42c1; font-weight: 600; }
+.hljs-type, .hljs-class .hljs-title { color: #005cc5; font-weight: 600; }
+.hljs-number, .hljs-literal { color: #005cc5; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-tag { color: #22863a; }
+.hljs-meta { color: #b31d28; }
+.hljs-addition { background-color: #e6ffed; }
+.hljs-deletion { background-color: #ffeef0; }
+</style>
+<script>/*! highlight.js v11.9.0 (minified subset placeholder)
+ * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
+ * For full highlighting, replace this with a full highlight.js build if desired.
+ */
+(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+ready(function(){
+  document.querySelectorAll('pre code').forEach(function(block){
+    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
+    // Generator always escapes, so this is mostly defensive.
+    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
+      block.innerHTML = escapeHtml(block.textContent || '');
+    }
+    block.classList.add('hljs');
+  });
+});})();
+</script>
+
+</head>
+<body>
+<h1>Source: codereviewer.py</h1>
+<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<hr>
+<pre><code class="language-python">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Code Reviewer - An offline utility for generating HTML code reviews with syntax highlighting.
+
+Supports:
+- Plain directory: Generate HTML versions of all code files with syntax highlighting
+- Git repository: Generate diffs between revisions (--base, --head) with per-file views
+- Subversion repository: Generate diffs between revisions (--base, --head) with per-file views
+&quot;&quot;&quot;
+
+import argparse
+import difflib
+import html
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+from typing import Optional
+
+try:
+    from pygments import highlight
+    from pygments.lexers import get_lexer_for_filename, guess_lexer_for_filename, TextLexer
+    from pygments.formatters import HtmlFormatter
+    from pygments.util import ClassNotFound
+except ImportError:
+    print(&quot;Error: Pygments is required. Install with: pip install pygments&quot;, file=sys.stderr)
+    sys.exit(1)
+
+
+# Default code file extensions to include (can be overridden)
+DEFAULT_EXTENSIONS = {
+    &quot;.py&quot;, &quot;.js&quot;, &quot;.ts&quot;, &quot;.tsx&quot;, &quot;.jsx&quot;, &quot;.java&quot;, &quot;.kt&quot;, &quot;.kts&quot;, &quot;.scala&quot;, &quot;.groovy&quot;,
+    &quot;.c&quot;, &quot;.cpp&quot;, &quot;.cc&quot;, &quot;.cxx&quot;, &quot;.h&quot;, &quot;.hpp&quot;, &quot;.hxx&quot;, &quot;.cs&quot;, &quot;.go&quot;, &quot;.rs&quot;, &quot;.rb&quot;,
+    &quot;.php&quot;, &quot;.swift&quot;, &quot;.m&quot;, &quot;.mm&quot;, &quot;.r&quot;, &quot;.R&quot;, &quot;.sql&quot;, &quot;.sh&quot;, &quot;.bash&quot;, &quot;.zsh&quot;,
+    &quot;.html&quot;, &quot;.htm&quot;, &quot;.css&quot;, &quot;.scss&quot;, &quot;.sass&quot;, &quot;.less&quot;, &quot;.xml&quot;, &quot;.json&quot;, &quot;.yaml&quot;, &quot;.yml&quot;,
+    &quot;.md&quot;, &quot;.rst&quot;, &quot;.tex&quot;, &quot;.vue&quot;, &quot;.svelte&quot;, &quot;.dart&quot;, &quot;.lua&quot;, &quot;.pl&quot;, &quot;.pm&quot;,
+    &quot;.make&quot;, &quot;.mk&quot;, &quot;.cmake&quot;, &quot;.dockerfile&quot;, &quot;.dockerignore&quot;, &quot;.gitignore&quot;,
+}
+
+
+STYLESHEET = &quot;&quot;&quot;
+body { background-color: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif; margin: 1em 2em; }
+h1 { color: #333; border-bottom: 2px solid #0066cc; padding-bottom: 0.3em; }
+h2 { color: #555; margin-top: 1.5em; }
+hr { border: none; border-top: 1px solid #aaa; margin: 1.5em 0; }
+pre { font-size: 0.85em; font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace; 
+      background: #fff; padding: 1em; overflow-x: auto; border: 1px solid #ddd; border-radius: 4px; }
+code { font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace; }
+span.removed { color: #c00; background-color: #ffe6e6; }
+span.added { color: #0a0; background-color: #e6ffe6; }
+span.context { color: #666; }
+a { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+table.index { border-collapse: collapse; width: 100%; margin-top: 1em; }
+table.index th, table.index td { padding: 0.5em 1em; text-align: left; border-bottom: 1px solid #ddd; }
+table.index th { background: #e9ecef; font-weight: 600; }
+table.index tr:hover { background: #f1f3f5; }
+.nav { margin: 1em 0; font-size: 0.9em; }
+.badge { display: inline-block; padding: 0.2em 0.5em; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+.badge-new { background: #c8e6c9; color: #2e7d32; }
+.badge-modified { background: #bbdefb; color: #1565c0; }
+.badge-deleted { background: #ffcdd2; color: #c62828; }
+.summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+
+/* Collapsible file tree */
+.tree { margin-top: 1em; font-size: 0.95em; }
+.tree details { margin-left: 1.25em; }
+.tree details &gt; summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
+.tree details &gt; summary:hover { text-decoration: underline; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-name { font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace; }
+.tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
+.tree .file-links a:first-child { margin-left: 0; }
+.tree .file-meta { display: inline-flex; gap: 0.5em; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.tree .header { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.4em 0; border-bottom: 1px solid #ddd; font-weight: 600; }
+.tree .header div:last-child { text-align: right; }
+.tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
+.tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.tree button:hover { background: #f1f3f5; }
+&quot;&quot;&quot;
+
+
+def build_file_tree(paths: list[str]) -&gt; dict:
+    &quot;&quot;&quot;Build a nested dict tree from posix-like paths.&quot;&quot;&quot;
+    root: dict = {&quot;_files&quot;: []}
+    for p in paths:
+        parts = [x for x in p.split(&quot;/&quot;) if x]
+        node = root
+        for part in parts[:-1]:
+            node = node.setdefault(part, {&quot;_files&quot;: []})
+        node[&quot;_files&quot;].append(parts[-1])
+    return root
+
+
+def render_plain_tree(tree: dict, base_path: str = &quot;&quot;) -&gt; str:
+    &quot;&quot;&quot;Render collapsible tree for plain mode.&quot;&quot;&quot;
+    html_parts: list[str] = []
+
+    # directories
+    for name in sorted(k for k in tree.keys() if k != &quot;_files&quot;):
+        sub = tree[name]
+        full = f&quot;{base_path}{name}/&quot;
+        html_parts.append(f&#x27;&lt;details open&gt;&lt;summary&gt;{html.escape(name)}/&lt;/summary&gt;&#x27;)
+        html_parts.append(render_plain_tree(sub, full))
+        html_parts.append(&quot;&lt;/details&gt;&quot;)
+
+    # files
+    for fname in sorted(tree.get(&quot;_files&quot;, [])):
+        rel = f&quot;{base_path}{fname}&quot;
+        link = f&quot;{html.escape(rel)}.html&quot;
+        html_parts.append(
+            &#x27;&lt;div class=&quot;file-row&quot;&gt;&#x27;
+            f&#x27;&lt;div class=&quot;file-name&quot;&gt;{html.escape(rel)}&lt;/div&gt;&#x27;
+            f&#x27;&lt;div class=&quot;file-links&quot;&gt;&lt;a href=&quot;{link}&quot;&gt;View&lt;/a&gt;&lt;/div&gt;&#x27;
+            &quot;&lt;/div&gt;&quot;
+        )
+    return &quot;\n&quot;.join(html_parts)
+
+
+def render_diff_tree(tree: dict, entries_by_path: dict[str, dict], base_path: str = &quot;&quot;) -&gt; str:
+    &quot;&quot;&quot;Render collapsible tree for git/svn diff mode.&quot;&quot;&quot;
+    html_parts: list[str] = []
+
+    for name in sorted(k for k in tree.keys() if k != &quot;_files&quot;):
+        sub = tree[name]
+        full = f&quot;{base_path}{name}/&quot;
+        html_parts.append(f&#x27;&lt;details open&gt;&lt;summary&gt;{html.escape(name)}/&lt;/summary&gt;&#x27;)
+        html_parts.append(render_diff_tree(sub, entries_by_path, full))
+        html_parts.append(&quot;&lt;/details&gt;&quot;)
+
+    for fname in sorted(tree.get(&quot;_files&quot;, [])):
+        rel = f&quot;{base_path}{fname}&quot;
+        e = entries_by_path.get(rel, {})
+        status = e.get(&quot;status&quot;, &quot;M&quot;)
+        status_badges = {&quot;A&quot;: &quot;badge-new&quot;, &quot;M&quot;: &quot;badge-modified&quot;, &quot;D&quot;: &quot;badge-deleted&quot;, &quot;R&quot;: &quot;badge-modified&quot;}
+        status_cls = status_badges.get(status[0], &quot;badge-modified&quot;)
+
+        def link(label: str, key: str) -&gt; str:
+            return f&#x27;&lt;a href=&quot;{html.escape(e[key])}&quot;&gt;{label}&lt;/a&gt;&#x27; if key in e else &quot;—&quot;
+
+        links = &quot; &quot;.join([
+            link(&quot;Udiffs&quot;, &quot;udiff&quot;),
+            link(&quot;Sdiffs&quot;, &quot;sdiff&quot;),
+            link(&quot;Old&quot;, &quot;old&quot;),
+            link(&quot;New&quot;, &quot;new&quot;),
+        ])
+
+        html_parts.append(
+            &#x27;&lt;div class=&quot;file-row&quot;&gt;&#x27;
+            f&#x27;&lt;div class=&quot;file-name&quot;&gt;{html.escape(rel)}&lt;/div&gt;&#x27;
+            f&#x27;&lt;div class=&quot;file-meta&quot;&gt;&lt;span class=&quot;badge {status_cls}&quot;&gt;{html.escape(status)}&lt;/span&gt;&#x27;
+            f&#x27;&lt;span class=&quot;file-links&quot;&gt;{links}&lt;/span&gt;&lt;/div&gt;&#x27;
+            &quot;&lt;/div&gt;&quot;
+        )
+
+    return &quot;\n&quot;.join(html_parts)
+
+
+def detect_vcs(root: Path) -&gt; Optional[str]:
+    &quot;&quot;&quot;Detect if directory is a git or subversion repository.&quot;&quot;&quot;
+    if (root / &quot;.git&quot;).exists():
+        return &quot;git&quot;
+    if (root / &quot;.svn&quot;).exists():
+        return &quot;svn&quot;
+    # Check parent directories for git
+    for parent in root.parents:
+        if (parent / &quot;.git&quot;).exists():
+            return &quot;git&quot;
+        if (parent / &quot;.svn&quot;).exists():
+            return &quot;svn&quot;
+    return None
+
+
+def get_lexer_for_file(filepath: Path, content: str):
+    &quot;&quot;&quot;Get appropriate Pygments lexer for a file.&quot;&quot;&quot;
+    try:
+        return guess_lexer_for_filename(str(filepath), content)
+    except ClassNotFound:
+        try:
+            return get_lexer_for_filename(str(filepath))
+        except ClassNotFound:
+            return TextLexer()
+
+
+def source_to_html(filepath: Path, content: str, title: str = &quot;Source&quot;) -&gt; str:
+    &quot;&quot;&quot;Convert source code to HTML with syntax highlighting.&quot;&quot;&quot;
+    lexer = get_lexer_for_file(filepath, content)
+    formatter = HtmlFormatter(
+        full=False,
+        cssclass=&quot;highlight&quot;,
+        linenos=&quot;table&quot;,
+        linenostart=1,
+        anchorlinenos=True,
+        lineanchors=&quot;line&quot;,
+    )
+    highlighted = highlight(content, lexer, formatter)
+    css = formatter.get_style_defs(&quot;.highlight&quot;)
+    return f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;{html.escape(title)} - {html.escape(str(filepath))}&lt;/title&gt;
+&lt;style&gt;{css}&lt;/style&gt;
+&lt;style&gt;{STYLESHEET}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;{html.escape(title)}: {html.escape(str(filepath))}&lt;/h1&gt;
+&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;index.html&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
+&lt;hr&gt;
+{highlighted}
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+
+def diff_to_html_unified(filepath: Path, old_content: str, new_content: str, 
+                         old_label: str = &quot;Old&quot;, new_label: str = &quot;New&quot;) -&gt; str:
+    &quot;&quot;&quot;Generate unified diff HTML with syntax highlighting.&quot;&quot;&quot;
+    diff_lines = list(difflib.unified_diff(
+        old_content.splitlines(keepends=True),
+        new_content.splitlines(keepends=True),
+        fromfile=f&quot;a/{filepath}&quot;,
+        tofile=f&quot;b/{filepath}&quot;,
+        lineterm=&quot;&quot;,
+    ))
+    diff_text = &quot;&quot;.join(diff_lines) if diff_lines else &quot;(no changes)&quot;
+    
+    lexer = get_lexer_for_file(Path(&quot;diff.diff&quot;), diff_text)
+    formatter = HtmlFormatter(
+        full=False,
+        cssclass=&quot;highlight&quot;,
+        linenos=False,
+    )
+    highlighted = highlight(diff_text, lexer, formatter)
+    css = formatter.get_style_defs(&quot;.highlight&quot;)
+    
+    return f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Diff - {html.escape(str(filepath))}&lt;/title&gt;
+&lt;style&gt;{css}&lt;/style&gt;
+&lt;style&gt;{STYLESHEET}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Unified Diff: {html.escape(str(filepath))}&lt;/h1&gt;
+&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;index.html&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
+&lt;hr&gt;
+{highlighted}
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+
+def diff_to_html_side_by_side(filepath: Path, old_content: str, new_content: str,
+                               old_label: str = &quot;Old&quot;, new_label: str = &quot;New&quot;) -&gt; str:
+    &quot;&quot;&quot;Generate side-by-side diff HTML.&quot;&quot;&quot;
+    old_lines = old_content.splitlines()
+    new_lines = new_content.splitlines()
+    matcher = difflib.SequenceMatcher(None, old_lines, new_lines)
+    
+    def get_lexer():
+        return get_lexer_for_file(filepath, content)
+    
+    def highlight_line(line: str, filepath: Path):
+        try:
+            lexer = get_lexer_for_file(filepath, line)
+            formatter = HtmlFormatter(full=False, cssclass=&quot;highlight&quot;, nowrap=True)
+            return highlight(line or &quot; &quot;, lexer, formatter)
+        except Exception:
+            return html.escape(line or &quot; &quot;)
+    
+    rows = []
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == &quot;equal&quot;:
+            for i in range(i1, i2):
+                rows.append((
+                    f&#x27;&lt;span class=&quot;context&quot;&gt;{i+1}&lt;/span&gt;&#x27;,
+                    highlight_line(old_lines[i], filepath),
+                    f&#x27;&lt;span class=&quot;context&quot;&gt;{i+1}&lt;/span&gt;&#x27;,
+                    highlight_line(old_lines[i], filepath),
+                    &quot;same&quot;,
+                ))
+        elif tag == &quot;replace&quot;:
+            max_len = max(i2 - i1, j2 - j1)
+            for k in range(max_len):
+                old_line = old_lines[i1 + k] if i1 + k &lt; i2 else &quot;&quot;
+                new_line = new_lines[j1 + k] if j1 + k &lt; j2 else &quot;&quot;
+                old_ln = i1 + k + 1 if i1 + k &lt; i2 else &quot;&quot;
+                new_ln = j1 + k + 1 if j1 + k &lt; j2 else &quot;&quot;
+                rows.append((
+                    f&#x27;&lt;span class=&quot;removed&quot;&gt;{old_ln}&lt;/span&gt;&#x27;,
+                    f&#x27;&lt;span class=&quot;removed&quot;&gt;{highlight_line(old_line, filepath)}&lt;/span&gt;&#x27;,
+                    f&#x27;&lt;span class=&quot;added&quot;&gt;{new_ln}&lt;/span&gt;&#x27;,
+                    f&#x27;&lt;span class=&quot;added&quot;&gt;{highlight_line(new_line, filepath)}&lt;/span&gt;&#x27;,
+                    &quot;diff&quot;,
+                ))
+        elif tag == &quot;delete&quot;:
+            for i in range(i1, i2):
+                rows.append((
+                    f&#x27;&lt;span class=&quot;removed&quot;&gt;{i+1}&lt;/span&gt;&#x27;,
+                    f&#x27;&lt;span class=&quot;removed&quot;&gt;{highlight_line(old_lines[i], filepath)}&lt;/span&gt;&#x27;,
+                    &quot;&quot;,
+                    &quot;&quot;,
+                    &quot;del&quot;,
+                ))
+        elif tag == &quot;insert&quot;:
+            for j in range(j1, j2):
+                rows.append((
+                    &quot;&quot;,
+                    &quot;&quot;,
+                    f&#x27;&lt;span class=&quot;added&quot;&gt;{j+1}&lt;/span&gt;&#x27;,
+                    f&#x27;&lt;span class=&quot;added&quot;&gt;{highlight_line(new_lines[j], filepath)}&lt;/span&gt;&#x27;,
+                    &quot;ins&quot;,
+                ))
+    
+    table_rows = &quot;&quot;.join(
+        f&#x27;&lt;tr class=&quot;{cls}&quot;&gt;&lt;td&gt;{ln1}&lt;/td&gt;&lt;td&gt;{c1}&lt;/td&gt;&lt;td&gt;{ln2}&lt;/td&gt;&lt;td&gt;{c2}&lt;/td&gt;&lt;/tr&gt;&#x27;
+        for ln1, c1, ln2, c2, cls in rows
+    )
+    
+    return f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Sdiff - {html.escape(str(filepath))}&lt;/title&gt;
+&lt;style&gt;{STYLESHEET}&lt;/style&gt;
+&lt;style&gt;
+table.sdiff {{ border-collapse: collapse; width: 100%; font-family: monospace; font-size: 0.85em; }}
+table.sdiff td {{ padding: 2px 8px; vertical-align: top; border: 1px solid #ddd; }}
+table.sdiff td:nth-child(1) {{ width: 3em; text-align: right; color: #666; }}
+table.sdiff td:nth-child(2) {{ width: 50%; background: #fff; }}
+table.sdiff td:nth-child(3) {{ width: 3em; text-align: right; color: #666; }}
+table.sdiff td:nth-child(4) {{ width: 50%; background: #fff; }}
+table.sdiff tr.del td:nth-child(2) {{ background: #ffe6e6; }}
+table.sdiff tr.ins td:nth-child(4) {{ background: #e6ffe6; }}
+table.sdiff tr.diff td:nth-child(2) {{ background: #ffe6e6; }}
+table.sdiff tr.diff td:nth-child(4) {{ background: #e6ffe6; }}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Side-by-Side Diff: {html.escape(str(filepath))}&lt;/h1&gt;
+&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;index.html&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;table class=&quot;sdiff&quot;&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th&gt;{html.escape(old_label)}&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;{html.escape(new_label)}&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+{table_rows}
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+
+def collect_files(root: Path, extensions: set, exclude_dirs: set) -&gt; list[Path]:
+    &quot;&quot;&quot;Collect code files from directory.&quot;&quot;&quot;
+    files = []
+    for path in root.rglob(&quot;*&quot;):
+        if not path.is_file():
+            continue
+        if any(part in exclude_dirs for part in path.relative_to(root).parts):
+            continue
+        if path.suffix.lower() in extensions or path.name.lower() in extensions:
+            files.append(path.relative_to(root))
+    return sorted(files)
+
+
+def run_plain_mode(args: argparse.Namespace) -&gt; None:
+    &quot;&quot;&quot;Generate HTML for all code files in directory (no VCS).&quot;&quot;&quot;
+    root = Path(args.directory).resolve()
+    output_dir = Path(args.output).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    extensions = set(e.lower() if e.startswith(&quot;.&quot;) else f&quot;.{e}&quot; for e in args.extensions)
+    exclude_dirs = {&quot;__pycache__&quot;, &quot;.git&quot;, &quot;.svn&quot;, &quot;node_modules&quot;, &quot;.venv&quot;, &quot;venv&quot;, &quot;dist&quot;, &quot;build&quot;}
+    
+    files = collect_files(root, extensions, exclude_dirs)
+    if not files:
+        print(f&quot;No code files found in {root}&quot;, file=sys.stderr)
+        return
+    
+    print(f&quot;Processing {len(files)} files...&quot;)
+    
+    index_entries = []
+    for rel_path in files:
+        full_path = root / rel_path
+        try:
+            content = full_path.read_text(encoding=&quot;utf-8&quot;, errors=&quot;replace&quot;)
+        except Exception as e:
+            print(f&quot;  Skipping {rel_path}: {e}&quot;, file=sys.stderr)
+            continue
+        
+        out_path = output_dir / rel_path.with_suffix(rel_path.suffix + &quot;.html&quot;)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        html_content = source_to_html(rel_path, content, &quot;Source&quot;)
+        out_path.write_text(html_content, encoding=&quot;utf-8&quot;)
+        
+        index_entries.append((str(rel_path), rel_path.with_suffix(rel_path.suffix + &quot;.html&quot;)))
+        print(f&quot;  {rel_path}&quot;)
+    
+    # Write index
+    tree = build_file_tree([name.replace(&quot;\\&quot;, &quot;/&quot;) for name, _ in index_entries])
+    tree_html = render_plain_tree(tree)
+    index_html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Code Review - {html.escape(str(root.name))}&lt;/title&gt;
+&lt;style&gt;{STYLESHEET}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Code Review: {html.escape(str(root.name))}&lt;/h1&gt;
+&lt;p&gt;Prepared for offline review. {len(index_entries)} files with syntax highlighting.&lt;/p&gt;
+&lt;div class=&quot;tree&quot;&gt;
+  &lt;div class=&quot;toolbar&quot;&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = true)&quot;&gt;Expand all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = false)&quot;&gt;Collapse all&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;header&quot;&gt;&lt;div&gt;File&lt;/div&gt;&lt;div&gt;Source&lt;/div&gt;&lt;/div&gt;
+  {tree_html}
+&lt;/div&gt;
+&lt;hr&gt;
+ &lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+    
+    (output_dir / &quot;index.html&quot;).write_text(index_html, encoding=&quot;utf-8&quot;)
+    print(f&quot;\nDone. Output: {output_dir}&quot;)
+    print(f&quot;Open {output_dir / &#x27;index.html&#x27;} in a browser.&quot;)
+
+
+def get_git_repo_root(path: Path) -&gt; Optional[Path]:
+    &quot;&quot;&quot;Find git repository root.&quot;&quot;&quot;
+    result = subprocess.run(
+        [&quot;git&quot;, &quot;rev-parse&quot;, &quot;--show-toplevel&quot;],
+        cwd=path,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        return Path(result.stdout.strip())
+    return None
+
+
+def get_git_changed_files(root: Path, base: str, head: str) -&gt; list[tuple[str, str, str]]:
+    &quot;&quot;&quot;Get list of (path, status, old_path) for changed files between base and head.&quot;&quot;&quot;
+    result = subprocess.run(
+        [&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, f&quot;{base}...{head}&quot;],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        result = subprocess.run(
+            [&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, base, head],
+            cwd=root,
+            capture_output=True,
+            text=True,
+        )
+    if result.returncode != 0:
+        raise RuntimeError(f&quot;git diff failed: {result.stderr}&quot;)
+    
+    files = []
+    for line in result.stdout.strip().splitlines():
+        if not line.strip():
+            continue
+        parts = line.split(&quot;\t&quot;, 2)
+        status = parts[0]
+        if status.startswith(&quot;R&quot;) and len(parts) &gt; 2:
+            # Rename: R100 old_path new_path
+            old_path, path = parts[1], parts[2]
+        else:
+            path = parts[1] if len(parts) &gt; 1 else &quot;&quot;
+            old_path = path
+        files.append((path, status, old_path))
+    return files
+
+
+def get_git_file_content(root: Path, rev: str, path: str) -&gt; str:
+    &quot;&quot;&quot;Get file content at given revision.&quot;&quot;&quot;
+    try:
+        result = subprocess.run(
+            [&quot;git&quot;, &quot;show&quot;, f&quot;{rev}:{path}&quot;],
+            cwd=root,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode == 0:
+            return result.stdout
+    except Exception:
+        pass
+    return &quot;&quot;
+
+
+def run_git_mode(args: argparse.Namespace) -&gt; None:
+    &quot;&quot;&quot;Generate review for Git repository.&quot;&quot;&quot;
+    root = Path(args.directory).resolve()
+    repo_root = get_git_repo_root(root)
+    if not repo_root:
+        print(&quot;Not a git repository. Use plain mode or specify a git directory.&quot;, file=sys.stderr)
+        sys.exit(1)
+    
+    base = args.base or &quot;HEAD~1&quot;
+    head = args.head or &quot;HEAD&quot;
+    output_dir = Path(args.output).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    try:
+        changed = get_git_changed_files(repo_root, base, head)
+    except RuntimeError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+    
+    if not changed:
+        print(&quot;No changes found between revisions.&quot;)
+        return
+    
+    print(f&quot;Processing {len(changed)} changed files...&quot;)
+    
+    # Get full diff for patch file
+    patch_result = subprocess.run(
+        [&quot;git&quot;, &quot;diff&quot;, f&quot;{base}...{head}&quot;],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+    )
+    if patch_result.returncode == 0:
+        (output_dir / &quot;changes.patch&quot;).write_text(patch_result.stdout, encoding=&quot;utf-8&quot;)
+    
+    index_entries = []
+    for path, status, old_path in changed:
+        if not path or path == &quot;/dev/null&quot;:
+            continue
+        # Skip binary/non-text files
+        if any(path.endswith(ext) for ext in (&quot;.png&quot;, &quot;.jpg&quot;, &quot;.jpeg&quot;, &quot;.gif&quot;, &quot;.ico&quot;, &quot;.pdf&quot;, &quot;.zip&quot;)):
+            continue
+            
+        old_content = get_git_file_content(repo_root, base, old_path) if status != &quot;A&quot; else &quot;&quot;
+        new_content = get_git_file_content(repo_root, head, path) if status != &quot;D&quot; else &quot;&quot;
+        
+        rel_path = Path(path)
+        out_base = output_dir / rel_path
+        
+        # Create subdirs
+        out_base.parent.mkdir(parents=True, exist_ok=True)
+        
+        entry = {&quot;path&quot;: path, &quot;status&quot;: status, &quot;old_path&quot;: old_path}
+        
+        path_posix = rel_path.as_posix()
+        if old_content or new_content:
+            if old_content:
+                old_html = source_to_html(rel_path, old_content, f&quot;Old ({base})&quot;)
+                (output_dir / f&quot;{path_posix}-.html&quot;).write_text(old_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;old&quot;] = f&quot;{path_posix}-.html&quot;
+            if new_content:
+                new_html = source_to_html(rel_path, new_content, f&quot;New ({head})&quot;)
+                (output_dir / f&quot;{path_posix}.html&quot;).write_text(new_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;new&quot;] = f&quot;{path_posix}.html&quot;
+            
+            if old_content and new_content:
+                udiff_html = diff_to_html_unified(rel_path, old_content, new_content, base, head)
+                sdiff_html = diff_to_html_side_by_side(rel_path, old_content, new_content, base, head)
+                (output_dir / f&quot;{path_posix}.udiff.html&quot;).write_text(udiff_html, encoding=&quot;utf-8&quot;)
+                (output_dir / f&quot;{path_posix}.sdiff.html&quot;).write_text(sdiff_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;udiff&quot;] = f&quot;{path_posix}.udiff.html&quot;
+                entry[&quot;sdiff&quot;] = f&quot;{path_posix}.sdiff.html&quot;
+        
+        index_entries.append(entry)
+        print(f&quot;  {path} ({status})&quot;)
+    
+    # Build index
+    status_badges = {&quot;A&quot;: &quot;badge-new&quot;, &quot;M&quot;: &quot;badge-modified&quot;, &quot;D&quot;: &quot;badge-deleted&quot;, &quot;R&quot;: &quot;badge-modified&quot;}
+    entries_by_path = {e[&quot;path&quot;].replace(&quot;\\&quot;, &quot;/&quot;): e for e in index_entries if &quot;path&quot; in e}
+    tree = build_file_tree(list(entries_by_path.keys()))
+    tree_html = render_diff_tree(tree, entries_by_path)
+    index_html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Code Review - {html.escape(str(repo_root.name))}&lt;/title&gt;
+&lt;style&gt;{STYLESHEET}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Code Review: {html.escape(str(repo_root.name))}&lt;/h1&gt;
+&lt;div class=&quot;summary&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; {html.escape(base)} &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; {html.escape(head)}&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; {len(index_entries)}&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tree&quot;&gt;
+  &lt;div class=&quot;toolbar&quot;&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = true)&quot;&gt;Expand all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = false)&quot;&gt;Collapse all&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;header&quot;&gt;&lt;div&gt;File&lt;/div&gt;&lt;div&gt;Links&lt;/div&gt;&lt;/div&gt;
+  {tree_html}
+&lt;/div&gt;
+&lt;hr&gt;
+ &lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+    
+    (output_dir / &quot;index.html&quot;).write_text(index_html, encoding=&quot;utf-8&quot;)
+    print(f&quot;\nDone. Output: {output_dir}&quot;)
+    print(f&quot;Open {output_dir / &#x27;index.html&#x27;} in a browser.&quot;)
+
+
+def get_svn_repo_root(path: Path) -&gt; Optional[Path]:
+    &quot;&quot;&quot;Find SVN repository root (working copy).&quot;&quot;&quot;
+    result = subprocess.run(
+        [&quot;svn&quot;, &quot;info&quot;, &quot;--show-item&quot;, &quot;wc-root&quot;],
+        cwd=path,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        return Path(result.stdout.strip())
+    return None
+
+
+def get_svn_changed_files(root: Path, base: str, head: str) -&gt; list[tuple[str, str]]:
+    &quot;&quot;&quot;Get list of changed files between SVN revisions.&quot;&quot;&quot;
+    result = subprocess.run(
+        [&quot;svn&quot;, &quot;diff&quot;, &quot;--summarize&quot;, &quot;-r&quot;, f&quot;{base}:{head}&quot;],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f&quot;svn diff failed: {result.stderr}&quot;)
+    
+    files = []
+    for line in result.stdout.strip().splitlines():
+        if not line.strip():
+            continue
+        parts = line.split(None, 1)
+        status = parts[0] if len(parts) &gt; 0 else &quot;&quot;
+        path = parts[1] if len(parts) &gt; 1 else &quot;&quot;
+        files.append((path, status))
+    return files
+
+
+def get_svn_file_content(root: Path, rev: str, path: str) -&gt; str:
+    &quot;&quot;&quot;Get file content at given SVN revision.&quot;&quot;&quot;
+    result = subprocess.run(
+        [&quot;svn&quot;, &quot;cat&quot;, &quot;-r&quot;, rev, path],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        return result.stdout
+    return &quot;&quot;
+
+
+def run_svn_mode(args: argparse.Namespace) -&gt; None:
+    &quot;&quot;&quot;Generate review for Subversion repository.&quot;&quot;&quot;
+    root = Path(args.directory).resolve()
+    wc_root = get_svn_repo_root(root)
+    if not wc_root:
+        print(&quot;Not a Subversion working copy.&quot;, file=sys.stderr)
+        sys.exit(1)
+    
+    base = args.base or &quot;BASE&quot;
+    head = args.head or &quot;HEAD&quot;
+    output_dir = Path(args.output).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    try:
+        changed = get_svn_changed_files(wc_root, base, head)
+    except RuntimeError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+    
+    if not changed:
+        print(&quot;No changes found between revisions.&quot;)
+        return
+    
+    # Get full diff
+    patch_result = subprocess.run(
+        [&quot;svn&quot;, &quot;diff&quot;, &quot;-r&quot;, f&quot;{base}:{head}&quot;],
+        cwd=wc_root,
+        capture_output=True,
+        text=True,
+    )
+    if patch_result.returncode == 0:
+        (output_dir / &quot;changes.patch&quot;).write_text(patch_result.stdout, encoding=&quot;utf-8&quot;)
+    
+    index_entries = []
+    for path, status in changed:
+        if not path:
+            continue
+        rel_path = Path(path)
+        if not rel_path.suffix or rel_path.suffix.lower() in (&quot;.png&quot;, &quot;.jpg&quot;, &quot;.jpeg&quot;, &quot;.gif&quot;, &quot;.ico&quot;, &quot;.pdf&quot;):
+            continue
+        
+        old_content = get_svn_file_content(wc_root, base, path)
+        new_content = get_svn_file_content(wc_root, head, path)
+        
+        out_base = output_dir / rel_path
+        out_base.parent.mkdir(parents=True, exist_ok=True)
+        
+        entry = {&quot;path&quot;: path, &quot;status&quot;: status}
+        if old_content or new_content:
+            if old_content:
+                old_html = source_to_html(rel_path, old_content, f&quot;Old (r{base})&quot;)
+                (output_dir / f&quot;{rel_path}-.html&quot;).write_text(old_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;old&quot;] = f&quot;{rel_path}-.html&quot;
+            if new_content:
+                new_html = source_to_html(rel_path, new_content, f&quot;New (r{head})&quot;)
+                (output_dir / f&quot;{rel_path}.html&quot;).write_text(new_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;new&quot;] = f&quot;{rel_path}.html&quot;
+            if old_content and new_content:
+                udiff_html = diff_to_html_unified(rel_path, old_content, new_content, f&quot;r{base}&quot;, f&quot;r{head}&quot;)
+                sdiff_html = diff_to_html_side_by_side(rel_path, old_content, new_content, f&quot;r{base}&quot;, f&quot;r{head}&quot;)
+                (output_dir / f&quot;{rel_path}.udiff.html&quot;).write_text(udiff_html, encoding=&quot;utf-8&quot;)
+                (output_dir / f&quot;{rel_path}.sdiff.html&quot;).write_text(sdiff_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;udiff&quot;] = f&quot;{rel_path}.udiff.html&quot;
+                entry[&quot;sdiff&quot;] = f&quot;{rel_path}.sdiff.html&quot;
+        
+        index_entries.append(entry)
+        print(f&quot;  {path} ({status})&quot;)
+    
+    status_badges = {&quot;A&quot;: &quot;badge-new&quot;, &quot;M&quot;: &quot;badge-modified&quot;, &quot;D&quot;: &quot;badge-deleted&quot;}
+    entries_by_path = {e[&quot;path&quot;].replace(&quot;\\&quot;, &quot;/&quot;): e for e in index_entries if &quot;path&quot; in e}
+    tree = build_file_tree(list(entries_by_path.keys()))
+    tree_html = render_diff_tree(tree, entries_by_path)
+    index_html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;title&gt;Code Review - {html.escape(str(wc_root.name))}&lt;/title&gt;
+&lt;style&gt;{STYLESHEET}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Code Review: {html.escape(str(wc_root.name))}&lt;/h1&gt;
+&lt;div class=&quot;summary&quot;&gt;
+&lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; r{base} &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; r{head}&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; {len(index_entries)}&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;tree&quot;&gt;
+  &lt;div class=&quot;toolbar&quot;&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = true)&quot;&gt;Expand all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = false)&quot;&gt;Collapse all&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;header&quot;&gt;&lt;div&gt;File&lt;/div&gt;&lt;div&gt;Links&lt;/div&gt;&lt;/div&gt;
+  {tree_html}
+&lt;/div&gt;
+&lt;hr&gt;
+ &lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+    
+    (output_dir / &quot;index.html&quot;).write_text(index_html, encoding=&quot;utf-8&quot;)
+    print(f&quot;\nDone. Output: {output_dir}&quot;)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=&quot;Generate HTML code reviews with syntax highlighting.&quot;,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=&quot;&quot;&quot;
+Examples:
+  # Plain directory - HTML of all code files:
+  codereviewer.py ./myproject -o ./review
+
+  # Git - diff between commits:
+  codereviewer.py ./myproject -o ./review --base main --head feature-branch
+
+  # Git - diff between working tree and HEAD:
+  codereviewer.py ./myproject -o ./review --base HEAD --head
+
+  # Subversion - diff between revisions:
+  codereviewer.py ./myproject -o ./review --base 1000 --head 1050
+&quot;&quot;&quot;
+    )
+    parser.add_argument(&quot;directory&quot;, nargs=&quot;?&quot;, default=&quot;.&quot;, help=&quot;Target directory (default: current)&quot;)
+    parser.add_argument(&quot;-o&quot;, &quot;--output&quot;, default=&quot;review&quot;, help=&quot;Output directory (default: review)&quot;)
+    parser.add_argument(&quot;--base&quot;, help=&quot;Base revision (git: commit, svn: rev number)&quot;)
+    parser.add_argument(&quot;--head&quot;, help=&quot;Head revision (git: commit, svn: rev number)&quot;)
+    parser.add_argument(&quot;--plain&quot;, action=&quot;store_true&quot;, help=&quot;Force plain mode (ignore VCS)&quot;)
+    parser.add_argument(&quot;--extensions&quot;, nargs=&quot;*&quot;, default=list(DEFAULT_EXTENSIONS),
+                        help=&quot;File extensions for plain mode (default: common code extensions)&quot;)
+    
+    args = parser.parse_args()
+    
+    root = Path(args.directory).resolve()
+    if not root.exists():
+        print(f&quot;Error: Directory not found: {root}&quot;, file=sys.stderr)
+        sys.exit(1)
+    
+    vcs = None if args.plain else detect_vcs(root)
+    
+    if vcs == &quot;git&quot; and (args.base or args.head):
+        run_git_mode(args)
+    elif vcs == &quot;svn&quot; and (args.base or args.head):
+        run_svn_mode(args)
+    else:
+        run_plain_mode(args)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+</body>
+</html>
