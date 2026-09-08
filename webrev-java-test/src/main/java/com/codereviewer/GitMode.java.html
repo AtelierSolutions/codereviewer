@@ -26,13 +26,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: "Consolas", "Monaco", monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details > summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review="yellow"] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review="red"] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review="green"] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -81,10 +94,11 @@ ready(function(){
 </head>
 <body>
 <h1>Source: src\main\java\com\codereviewer\GitMode.java</h1>
-<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<div class="nav"><a href="../../../../../index.html">&#8592; Back to index</a></div>
 <hr>
 <pre><code class="language-java">package com.codereviewer;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +108,7 @@ import java.util.Map;
 final class GitMode {
     private GitMode() {}
 
-    static int run(Path root, Path outputDir, String baseArg, String headArg) {
+    static int run(Path root, Path outputDir, String baseArg, String headArg, boolean worktree) {
         try {
             Path repoRoot = getRepoRoot(root);
             if (repoRoot == null) {
@@ -102,12 +116,14 @@ final class GitMode {
                 return 1;
             }
 
-            String base = (baseArg == null || baseArg.isBlank()) ? &quot;HEAD~1&quot; : baseArg;
-            String head = (headArg == null || headArg.isBlank()) ? &quot;HEAD&quot; : headArg;
+            String base = (baseArg == null || baseArg.isBlank()) ? (worktree ? &quot;HEAD&quot; : &quot;HEAD~1&quot;) : baseArg;
+            String head = worktree ? &quot;WORKTREE&quot; : ((headArg == null || headArg.isBlank()) ? &quot;HEAD&quot; : headArg);
 
             IO.mkdirs(outputDir);
 
-            List&lt;ChangedFile&gt; changed = getChangedFiles(repoRoot, base, head);
+            String patchText = &quot;&quot;;
+
+            List&lt;ChangedFile&gt; changed = worktree ? getWorktreeChangedFiles(repoRoot, base) : getChangedFiles(repoRoot, base, head);
             if (changed.isEmpty()) {
                 System.out.println(&quot;No changes found between revisions.&quot;);
                 return 0;
@@ -116,9 +132,25 @@ final class GitMode {
             System.out.println(&quot;Processing &quot; + changed.size() + &quot; changed files...&quot;);
 
             // changes.patch
-            IO.ExecResult patch = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, base + &quot;...&quot; + head), repoRoot);
-            if (patch.exitCode() == 0) {
-                IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patch.stdout());
+            if (worktree) {
+                StringBuilder patchBuf = new StringBuilder();
+                IO.ExecResult cached = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--cached&quot;, base), repoRoot);
+                if (cached.exitCode() == 0 &amp;&amp; !cached.stdout().isBlank()) patchBuf.append(cached.stdout());
+                IO.ExecResult unstaged = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, base), repoRoot);
+                if (unstaged.exitCode() == 0 &amp;&amp; !unstaged.stdout().isBlank()) {
+                    if (!patchBuf.isEmpty() &amp;&amp; !patchBuf.toString().endsWith(&quot;\n&quot;)) patchBuf.append(&quot;\n&quot;);
+                    patchBuf.append(unstaged.stdout());
+                }
+                patchText = patchBuf.toString();
+                if (!patchText.isBlank()) {
+                    IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patchText);
+                }
+            } else {
+                IO.ExecResult patch = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, base + &quot;...&quot; + head), repoRoot);
+                if (patch.exitCode() == 0) {
+                    patchText = patch.stdout();
+                    IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patchText);
+                }
             }
 
             List&lt;Map&lt;String, String&gt;&gt; indexEntries = new ArrayList&lt;&gt;();
@@ -127,7 +159,7 @@ final class GitMode {
                 if (isBinaryLike(cf.path)) continue;
 
                 String oldContent = (!cf.status.startsWith(&quot;A&quot;)) ? getFileContent(repoRoot, base, cf.oldPath) : &quot;&quot;;
-                String newContent = (!cf.status.startsWith(&quot;D&quot;)) ? getFileContent(repoRoot, head, cf.path) : &quot;&quot;;
+                String newContent = worktree ? readWorktreeFile(repoRoot, cf.path) : ((!cf.status.startsWith(&quot;D&quot;)) ? getFileContent(repoRoot, head, cf.path) : &quot;&quot;);
 
                 Path relPath = Path.of(cf.path);
                 String pathPosix = PlainMode.toPosix(relPath.toString());
@@ -140,20 +172,27 @@ final class GitMode {
                 entry.put(&quot;old_path&quot;, cf.oldPath);
 
                 if (!oldContent.isEmpty()) {
-                    String oldHtml = Html.sourcePage(relPath.toString(), &quot;Old (&quot; + base + &quot;)&quot;, oldContent, Lang.languageClassFor(relPath));
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;-.html&quot;), oldHtml);
+                    Path oldOutRel = Path.of(pathPosix + &quot;-.html&quot;);
+                    String oldHtml = Html.sourcePage(relPath.toString(), &quot;Old (&quot; + base + &quot;)&quot;, oldContent,
+                            Lang.languageClassFor(relPath), Html.hrefToIndex(oldOutRel));
+                    IO.writeText(outputDir.resolve(oldOutRel), oldHtml);
                     entry.put(&quot;old&quot;, pathPosix + &quot;-.html&quot;);
                 }
                 if (!newContent.isEmpty()) {
-                    String newHtml = Html.sourcePage(relPath.toString(), &quot;New (&quot; + head + &quot;)&quot;, newContent, Lang.languageClassFor(relPath));
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;.html&quot;), newHtml);
+                    Path newOutRel = Path.of(pathPosix + &quot;.html&quot;);
+                    String newHtml = Html.sourcePage(relPath.toString(), &quot;New (&quot; + head + &quot;)&quot;, newContent,
+                            Lang.languageClassFor(relPath), Html.hrefToIndex(newOutRel));
+                    IO.writeText(outputDir.resolve(newOutRel), newHtml);
                     entry.put(&quot;new&quot;, pathPosix + &quot;.html&quot;);
                 }
                 if (!oldContent.isEmpty() &amp;&amp; !newContent.isEmpty()) {
-                    String udiffHtml = DiffViews.unifiedDiffPage(relPath, oldContent, newContent);
-                    String sdiffHtml = DiffViews.sideBySideDiffPage(relPath, oldContent, newContent, base, head);
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;.udiff.html&quot;), udiffHtml);
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;.sdiff.html&quot;), sdiffHtml);
+                    Path udiffOutRel = Path.of(pathPosix + &quot;.udiff.html&quot;);
+                    Path sdiffOutRel = Path.of(pathPosix + &quot;.sdiff.html&quot;);
+                    String udiffHtml = DiffViews.unifiedDiffPage(relPath, oldContent, newContent, Html.hrefToIndex(udiffOutRel));
+                    String sdiffHtml = DiffViews.sideBySideDiffPage(relPath, oldContent, newContent, base, head,
+                            Html.hrefToIndex(sdiffOutRel));
+                    IO.writeText(outputDir.resolve(udiffOutRel), udiffHtml);
+                    IO.writeText(outputDir.resolve(sdiffOutRel), sdiffHtml);
                     entry.put(&quot;udiff&quot;, pathPosix + &quot;.udiff.html&quot;);
                     entry.put(&quot;sdiff&quot;, pathPosix + &quot;.sdiff.html&quot;);
                 }
@@ -162,7 +201,8 @@ final class GitMode {
                 System.out.println(&quot;  &quot; + cf.path + &quot; (&quot; + cf.status + &quot;)&quot;);
             }
 
-            String indexHtml = buildIndex(repoRoot.getFileName().toString(), base, head, indexEntries);
+            DiffLineStats.Result lineStats = DiffLineStats.fromUnifiedPatch(patchText);
+            String indexHtml = buildIndex(repoRoot.getFileName().toString(), base, head, indexEntries, lineStats);
             IO.writeText(outputDir.resolve(&quot;index.html&quot;), indexHtml);
 
             System.out.println(&quot;\nDone. Output: &quot; + outputDir);
@@ -174,15 +214,18 @@ final class GitMode {
         }
     }
 
-    private static String buildIndex(String repoName, String base, String head, List&lt;Map&lt;String, String&gt;&gt; entries) {
+    private static String buildIndex(String repoName, String base, String head, List&lt;Map&lt;String, String&gt;&gt; entries,
+                                     DiffLineStats.Result lineStats) {
         String summary = &quot;&quot;&quot;
                 &lt;div class=&quot;summary&quot;&gt;
                 &lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; %s &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; %s&lt;/p&gt;
                 &lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; %d&lt;/p&gt;
                 &lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
+                %s
                 &lt;/div&gt;
-                &quot;&quot;&quot;.formatted(Html.escape(base), Html.escape(head), entries.size());
-        String body = summary + TreeIndex.renderDiff(entries) + &quot;&lt;hr&gt;\n&quot;;
+                &quot;&quot;&quot;.formatted(Html.escape(base), Html.escape(head), entries.size(),
+                Html.lineStatsSummary(lineStats.added(), lineStats.modified(), lineStats.removed()));
+        String body = summary + TreeIndex.renderDiff(entries) + &quot;&lt;hr&gt;\n&quot; + Html.indexReviewScript();
         return Html.doc(&quot;Code Review - &quot; + repoName, &quot;Code Review: &quot; + Html.escape(repoName), &quot;&quot;, body, &quot;&quot;);
     }
 
@@ -227,11 +270,57 @@ final class GitMode {
         return out;
     }
 
+    private static List&lt;ChangedFile&gt; getWorktreeChangedFiles(Path repoRoot, String base) throws Exception {
+        IO.ExecResult staged = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, &quot;-M&quot;, &quot;--cached&quot;, base), repoRoot);
+        IO.ExecResult unstaged = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, &quot;-M&quot;, base), repoRoot);
+        if (staged.exitCode() != 0 &amp;&amp; unstaged.exitCode() != 0) {
+            throw new RuntimeException(&quot;git diff failed: &quot; + (unstaged.stderr().isBlank() ? staged.stderr() : unstaged.stderr()));
+        }
+
+        Map&lt;String, ChangedFile&gt; merged = new HashMap&lt;&gt;();
+        for (ChangedFile cf : parseNameStatus(staged.stdout())) {
+            if (cf.path != null &amp;&amp; !cf.path.isBlank()) merged.put(cf.path, cf);
+        }
+        for (ChangedFile cf : parseNameStatus(unstaged.stdout())) {
+            if (cf.path != null &amp;&amp; !cf.path.isBlank()) merged.put(cf.path, cf);
+        }
+        return new ArrayList&lt;&gt;(merged.values());
+    }
+
+    private static List&lt;ChangedFile&gt; parseNameStatus(String stdout) {
+        List&lt;ChangedFile&gt; out = new ArrayList&lt;&gt;();
+        if (stdout == null || stdout.isBlank()) return out;
+        for (String line : stdout.split(&quot;\\R&quot;)) {
+            if (line == null || line.isBlank()) continue;
+            String[] parts = line.split(&quot;\\t&quot;, 3);
+            String status = parts.length &gt; 0 ? parts[0] : &quot;&quot;;
+            if (status.startsWith(&quot;R&quot;) &amp;&amp; parts.length &gt; 2) {
+                out.add(new ChangedFile(parts[2], status, parts[1]));
+            } else {
+                String p = parts.length &gt; 1 ? parts[1] : &quot;&quot;;
+                out.add(new ChangedFile(p, status, p));
+            }
+        }
+        return out;
+    }
+
     private static String getFileContent(Path repoRoot, String rev, String path) {
         if (path == null || path.isBlank()) return &quot;&quot;;
         try {
             IO.ExecResult res = IO.exec(List.of(&quot;git&quot;, &quot;show&quot;, rev + &quot;:&quot; + path), repoRoot);
             if (res.exitCode() == 0) return res.stdout();
+        } catch (Exception ignored) {
+        }
+        return &quot;&quot;;
+    }
+
+    private static String readWorktreeFile(Path repoRoot, String path) {
+        if (path == null || path.isBlank()) return &quot;&quot;;
+        try {
+            Path p = repoRoot.resolve(path);
+            if (Files.exists(p) &amp;&amp; Files.isRegularFile(p)) {
+                return IO.readText(p);
+            }
         } catch (Exception ignored) {
         }
         return &quot;&quot;;

@@ -26,13 +26,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: "Consolas", "Monaco", monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details > summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review="yellow"] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review="red"] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review="green"] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -85,7 +98,7 @@ ready(function(){
 <hr>
 <pre><code class="language-python">#!/usr/bin/env python3
 &quot;&quot;&quot;
-Code Reviewer - An offline utility for generating HTML code reviews with syntax highlighting.
+Code Reviewer - An offline codereview utility for generating HTML code reviews with syntax highlighting.
 
 Supports:
 - Plain directory: Generate HTML versions of all code files with syntax highlighting
@@ -147,13 +160,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details &gt; summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details &gt; summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review=&quot;yellow&quot;] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review=&quot;red&quot;] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review=&quot;green&quot;] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -163,6 +189,134 @@ table.index tr:hover { background: #f1f3f5; }
 .tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
 .tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
 .tree button:hover { background: #f1f3f5; }
+&quot;&quot;&quot;
+
+# Inline on index.html only: row review marks + folder expand state (keep in sync with Html.indexReviewScript() in Java).
+INDEX_REVIEW_SCRIPT = &quot;&quot;&quot;
+&lt;script&gt;
+(function(){
+var KEY=&#x27;codereviewer-index-review-v1&#x27;;
+var TREE_KEY=&#x27;codereviewer-index-tree-v1&#x27;;
+var ORDER=[&#x27;&#x27;,&#x27;yellow&#x27;,&#x27;red&#x27;,&#x27;green&#x27;];
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||&#x27;{}&#x27;);}catch(e){return {};}}
+function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+function loadTree(){try{return JSON.parse(localStorage.getItem(TREE_KEY)||&#x27;{}&#x27;);}catch(e){return {};}}
+function saveTree(m){try{localStorage.setItem(TREE_KEY,JSON.stringify(m));}catch(e){}}
+function apply(){
+  var m=load();
+  document.querySelectorAll(&#x27;.tree .file-row[data-file-path]&#x27;).forEach(function(row){
+    var p=row.getAttribute(&#x27;data-file-path&#x27;);
+    if(m[p]) row.setAttribute(&#x27;data-review&#x27;,m[p]); else row.removeAttribute(&#x27;data-review&#x27;);
+  });
+}
+function applyTree(){
+  var collapsed=loadTree();
+  document.querySelectorAll(&#x27;.tree details[data-folder-path]&#x27;).forEach(function(d){
+    var p=d.getAttribute(&#x27;data-folder-path&#x27;);
+    d.open=!collapsed[p];
+  });
+}
+function persistTreeState(){
+  var collapsed={};
+  document.querySelectorAll(&#x27;.tree details[data-folder-path]&#x27;).forEach(function(d){
+    var p=d.getAttribute(&#x27;data-folder-path&#x27;);
+    if(p&amp;&amp;!d.open) collapsed[p]=true;
+  });
+  saveTree(collapsed);
+}
+function cycle(row){
+  var p=row.getAttribute(&#x27;data-file-path&#x27;);
+  if(!p) return;
+  var cur=row.getAttribute(&#x27;data-review&#x27;)||&#x27;&#x27;;
+  var i=ORDER.indexOf(cur); if(i&lt;0) i=0;
+  var next=ORDER[(i+1)%ORDER.length];
+  var m=load();
+  if(next) m[p]=next; else delete m[p];
+  save(m);
+  if(next) row.setAttribute(&#x27;data-review&#x27;,next); else row.removeAttribute(&#x27;data-review&#x27;);
+}
+window.codereviewerExpandAll=function(){
+  document.querySelectorAll(&#x27;.tree details&#x27;).forEach(function(d){d.open=true;});
+  saveTree({});
+};
+window.codereviewerCollapseAll=function(){
+  document.querySelectorAll(&#x27;.tree details&#x27;).forEach(function(d){d.open=false;});
+  persistTreeState();
+};
+document.addEventListener(&#x27;DOMContentLoaded&#x27;,function(){
+  apply();
+  applyTree();
+  var tree=document.querySelector(&#x27;.tree&#x27;);
+  if(tree){
+    tree.addEventListener(&#x27;toggle&#x27;,function(e){
+      var d=e.target;
+      if(!d||d.tagName!==&#x27;DETAILS&#x27;||!d.hasAttribute(&#x27;data-folder-path&#x27;)) return;
+      persistTreeState();
+    },true);
+  }
+});
+document.addEventListener(&#x27;click&#x27;,function(e){
+  var tree=document.querySelector(&#x27;.tree&#x27;);
+  if(!tree||!tree.contains(e.target)) return;
+  if(e.target.closest(&#x27;a&#x27;)||e.target.closest(&#x27;button&#x27;)) return;
+  var row=e.target.closest(&#x27;.file-row&#x27;);
+  if(row) cycle(row);
+});
+})();
+&lt;/script&gt;
+&quot;&quot;&quot;
+
+
+def href_to_index(output_file_rel: Path) -&gt; str:
+    &quot;&quot;&quot;Relative URL from a generated HTML file to index.html at the output root.&quot;&quot;&quot;
+    depth = len(output_file_rel.parent.parts)
+    prefix = &quot;../&quot; * depth
+    return f&quot;{prefix}index.html&quot;
+
+
+def partition_line_stats_from_patch(patch: str) -&gt; tuple[int, int, int]:
+    &quot;&quot;&quot;
+    From a unified diff: per file-chunk, min(insertions, deletions) counts as modified;
+    remaining + lines are added, remaining - lines removed. Returns (added, modified, removed).
+    &quot;&quot;&quot;
+    if not patch or not patch.strip():
+        return (0, 0, 0)
+    if re.search(r&quot;^diff --git &quot;, patch, re.MULTILINE):
+        chunks = re.split(r&quot;(?m)^(?=diff --git )&quot;, patch)
+    elif re.search(r&quot;^Index: &quot;, patch, re.MULTILINE):
+        chunks = re.split(r&quot;(?m)^(?=Index: )&quot;, patch)
+    else:
+        chunks = [patch]
+    total_added = total_modified = total_removed = 0
+    for chunk in chunks:
+        if not chunk.strip():
+            continue
+        a = r = 0
+        for line in chunk.splitlines():
+            if line.startswith(&quot;+++&quot;) or line.startswith(&quot;---&quot;):
+                continue
+            if line.startswith(&quot;@@&quot;):
+                continue
+            if line.startswith(&quot;\\&quot;):
+                continue
+            if line.startswith(&quot;+&quot;):
+                a += 1
+            elif line.startswith(&quot;-&quot;):
+                r += 1
+        m = min(a, r)
+        total_added += a - m
+        total_removed += r - m
+        total_modified += m
+    return (total_added, total_modified, total_removed)
+
+
+def format_line_stats_html(added: int, modified: int, removed: int) -&gt; str:
+    &quot;&quot;&quot;HTML fragment for index summary (diff modes).&quot;&quot;&quot;
+    return f&quot;&quot;&quot;&lt;div class=&quot;line-stats&quot; aria-label=&quot;Line change estimates from patch&quot;&gt;
+  &lt;div class=&quot;line-stat line-stat-added&quot;&gt;&lt;span class=&quot;line-stat-label&quot;&gt;Lines added&lt;/span&gt;&lt;span class=&quot;line-stat-value&quot;&gt;{added}&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;line-stat line-stat-modified&quot;&gt;&lt;span class=&quot;line-stat-label&quot;&gt;Lines modified&lt;/span&gt;&lt;span class=&quot;line-stat-value&quot;&gt;{modified}&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;line-stat line-stat-removed&quot;&gt;&lt;span class=&quot;line-stat-label&quot;&gt;Lines removed&lt;/span&gt;&lt;span class=&quot;line-stat-value&quot;&gt;{removed}&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
 &quot;&quot;&quot;
 
 
@@ -178,7 +332,7 @@ def build_file_tree(paths: list[str]) -&gt; dict:
     return root
 
 
-def render_plain_tree(tree: dict, base_path: str = &quot;&quot;) -&gt; str:
+def render_plain_tree(tree: dict, base_path: str, stripe_counter: list[int]) -&gt; str:
     &quot;&quot;&quot;Render collapsible tree for plain mode.&quot;&quot;&quot;
     html_parts: list[str] = []
 
@@ -186,16 +340,23 @@ def render_plain_tree(tree: dict, base_path: str = &quot;&quot;) -&gt; str:
     for name in sorted(k for k in tree.keys() if k != &quot;_files&quot;):
         sub = tree[name]
         full = f&quot;{base_path}{name}/&quot;
-        html_parts.append(f&#x27;&lt;details open&gt;&lt;summary&gt;{html.escape(name)}/&lt;/summary&gt;&#x27;)
-        html_parts.append(render_plain_tree(sub, full))
+        attr_folder = html.escape(full.replace(&quot;\\&quot;, &quot;/&quot;))
+        html_parts.append(
+            f&#x27;&lt;details open data-folder-path=&quot;{attr_folder}&quot;&gt;&lt;summary&gt;{html.escape(name)}/&lt;/summary&gt;&#x27;
+        )
+        html_parts.append(render_plain_tree(sub, full, stripe_counter))
         html_parts.append(&quot;&lt;/details&gt;&quot;)
 
     # files
     for fname in sorted(tree.get(&quot;_files&quot;, [])):
         rel = f&quot;{base_path}{fname}&quot;
         link = f&quot;{html.escape(rel)}.html&quot;
+        idx = stripe_counter[0]
+        stripe_counter[0] += 1
+        stripe_cls = &quot;stripe-even&quot; if idx % 2 == 0 else &quot;stripe-odd&quot;
+        attr_path = html.escape(rel.replace(&quot;\\&quot;, &quot;/&quot;))
         html_parts.append(
-            &#x27;&lt;div class=&quot;file-row&quot;&gt;&#x27;
+            f&#x27;&lt;div class=&quot;file-row {stripe_cls}&quot; data-file-path=&quot;{attr_path}&quot;&gt;&#x27;
             f&#x27;&lt;div class=&quot;file-name&quot;&gt;{html.escape(rel)}&lt;/div&gt;&#x27;
             f&#x27;&lt;div class=&quot;file-links&quot;&gt;&lt;a href=&quot;{link}&quot;&gt;View&lt;/a&gt;&lt;/div&gt;&#x27;
             &quot;&lt;/div&gt;&quot;
@@ -203,15 +364,18 @@ def render_plain_tree(tree: dict, base_path: str = &quot;&quot;) -&gt; str:
     return &quot;\n&quot;.join(html_parts)
 
 
-def render_diff_tree(tree: dict, entries_by_path: dict[str, dict], base_path: str = &quot;&quot;) -&gt; str:
+def render_diff_tree(tree: dict, entries_by_path: dict[str, dict], base_path: str, stripe_counter: list[int]) -&gt; str:
     &quot;&quot;&quot;Render collapsible tree for git/svn diff mode.&quot;&quot;&quot;
     html_parts: list[str] = []
 
     for name in sorted(k for k in tree.keys() if k != &quot;_files&quot;):
         sub = tree[name]
         full = f&quot;{base_path}{name}/&quot;
-        html_parts.append(f&#x27;&lt;details open&gt;&lt;summary&gt;{html.escape(name)}/&lt;/summary&gt;&#x27;)
-        html_parts.append(render_diff_tree(sub, entries_by_path, full))
+        attr_folder = html.escape(full.replace(&quot;\\&quot;, &quot;/&quot;))
+        html_parts.append(
+            f&#x27;&lt;details open data-folder-path=&quot;{attr_folder}&quot;&gt;&lt;summary&gt;{html.escape(name)}/&lt;/summary&gt;&#x27;
+        )
+        html_parts.append(render_diff_tree(sub, entries_by_path, full, stripe_counter))
         html_parts.append(&quot;&lt;/details&gt;&quot;)
 
     for fname in sorted(tree.get(&quot;_files&quot;, [])):
@@ -231,8 +395,12 @@ def render_diff_tree(tree: dict, entries_by_path: dict[str, dict], base_path: st
             link(&quot;New&quot;, &quot;new&quot;),
         ])
 
+        idx = stripe_counter[0]
+        stripe_counter[0] += 1
+        stripe_cls = &quot;stripe-even&quot; if idx % 2 == 0 else &quot;stripe-odd&quot;
+        attr_path = html.escape(rel.replace(&quot;\\&quot;, &quot;/&quot;))
         html_parts.append(
-            &#x27;&lt;div class=&quot;file-row&quot;&gt;&#x27;
+            f&#x27;&lt;div class=&quot;file-row {stripe_cls}&quot; data-file-path=&quot;{attr_path}&quot;&gt;&#x27;
             f&#x27;&lt;div class=&quot;file-name&quot;&gt;{html.escape(rel)}&lt;/div&gt;&#x27;
             f&#x27;&lt;div class=&quot;file-meta&quot;&gt;&lt;span class=&quot;badge {status_cls}&quot;&gt;{html.escape(status)}&lt;/span&gt;&#x27;
             f&#x27;&lt;span class=&quot;file-links&quot;&gt;{links}&lt;/span&gt;&lt;/div&gt;&#x27;
@@ -268,7 +436,12 @@ def get_lexer_for_file(filepath: Path, content: str):
             return TextLexer()
 
 
-def source_to_html(filepath: Path, content: str, title: str = &quot;Source&quot;) -&gt; str:
+def source_to_html(
+    filepath: Path,
+    content: str,
+    title: str = &quot;Source&quot;,
+    index_href: str = &quot;index.html&quot;,
+) -&gt; str:
     &quot;&quot;&quot;Convert source code to HTML with syntax highlighting.&quot;&quot;&quot;
     lexer = get_lexer_for_file(filepath, content)
     formatter = HtmlFormatter(
@@ -291,15 +464,21 @@ def source_to_html(filepath: Path, content: str, title: str = &quot;Source&quot;
 &lt;/head&gt;
 &lt;body&gt;
 &lt;h1&gt;{html.escape(title)}: {html.escape(str(filepath))}&lt;/h1&gt;
-&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;index.html&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
+&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;{html.escape(index_href)}&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
 &lt;hr&gt;
 {highlighted}
 &lt;/body&gt;
 &lt;/html&gt;&quot;&quot;&quot;
 
 
-def diff_to_html_unified(filepath: Path, old_content: str, new_content: str, 
-                         old_label: str = &quot;Old&quot;, new_label: str = &quot;New&quot;) -&gt; str:
+def diff_to_html_unified(
+    filepath: Path,
+    old_content: str,
+    new_content: str,
+    old_label: str = &quot;Old&quot;,
+    new_label: str = &quot;New&quot;,
+    index_href: str = &quot;index.html&quot;,
+) -&gt; str:
     &quot;&quot;&quot;Generate unified diff HTML with syntax highlighting.&quot;&quot;&quot;
     diff_lines = list(difflib.unified_diff(
         old_content.splitlines(keepends=True),
@@ -329,15 +508,21 @@ def diff_to_html_unified(filepath: Path, old_content: str, new_content: str,
 &lt;/head&gt;
 &lt;body&gt;
 &lt;h1&gt;Unified Diff: {html.escape(str(filepath))}&lt;/h1&gt;
-&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;index.html&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
+&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;{html.escape(index_href)}&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
 &lt;hr&gt;
 {highlighted}
 &lt;/body&gt;
 &lt;/html&gt;&quot;&quot;&quot;
 
 
-def diff_to_html_side_by_side(filepath: Path, old_content: str, new_content: str,
-                               old_label: str = &quot;Old&quot;, new_label: str = &quot;New&quot;) -&gt; str:
+def diff_to_html_side_by_side(
+    filepath: Path,
+    old_content: str,
+    new_content: str,
+    old_label: str = &quot;Old&quot;,
+    new_label: str = &quot;New&quot;,
+    index_href: str = &quot;index.html&quot;,
+) -&gt; str:
     &quot;&quot;&quot;Generate side-by-side diff HTML.&quot;&quot;&quot;
     old_lines = old_content.splitlines()
     new_lines = new_content.splitlines()
@@ -349,10 +534,11 @@ def diff_to_html_side_by_side(filepath: Path, old_content: str, new_content: str
     def highlight_line(line: str, filepath: Path):
         try:
             lexer = get_lexer_for_file(filepath, line)
-            formatter = HtmlFormatter(full=False, cssclass=&quot;highlight&quot;, nowrap=True)
+            # nowrap=True emits white-space: nowrap which collapses runs of spaces; keep whitespace visible.
+            formatter = HtmlFormatter(full=False, cssclass=&quot;highlight&quot;, nowrap=False, stripnl=False)
             return highlight(line or &quot; &quot;, lexer, formatter)
         except Exception:
-            return html.escape(line or &quot; &quot;)
+            return f&#x27;&lt;span class=&quot;sdiff-plain&quot;&gt;{html.escape(line or &quot;&quot;)}&lt;/span&gt;&#x27;
     
     rows = []
     for tag, i1, i2, j1, j2 in matcher.get_opcodes():
@@ -413,9 +599,14 @@ def diff_to_html_side_by_side(filepath: Path, old_content: str, new_content: str
 table.sdiff {{ border-collapse: collapse; width: 100%; font-family: monospace; font-size: 0.85em; }}
 table.sdiff td {{ padding: 2px 8px; vertical-align: top; border: 1px solid #ddd; }}
 table.sdiff td:nth-child(1) {{ width: 3em; text-align: right; color: #666; }}
-table.sdiff td:nth-child(2) {{ width: 50%; background: #fff; }}
+table.sdiff td:nth-child(2) {{ width: 50%; background: #fff; white-space: pre-wrap; word-break: break-word; tab-size: 4; }}
 table.sdiff td:nth-child(3) {{ width: 3em; text-align: right; color: #666; }}
-table.sdiff td:nth-child(4) {{ width: 50%; background: #fff; }}
+table.sdiff td:nth-child(4) {{ width: 50%; background: #fff; white-space: pre-wrap; word-break: break-word; tab-size: 4; }}
+table.sdiff td:nth-child(2) .highlight,
+table.sdiff td:nth-child(4) .highlight {{ white-space: pre-wrap; }}
+table.sdiff td:nth-child(2) .highlight pre,
+table.sdiff td:nth-child(4) .highlight pre {{ white-space: pre-wrap !important; word-wrap: break-word; margin: 0; padding: 0; border: none; background: transparent; }}
+table.sdiff .sdiff-plain {{ white-space: pre-wrap; font-family: &quot;Consolas&quot;, &quot;Monaco&quot;, &quot;Courier New&quot;, monospace; }}
 table.sdiff tr.del td:nth-child(2) {{ background: #ffe6e6; }}
 table.sdiff tr.ins td:nth-child(4) {{ background: #e6ffe6; }}
 table.sdiff tr.diff td:nth-child(2) {{ background: #ffe6e6; }}
@@ -424,7 +615,7 @@ table.sdiff tr.diff td:nth-child(4) {{ background: #e6ffe6; }}
 &lt;/head&gt;
 &lt;body&gt;
 &lt;h1&gt;Side-by-Side Diff: {html.escape(str(filepath))}&lt;/h1&gt;
-&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;index.html&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
+&lt;div class=&quot;nav&quot;&gt;&lt;a href=&quot;{html.escape(index_href)}&quot;&gt;← Back to index&lt;/a&gt;&lt;/div&gt;
 &lt;hr&gt;
 &lt;table class=&quot;sdiff&quot;&gt;
 &lt;thead&gt;&lt;tr&gt;&lt;th&gt;{html.escape(old_label)}&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;{html.escape(new_label)}&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
@@ -476,8 +667,9 @@ def run_plain_mode(args: argparse.Namespace) -&gt; None:
         
         out_path = output_dir / rel_path.with_suffix(rel_path.suffix + &quot;.html&quot;)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        html_content = source_to_html(rel_path, content, &quot;Source&quot;)
+        out_rel = rel_path.with_suffix(rel_path.suffix + &quot;.html&quot;)
+
+        html_content = source_to_html(rel_path, content, &quot;Source&quot;, href_to_index(out_rel))
         out_path.write_text(html_content, encoding=&quot;utf-8&quot;)
         
         index_entries.append((str(rel_path), rel_path.with_suffix(rel_path.suffix + &quot;.html&quot;)))
@@ -485,7 +677,7 @@ def run_plain_mode(args: argparse.Namespace) -&gt; None:
     
     # Write index
     tree = build_file_tree([name.replace(&quot;\\&quot;, &quot;/&quot;) for name, _ in index_entries])
-    tree_html = render_plain_tree(tree)
+    tree_html = render_plain_tree(tree, &quot;&quot;, [0])
     index_html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -498,14 +690,15 @@ def run_plain_mode(args: argparse.Namespace) -&gt; None:
 &lt;p&gt;Prepared for offline review. {len(index_entries)} files with syntax highlighting.&lt;/p&gt;
 &lt;div class=&quot;tree&quot;&gt;
   &lt;div class=&quot;toolbar&quot;&gt;
-    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = true)&quot;&gt;Expand all&lt;/button&gt;
-    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = false)&quot;&gt;Collapse all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;codereviewerExpandAll()&quot;&gt;Expand all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;codereviewerCollapseAll()&quot;&gt;Collapse all&lt;/button&gt;
   &lt;/div&gt;
   &lt;div class=&quot;header&quot;&gt;&lt;div&gt;File&lt;/div&gt;&lt;div&gt;Source&lt;/div&gt;&lt;/div&gt;
   {tree_html}
 &lt;/div&gt;
 &lt;hr&gt;
- &lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+{INDEX_REVIEW_SCRIPT}
+&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
     
     (output_dir / &quot;index.html&quot;).write_text(index_html, encoding=&quot;utf-8&quot;)
     print(f&quot;\nDone. Output: {output_dir}&quot;)
@@ -559,6 +752,59 @@ def get_git_changed_files(root: Path, base: str, head: str) -&gt; list[tuple[str
     return files
 
 
+def get_git_worktree_changed_files(root: Path, base: str) -&gt; list[tuple[str, str, str]]:
+    &quot;&quot;&quot;Get list of (path, status, old_path) for changes from base -&gt; index/worktree.&quot;&quot;&quot;
+    def parse(name_status: str) -&gt; list[tuple[str, str, str]]:
+        out: list[tuple[str, str, str]] = []
+        for line in name_status.strip().splitlines():
+            if not line.strip():
+                continue
+            parts = line.split(&quot;\t&quot;, 2)
+            status = parts[0]
+            if status.startswith(&quot;R&quot;) and len(parts) &gt; 2:
+                old_path, path = parts[1], parts[2]
+            else:
+                path = parts[1] if len(parts) &gt; 1 else &quot;&quot;
+                old_path = path
+            out.append((path, status, old_path))
+        return out
+
+    unstaged = subprocess.run(
+        [&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, &quot;-M&quot;, base],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    staged = subprocess.run(
+        [&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, &quot;-M&quot;, &quot;--cached&quot;, base],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    if unstaged.returncode != 0 and staged.returncode != 0:
+        raise RuntimeError(f&quot;git diff failed: {unstaged.stderr or staged.stderr}&quot;)
+
+    merged: dict[str, tuple[str, str, str]] = {}
+    for path, status, old_path in parse(staged.stdout):
+        if path:
+            merged[path] = (path, status, old_path)
+    for path, status, old_path in parse(unstaged.stdout):
+        if path:
+            merged[path] = (path, status, old_path)
+    return list(merged.values())
+
+
+def get_worktree_file_content(repo_root: Path, rel_path: str) -&gt; str:
+    &quot;&quot;&quot;Read file from disk (worktree).&quot;&quot;&quot;
+    try:
+        p = repo_root / rel_path
+        if p.exists() and p.is_file():
+            return p.read_text(encoding=&quot;utf-8&quot;, errors=&quot;replace&quot;)
+    except Exception:
+        pass
+    return &quot;&quot;
+
+
 def get_git_file_content(root: Path, rev: str, path: str) -&gt; str:
     &quot;&quot;&quot;Get file content at given revision.&quot;&quot;&quot;
     try:
@@ -583,13 +829,14 @@ def run_git_mode(args: argparse.Namespace) -&gt; None:
         print(&quot;Not a git repository. Use plain mode or specify a git directory.&quot;, file=sys.stderr)
         sys.exit(1)
     
-    base = args.base or &quot;HEAD~1&quot;
-    head = args.head or &quot;HEAD&quot;
+    worktree = bool(getattr(args, &quot;worktree&quot;, False))
+    base = args.base or (&quot;HEAD&quot; if worktree else &quot;HEAD~1&quot;)
+    head = &quot;WORKTREE&quot; if worktree else (args.head or &quot;HEAD&quot;)
     output_dir = Path(args.output).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     
     try:
-        changed = get_git_changed_files(repo_root, base, head)
+        changed = get_git_worktree_changed_files(repo_root, base) if worktree else get_git_changed_files(repo_root, base, head)
     except RuntimeError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
@@ -599,17 +846,44 @@ def run_git_mode(args: argparse.Namespace) -&gt; None:
         return
     
     print(f&quot;Processing {len(changed)} changed files...&quot;)
-    
+
+    patch_text = &quot;&quot;
     # Get full diff for patch file
-    patch_result = subprocess.run(
-        [&quot;git&quot;, &quot;diff&quot;, f&quot;{base}...{head}&quot;],
-        cwd=repo_root,
-        capture_output=True,
-        text=True,
-    )
-    if patch_result.returncode == 0:
-        (output_dir / &quot;changes.patch&quot;).write_text(patch_result.stdout, encoding=&quot;utf-8&quot;)
-    
+    if worktree:
+        patch_cached = subprocess.run(
+            [&quot;git&quot;, &quot;diff&quot;, &quot;--cached&quot;, base],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+        )
+        patch_unstaged = subprocess.run(
+            [&quot;git&quot;, &quot;diff&quot;, base],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+        )
+        if patch_cached.returncode == 0 and patch_cached.stdout.strip():
+            patch_text += patch_cached.stdout
+        if patch_unstaged.returncode == 0 and patch_unstaged.stdout.strip():
+            if patch_text and not patch_text.endswith(&quot;\n&quot;):
+                patch_text += &quot;\n&quot;
+            patch_text += patch_unstaged.stdout
+        if patch_text:
+            (output_dir / &quot;changes.patch&quot;).write_text(patch_text, encoding=&quot;utf-8&quot;)
+    else:
+        patch_result = subprocess.run(
+            [&quot;git&quot;, &quot;diff&quot;, f&quot;{base}...{head}&quot;],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+        )
+        if patch_result.returncode == 0:
+            patch_text = patch_result.stdout
+            (output_dir / &quot;changes.patch&quot;).write_text(patch_text, encoding=&quot;utf-8&quot;)
+
+    n_add, n_mod, n_rem = partition_line_stats_from_patch(patch_text)
+    line_stats_html = format_line_stats_html(n_add, n_mod, n_rem)
+
     index_entries = []
     for path, status, old_path in changed:
         if not path or path == &quot;/dev/null&quot;:
@@ -619,7 +893,10 @@ def run_git_mode(args: argparse.Namespace) -&gt; None:
             continue
             
         old_content = get_git_file_content(repo_root, base, old_path) if status != &quot;A&quot; else &quot;&quot;
-        new_content = get_git_file_content(repo_root, head, path) if status != &quot;D&quot; else &quot;&quot;
+        if worktree:
+            new_content = &quot;&quot; if status == &quot;D&quot; else get_worktree_file_content(repo_root, path)
+        else:
+            new_content = get_git_file_content(repo_root, head, path) if status != &quot;D&quot; else &quot;&quot;
         
         rel_path = Path(path)
         out_base = output_dir / rel_path
@@ -632,21 +909,43 @@ def run_git_mode(args: argparse.Namespace) -&gt; None:
         path_posix = rel_path.as_posix()
         if old_content or new_content:
             if old_content:
-                old_html = source_to_html(rel_path, old_content, f&quot;Old ({base})&quot;)
-                (output_dir / f&quot;{path_posix}-.html&quot;).write_text(old_html, encoding=&quot;utf-8&quot;)
-                entry[&quot;old&quot;] = f&quot;{path_posix}-.html&quot;
+                old_out_rel = Path(f&quot;{path_posix}-.html&quot;)
+                old_html = source_to_html(
+                    rel_path, old_content, f&quot;Old ({base})&quot;, href_to_index(old_out_rel)
+                )
+                (output_dir / old_out_rel).write_text(old_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;old&quot;] = old_out_rel.as_posix()
             if new_content:
-                new_html = source_to_html(rel_path, new_content, f&quot;New ({head})&quot;)
-                (output_dir / f&quot;{path_posix}.html&quot;).write_text(new_html, encoding=&quot;utf-8&quot;)
-                entry[&quot;new&quot;] = f&quot;{path_posix}.html&quot;
-            
+                new_out_rel = Path(f&quot;{path_posix}.html&quot;)
+                new_html = source_to_html(
+                    rel_path, new_content, f&quot;New ({head})&quot;, href_to_index(new_out_rel)
+                )
+                (output_dir / new_out_rel).write_text(new_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;new&quot;] = new_out_rel.as_posix()
+
             if old_content and new_content:
-                udiff_html = diff_to_html_unified(rel_path, old_content, new_content, base, head)
-                sdiff_html = diff_to_html_side_by_side(rel_path, old_content, new_content, base, head)
-                (output_dir / f&quot;{path_posix}.udiff.html&quot;).write_text(udiff_html, encoding=&quot;utf-8&quot;)
-                (output_dir / f&quot;{path_posix}.sdiff.html&quot;).write_text(sdiff_html, encoding=&quot;utf-8&quot;)
-                entry[&quot;udiff&quot;] = f&quot;{path_posix}.udiff.html&quot;
-                entry[&quot;sdiff&quot;] = f&quot;{path_posix}.sdiff.html&quot;
+                udiff_out_rel = Path(f&quot;{path_posix}.udiff.html&quot;)
+                sdiff_out_rel = Path(f&quot;{path_posix}.sdiff.html&quot;)
+                udiff_html = diff_to_html_unified(
+                    rel_path,
+                    old_content,
+                    new_content,
+                    base,
+                    head,
+                    index_href=href_to_index(udiff_out_rel),
+                )
+                sdiff_html = diff_to_html_side_by_side(
+                    rel_path,
+                    old_content,
+                    new_content,
+                    base,
+                    head,
+                    index_href=href_to_index(sdiff_out_rel),
+                )
+                (output_dir / udiff_out_rel).write_text(udiff_html, encoding=&quot;utf-8&quot;)
+                (output_dir / sdiff_out_rel).write_text(sdiff_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;udiff&quot;] = udiff_out_rel.as_posix()
+                entry[&quot;sdiff&quot;] = sdiff_out_rel.as_posix()
         
         index_entries.append(entry)
         print(f&quot;  {path} ({status})&quot;)
@@ -655,7 +954,7 @@ def run_git_mode(args: argparse.Namespace) -&gt; None:
     status_badges = {&quot;A&quot;: &quot;badge-new&quot;, &quot;M&quot;: &quot;badge-modified&quot;, &quot;D&quot;: &quot;badge-deleted&quot;, &quot;R&quot;: &quot;badge-modified&quot;}
     entries_by_path = {e[&quot;path&quot;].replace(&quot;\\&quot;, &quot;/&quot;): e for e in index_entries if &quot;path&quot; in e}
     tree = build_file_tree(list(entries_by_path.keys()))
-    tree_html = render_diff_tree(tree, entries_by_path)
+    tree_html = render_diff_tree(tree, entries_by_path, &quot;&quot;, [0])
     index_html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -669,17 +968,19 @@ def run_git_mode(args: argparse.Namespace) -&gt; None:
 &lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; {html.escape(base)} &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; {html.escape(head)}&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; {len(index_entries)}&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
+{line_stats_html}
 &lt;/div&gt;
 &lt;div class=&quot;tree&quot;&gt;
   &lt;div class=&quot;toolbar&quot;&gt;
-    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = true)&quot;&gt;Expand all&lt;/button&gt;
-    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = false)&quot;&gt;Collapse all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;codereviewerExpandAll()&quot;&gt;Expand all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;codereviewerCollapseAll()&quot;&gt;Collapse all&lt;/button&gt;
   &lt;/div&gt;
   &lt;div class=&quot;header&quot;&gt;&lt;div&gt;File&lt;/div&gt;&lt;div&gt;Links&lt;/div&gt;&lt;/div&gt;
   {tree_html}
 &lt;/div&gt;
 &lt;hr&gt;
- &lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+{INDEX_REVIEW_SCRIPT}
+&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
     
     (output_dir / &quot;index.html&quot;).write_text(index_html, encoding=&quot;utf-8&quot;)
     print(f&quot;\nDone. Output: {output_dir}&quot;)
@@ -764,9 +1065,13 @@ def run_svn_mode(args: argparse.Namespace) -&gt; None:
         capture_output=True,
         text=True,
     )
-    if patch_result.returncode == 0:
-        (output_dir / &quot;changes.patch&quot;).write_text(patch_result.stdout, encoding=&quot;utf-8&quot;)
-    
+    patch_text = patch_result.stdout if patch_result.returncode == 0 else &quot;&quot;
+    if patch_text:
+        (output_dir / &quot;changes.patch&quot;).write_text(patch_text, encoding=&quot;utf-8&quot;)
+
+    n_add, n_mod, n_rem = partition_line_stats_from_patch(patch_text)
+    line_stats_html = format_line_stats_html(n_add, n_mod, n_rem)
+
     index_entries = []
     for path, status in changed:
         if not path:
@@ -782,22 +1087,45 @@ def run_svn_mode(args: argparse.Namespace) -&gt; None:
         out_base.parent.mkdir(parents=True, exist_ok=True)
         
         entry = {&quot;path&quot;: path, &quot;status&quot;: status}
+        path_posix = rel_path.as_posix()
         if old_content or new_content:
             if old_content:
-                old_html = source_to_html(rel_path, old_content, f&quot;Old (r{base})&quot;)
-                (output_dir / f&quot;{rel_path}-.html&quot;).write_text(old_html, encoding=&quot;utf-8&quot;)
-                entry[&quot;old&quot;] = f&quot;{rel_path}-.html&quot;
+                old_out_rel = Path(f&quot;{path_posix}-.html&quot;)
+                old_html = source_to_html(
+                    rel_path, old_content, f&quot;Old (r{base})&quot;, href_to_index(old_out_rel)
+                )
+                (output_dir / old_out_rel).write_text(old_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;old&quot;] = old_out_rel.as_posix()
             if new_content:
-                new_html = source_to_html(rel_path, new_content, f&quot;New (r{head})&quot;)
-                (output_dir / f&quot;{rel_path}.html&quot;).write_text(new_html, encoding=&quot;utf-8&quot;)
-                entry[&quot;new&quot;] = f&quot;{rel_path}.html&quot;
+                new_out_rel = Path(f&quot;{path_posix}.html&quot;)
+                new_html = source_to_html(
+                    rel_path, new_content, f&quot;New (r{head})&quot;, href_to_index(new_out_rel)
+                )
+                (output_dir / new_out_rel).write_text(new_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;new&quot;] = new_out_rel.as_posix()
             if old_content and new_content:
-                udiff_html = diff_to_html_unified(rel_path, old_content, new_content, f&quot;r{base}&quot;, f&quot;r{head}&quot;)
-                sdiff_html = diff_to_html_side_by_side(rel_path, old_content, new_content, f&quot;r{base}&quot;, f&quot;r{head}&quot;)
-                (output_dir / f&quot;{rel_path}.udiff.html&quot;).write_text(udiff_html, encoding=&quot;utf-8&quot;)
-                (output_dir / f&quot;{rel_path}.sdiff.html&quot;).write_text(sdiff_html, encoding=&quot;utf-8&quot;)
-                entry[&quot;udiff&quot;] = f&quot;{rel_path}.udiff.html&quot;
-                entry[&quot;sdiff&quot;] = f&quot;{rel_path}.sdiff.html&quot;
+                udiff_out_rel = Path(f&quot;{path_posix}.udiff.html&quot;)
+                sdiff_out_rel = Path(f&quot;{path_posix}.sdiff.html&quot;)
+                udiff_html = diff_to_html_unified(
+                    rel_path,
+                    old_content,
+                    new_content,
+                    f&quot;r{base}&quot;,
+                    f&quot;r{head}&quot;,
+                    index_href=href_to_index(udiff_out_rel),
+                )
+                sdiff_html = diff_to_html_side_by_side(
+                    rel_path,
+                    old_content,
+                    new_content,
+                    f&quot;r{base}&quot;,
+                    f&quot;r{head}&quot;,
+                    index_href=href_to_index(sdiff_out_rel),
+                )
+                (output_dir / udiff_out_rel).write_text(udiff_html, encoding=&quot;utf-8&quot;)
+                (output_dir / sdiff_out_rel).write_text(sdiff_html, encoding=&quot;utf-8&quot;)
+                entry[&quot;udiff&quot;] = udiff_out_rel.as_posix()
+                entry[&quot;sdiff&quot;] = sdiff_out_rel.as_posix()
         
         index_entries.append(entry)
         print(f&quot;  {path} ({status})&quot;)
@@ -805,7 +1133,7 @@ def run_svn_mode(args: argparse.Namespace) -&gt; None:
     status_badges = {&quot;A&quot;: &quot;badge-new&quot;, &quot;M&quot;: &quot;badge-modified&quot;, &quot;D&quot;: &quot;badge-deleted&quot;}
     entries_by_path = {e[&quot;path&quot;].replace(&quot;\\&quot;, &quot;/&quot;): e for e in index_entries if &quot;path&quot; in e}
     tree = build_file_tree(list(entries_by_path.keys()))
-    tree_html = render_diff_tree(tree, entries_by_path)
+    tree_html = render_diff_tree(tree, entries_by_path, &quot;&quot;, [0])
     index_html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -819,17 +1147,19 @@ def run_svn_mode(args: argparse.Namespace) -&gt; None:
 &lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; r{base} &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; r{head}&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; {len(index_entries)}&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
+{line_stats_html}
 &lt;/div&gt;
 &lt;div class=&quot;tree&quot;&gt;
   &lt;div class=&quot;toolbar&quot;&gt;
-    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = true)&quot;&gt;Expand all&lt;/button&gt;
-    &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = false)&quot;&gt;Collapse all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;codereviewerExpandAll()&quot;&gt;Expand all&lt;/button&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;codereviewerCollapseAll()&quot;&gt;Collapse all&lt;/button&gt;
   &lt;/div&gt;
   &lt;div class=&quot;header&quot;&gt;&lt;div&gt;File&lt;/div&gt;&lt;div&gt;Links&lt;/div&gt;&lt;/div&gt;
   {tree_html}
 &lt;/div&gt;
 &lt;hr&gt;
- &lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
+{INDEX_REVIEW_SCRIPT}
+&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;
     
     (output_dir / &quot;index.html&quot;).write_text(index_html, encoding=&quot;utf-8&quot;)
     print(f&quot;\nDone. Output: {output_dir}&quot;)
@@ -858,6 +1188,8 @@ Examples:
     parser.add_argument(&quot;-o&quot;, &quot;--output&quot;, default=&quot;review&quot;, help=&quot;Output directory (default: review)&quot;)
     parser.add_argument(&quot;--base&quot;, help=&quot;Base revision (git: commit, svn: rev number)&quot;)
     parser.add_argument(&quot;--head&quot;, help=&quot;Head revision (git: commit, svn: rev number)&quot;)
+    parser.add_argument(&quot;--worktree&quot;, action=&quot;store_true&quot;,
+                        help=&quot;Git only: diff --base (default: HEAD) against staged+unstaged working tree changes&quot;)
     parser.add_argument(&quot;--plain&quot;, action=&quot;store_true&quot;, help=&quot;Force plain mode (ignore VCS)&quot;)
     parser.add_argument(&quot;--extensions&quot;, nargs=&quot;*&quot;, default=list(DEFAULT_EXTENSIONS),
                         help=&quot;File extensions for plain mode (default: common code extensions)&quot;)
@@ -871,7 +1203,7 @@ Examples:
     
     vcs = None if args.plain else detect_vcs(root)
     
-    if vcs == &quot;git&quot; and (args.base or args.head):
+    if vcs == &quot;git&quot; and (args.base or args.head or args.worktree):
         run_git_mode(args)
     elif vcs == &quot;svn&quot; and (args.base or args.head):
         run_svn_mode(args)

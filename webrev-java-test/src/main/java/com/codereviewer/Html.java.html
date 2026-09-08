@@ -26,13 +26,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: "Consolas", "Monaco", monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details > summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review="yellow"] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review="red"] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review="green"] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -81,10 +94,11 @@ ready(function(){
 </head>
 <body>
 <h1>Source: src\main\java\com\codereviewer\Html.java</h1>
-<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<div class="nav"><a href="../../../../../index.html">&#8592; Back to index</a></div>
 <hr>
 <pre><code class="language-java">package com.codereviewer;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 final class Html {
@@ -129,11 +143,112 @@ final class Html {
                 h1 == null ? &quot;&quot; : h1, navHtml == null ? &quot;&quot; : navHtml, bodyHtml == null ? &quot;&quot; : bodyHtml);
     }
 
-    static String navBackToIndex() {
-        return &quot;&lt;div class=\&quot;nav\&quot;&gt;&lt;a href=\&quot;index.html\&quot;&gt;&amp;#8592; Back to index&lt;/a&gt;&lt;/div&gt;&quot;;
+    /**
+     * Relative URL from a generated HTML file (path relative to output root) to {@code index.html} at the output root.
+     */
+    static String hrefToIndex(Path outputFileRel) {
+        Path normalized = outputFileRel.normalize();
+        int depth = normalized.getNameCount() &gt; 0 ? normalized.getNameCount() - 1 : 0;
+        if (depth &lt;= 0) {
+            return &quot;index.html&quot;;
+        }
+        return &quot;../&quot;.repeat(depth) + &quot;index.html&quot;;
     }
 
-    static String sourcePage(String displayPath, String titlePrefix, String code, String languageClass) {
+    static String navBackToIndex(String indexHref) {
+        return &quot;&lt;div class=\&quot;nav\&quot;&gt;&lt;a href=\&quot;&quot; + escape(indexHref == null ? &quot;index.html&quot; : indexHref)
+                + &quot;\&quot;&gt;&amp;#8592; Back to index&lt;/a&gt;&lt;/div&gt;&quot;;
+    }
+
+    /** Line-change summary for diff-mode index pages (from unified patch). */
+    static String lineStatsSummary(int added, int modified, int removed) {
+        return &quot;&quot;&quot;
+                &lt;div class=&quot;line-stats&quot; aria-label=&quot;Line change estimates from patch&quot;&gt;
+                  &lt;div class=&quot;line-stat line-stat-added&quot;&gt;&lt;span class=&quot;line-stat-label&quot;&gt;Lines added&lt;/span&gt;&lt;span class=&quot;line-stat-value&quot;&gt;%d&lt;/span&gt;&lt;/div&gt;
+                  &lt;div class=&quot;line-stat line-stat-modified&quot;&gt;&lt;span class=&quot;line-stat-label&quot;&gt;Lines modified&lt;/span&gt;&lt;span class=&quot;line-stat-value&quot;&gt;%d&lt;/span&gt;&lt;/div&gt;
+                  &lt;div class=&quot;line-stat line-stat-removed&quot;&gt;&lt;span class=&quot;line-stat-label&quot;&gt;Lines removed&lt;/span&gt;&lt;span class=&quot;line-stat-value&quot;&gt;%d&lt;/span&gt;&lt;/div&gt;
+                &lt;/div&gt;
+                &quot;&quot;&quot;.formatted(added, modified, removed);
+    }
+
+    /** Inline on index.html only; keep in sync with INDEX_REVIEW_SCRIPT in codereviewer.py. */
+    static String indexReviewScript() {
+        return &quot;&quot;&quot;
+                &lt;script&gt;
+                (function(){
+                var KEY=&#x27;codereviewer-index-review-v1&#x27;;
+                var TREE_KEY=&#x27;codereviewer-index-tree-v1&#x27;;
+                var ORDER=[&#x27;&#x27;,&#x27;yellow&#x27;,&#x27;red&#x27;,&#x27;green&#x27;];
+                function load(){try{return JSON.parse(localStorage.getItem(KEY)||&#x27;{}&#x27;);}catch(e){return {};}}
+                function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+                function loadTree(){try{return JSON.parse(localStorage.getItem(TREE_KEY)||&#x27;{}&#x27;);}catch(e){return {};}}
+                function saveTree(m){try{localStorage.setItem(TREE_KEY,JSON.stringify(m));}catch(e){}}
+                function apply(){
+                  var m=load();
+                  document.querySelectorAll(&#x27;.tree .file-row[data-file-path]&#x27;).forEach(function(row){
+                    var p=row.getAttribute(&#x27;data-file-path&#x27;);
+                    if(m[p]) row.setAttribute(&#x27;data-review&#x27;,m[p]); else row.removeAttribute(&#x27;data-review&#x27;);
+                  });
+                }
+                function applyTree(){
+                  var collapsed=loadTree();
+                  document.querySelectorAll(&#x27;.tree details[data-folder-path]&#x27;).forEach(function(d){
+                    var p=d.getAttribute(&#x27;data-folder-path&#x27;);
+                    d.open=!collapsed[p];
+                  });
+                }
+                function persistTreeState(){
+                  var collapsed={};
+                  document.querySelectorAll(&#x27;.tree details[data-folder-path]&#x27;).forEach(function(d){
+                    var p=d.getAttribute(&#x27;data-folder-path&#x27;);
+                    if(p&amp;&amp;!d.open) collapsed[p]=true;
+                  });
+                  saveTree(collapsed);
+                }
+                function cycle(row){
+                  var p=row.getAttribute(&#x27;data-file-path&#x27;);
+                  if(!p) return;
+                  var cur=row.getAttribute(&#x27;data-review&#x27;)||&#x27;&#x27;;
+                  var i=ORDER.indexOf(cur); if(i&lt;0) i=0;
+                  var next=ORDER[(i+1)%ORDER.length];
+                  var m=load();
+                  if(next) m[p]=next; else delete m[p];
+                  save(m);
+                  if(next) row.setAttribute(&#x27;data-review&#x27;,next); else row.removeAttribute(&#x27;data-review&#x27;);
+                }
+                window.codereviewerExpandAll=function(){
+                  document.querySelectorAll(&#x27;.tree details&#x27;).forEach(function(d){d.open=true;});
+                  saveTree({});
+                };
+                window.codereviewerCollapseAll=function(){
+                  document.querySelectorAll(&#x27;.tree details&#x27;).forEach(function(d){d.open=false;});
+                  persistTreeState();
+                };
+                document.addEventListener(&#x27;DOMContentLoaded&#x27;,function(){
+                  apply();
+                  applyTree();
+                  var tree=document.querySelector(&#x27;.tree&#x27;);
+                  if(tree){
+                    tree.addEventListener(&#x27;toggle&#x27;,function(e){
+                      var d=e.target;
+                      if(!d||d.tagName!==&#x27;DETAILS&#x27;||!d.hasAttribute(&#x27;data-folder-path&#x27;)) return;
+                      persistTreeState();
+                    },true);
+                  }
+                });
+                document.addEventListener(&#x27;click&#x27;,function(e){
+                  var tree=document.querySelector(&#x27;.tree&#x27;);
+                  if(!tree||!tree.contains(e.target)) return;
+                  if(e.target.closest(&#x27;a&#x27;)||e.target.closest(&#x27;button&#x27;)) return;
+                  var row=e.target.closest(&#x27;.file-row&#x27;);
+                  if(row) cycle(row);
+                });
+                })();
+                &lt;/script&gt;
+                &quot;&quot;&quot;;
+    }
+
+    static String sourcePage(String displayPath, String titlePrefix, String code, String languageClass, String indexHref) {
         String title = titlePrefix + &quot; - &quot; + displayPath;
         String h1 = escape(titlePrefix) + &quot;: &quot; + escape(displayPath);
         String head = &quot;&quot;&quot;
@@ -141,7 +256,7 @@ final class Html {
                 &quot;&quot;&quot;.formatted(Defaults.HIGHLIGHT_JS_MIN);
         String codeHtml = &quot;&lt;pre&gt;&lt;code class=\&quot;%s\&quot;&gt;%s&lt;/code&gt;&lt;/pre&gt;&quot;
                 .formatted(escape(languageClass == null ? &quot;&quot; : languageClass), escape(code == null ? &quot;&quot; : code));
-        return doc(title, h1, navBackToIndex(), codeHtml, head);
+        return doc(title, h1, navBackToIndex(indexHref), codeHtml, head);
     }
 
     static String tableIndex(String[] headers, String rowsHtml) {

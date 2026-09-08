@@ -113,7 +113,7 @@ python codereviewer.py ./git-repo -o ./review --plain
 - `index.html` — Index of all files with links to syntax-highlighted source
 - `path/to/file.py.html` — HTML version of each code file
 
-On **`index.html`** (Python and Java): file rows use alternating light gray and light blue backgrounds so each file lines up with its links. Click a row **outside** a link or button to cycle review highlight: unmarked, then yellow, red, green, then clear again. That state is saved in the browser under the `localStorage` key `codereviewer-index-review-v1`, so it survives refresh while you keep the same output folder path.
+On **`index.html`** (Python and Java): file rows use alternating light gray and light blue backgrounds so each file lines up with its links. Click a row **outside** a link or button to cycle review highlight: unmarked, then yellow, red, green, then clear again. That state is saved in the browser under the `localStorage` key `codereviewer-index-review-v1`, so it survives refresh while you keep the same output folder path. Folder expand/collapse is likewise persisted under `codereviewer-index-tree-v1` (collapsed folders only; default remains expanded), including after you open a file and return via **Back to index**. Expand all / Collapse all update that stored state as well.
 
 ### Git/SVN Diff Mode
 

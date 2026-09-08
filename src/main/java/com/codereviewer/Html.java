@@ -79,15 +79,33 @@ final class Html {
                 <script>
                 (function(){
                 var KEY='codereviewer-index-review-v1';
+                var TREE_KEY='codereviewer-index-tree-v1';
                 var ORDER=['','yellow','red','green'];
                 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
                 function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+                function loadTree(){try{return JSON.parse(localStorage.getItem(TREE_KEY)||'{}');}catch(e){return {};}}
+                function saveTree(m){try{localStorage.setItem(TREE_KEY,JSON.stringify(m));}catch(e){}}
                 function apply(){
                   var m=load();
                   document.querySelectorAll('.tree .file-row[data-file-path]').forEach(function(row){
                     var p=row.getAttribute('data-file-path');
                     if(m[p]) row.setAttribute('data-review',m[p]); else row.removeAttribute('data-review');
                   });
+                }
+                function applyTree(){
+                  var collapsed=loadTree();
+                  document.querySelectorAll('.tree details[data-folder-path]').forEach(function(d){
+                    var p=d.getAttribute('data-folder-path');
+                    d.open=!collapsed[p];
+                  });
+                }
+                function persistTreeState(){
+                  var collapsed={};
+                  document.querySelectorAll('.tree details[data-folder-path]').forEach(function(d){
+                    var p=d.getAttribute('data-folder-path');
+                    if(p&&!d.open) collapsed[p]=true;
+                  });
+                  saveTree(collapsed);
                 }
                 function cycle(row){
                   var p=row.getAttribute('data-file-path');
@@ -100,7 +118,26 @@ final class Html {
                   save(m);
                   if(next) row.setAttribute('data-review',next); else row.removeAttribute('data-review');
                 }
-                document.addEventListener('DOMContentLoaded',apply);
+                window.codereviewerExpandAll=function(){
+                  document.querySelectorAll('.tree details').forEach(function(d){d.open=true;});
+                  saveTree({});
+                };
+                window.codereviewerCollapseAll=function(){
+                  document.querySelectorAll('.tree details').forEach(function(d){d.open=false;});
+                  persistTreeState();
+                };
+                document.addEventListener('DOMContentLoaded',function(){
+                  apply();
+                  applyTree();
+                  var tree=document.querySelector('.tree');
+                  if(tree){
+                    tree.addEventListener('toggle',function(e){
+                      var d=e.target;
+                      if(!d||d.tagName!=='DETAILS'||!d.hasAttribute('data-folder-path')) return;
+                      persistTreeState();
+                    },true);
+                  }
+                });
                 document.addEventListener('click',function(e){
                   var tree=document.querySelector('.tree');
                   if(!tree||!tree.contains(e.target)) return;

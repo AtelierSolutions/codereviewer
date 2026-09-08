@@ -93,20 +93,38 @@ table.index tr:hover { background: #f1f3f5; }
 .tree button:hover { background: #f1f3f5; }
 """
 
-# Inline on index.html only: row review marks + localStorage (keep in sync with Html.indexReviewScript() in Java).
+# Inline on index.html only: row review marks + folder expand state (keep in sync with Html.indexReviewScript() in Java).
 INDEX_REVIEW_SCRIPT = """
 <script>
 (function(){
 var KEY='codereviewer-index-review-v1';
+var TREE_KEY='codereviewer-index-tree-v1';
 var ORDER=['','yellow','red','green'];
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
 function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+function loadTree(){try{return JSON.parse(localStorage.getItem(TREE_KEY)||'{}');}catch(e){return {};}}
+function saveTree(m){try{localStorage.setItem(TREE_KEY,JSON.stringify(m));}catch(e){}}
 function apply(){
   var m=load();
   document.querySelectorAll('.tree .file-row[data-file-path]').forEach(function(row){
     var p=row.getAttribute('data-file-path');
     if(m[p]) row.setAttribute('data-review',m[p]); else row.removeAttribute('data-review');
   });
+}
+function applyTree(){
+  var collapsed=loadTree();
+  document.querySelectorAll('.tree details[data-folder-path]').forEach(function(d){
+    var p=d.getAttribute('data-folder-path');
+    d.open=!collapsed[p];
+  });
+}
+function persistTreeState(){
+  var collapsed={};
+  document.querySelectorAll('.tree details[data-folder-path]').forEach(function(d){
+    var p=d.getAttribute('data-folder-path');
+    if(p&&!d.open) collapsed[p]=true;
+  });
+  saveTree(collapsed);
 }
 function cycle(row){
   var p=row.getAttribute('data-file-path');
@@ -119,7 +137,26 @@ function cycle(row){
   save(m);
   if(next) row.setAttribute('data-review',next); else row.removeAttribute('data-review');
 }
-document.addEventListener('DOMContentLoaded',apply);
+window.codereviewerExpandAll=function(){
+  document.querySelectorAll('.tree details').forEach(function(d){d.open=true;});
+  saveTree({});
+};
+window.codereviewerCollapseAll=function(){
+  document.querySelectorAll('.tree details').forEach(function(d){d.open=false;});
+  persistTreeState();
+};
+document.addEventListener('DOMContentLoaded',function(){
+  apply();
+  applyTree();
+  var tree=document.querySelector('.tree');
+  if(tree){
+    tree.addEventListener('toggle',function(e){
+      var d=e.target;
+      if(!d||d.tagName!=='DETAILS'||!d.hasAttribute('data-folder-path')) return;
+      persistTreeState();
+    },true);
+  }
+});
 document.addEventListener('click',function(e){
   var tree=document.querySelector('.tree');
   if(!tree||!tree.contains(e.target)) return;
@@ -205,7 +242,10 @@ def render_plain_tree(tree: dict, base_path: str, stripe_counter: list[int]) -> 
     for name in sorted(k for k in tree.keys() if k != "_files"):
         sub = tree[name]
         full = f"{base_path}{name}/"
-        html_parts.append(f'<details open><summary>{html.escape(name)}/</summary>')
+        attr_folder = html.escape(full.replace("\\", "/"))
+        html_parts.append(
+            f'<details open data-folder-path="{attr_folder}"><summary>{html.escape(name)}/</summary>'
+        )
         html_parts.append(render_plain_tree(sub, full, stripe_counter))
         html_parts.append("</details>")
 
@@ -233,7 +273,10 @@ def render_diff_tree(tree: dict, entries_by_path: dict[str, dict], base_path: st
     for name in sorted(k for k in tree.keys() if k != "_files"):
         sub = tree[name]
         full = f"{base_path}{name}/"
-        html_parts.append(f'<details open><summary>{html.escape(name)}/</summary>')
+        attr_folder = html.escape(full.replace("\\", "/"))
+        html_parts.append(
+            f'<details open data-folder-path="{attr_folder}"><summary>{html.escape(name)}/</summary>'
+        )
         html_parts.append(render_diff_tree(sub, entries_by_path, full, stripe_counter))
         html_parts.append("</details>")
 
@@ -549,8 +592,8 @@ def run_plain_mode(args: argparse.Namespace) -> None:
 <p>Prepared for offline review. {len(index_entries)} files with syntax highlighting.</p>
 <div class="tree">
   <div class="toolbar">
-    <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = true)">Expand all</button>
-    <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = false)">Collapse all</button>
+    <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
+    <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
   </div>
   <div class="header"><div>File</div><div>Source</div></div>
   {tree_html}
@@ -831,8 +874,8 @@ def run_git_mode(args: argparse.Namespace) -> None:
 </div>
 <div class="tree">
   <div class="toolbar">
-    <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = true)">Expand all</button>
-    <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = false)">Collapse all</button>
+    <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
+    <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
   </div>
   <div class="header"><div>File</div><div>Links</div></div>
   {tree_html}
@@ -1010,8 +1053,8 @@ def run_svn_mode(args: argparse.Namespace) -> None:
 </div>
 <div class="tree">
   <div class="toolbar">
-    <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = true)">Expand all</button>
-    <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = false)">Collapse all</button>
+    <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
+    <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
   </div>
   <div class="header"><div>File</div><div>Links</div></div>
   {tree_html}

@@ -26,13 +26,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: "Consolas", "Monaco", monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details > summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review="yellow"] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review="red"] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review="green"] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -81,7 +94,7 @@ ready(function(){
 </head>
 <body>
 <h1>Source: src\main\java\com\codereviewer\TreeIndex.java</h1>
-<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<div class="nav"><a href="../../../../../index.html">&#8592; Back to index</a></div>
 <hr>
 <pre><code class="language-java">package com.codereviewer;
 
@@ -98,8 +111,8 @@ final class TreeIndex {
     static String toolbarHtml() {
         return &quot;&quot;&quot;
                 &lt;div class=&quot;toolbar&quot;&gt;
-                  &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = true)&quot;&gt;Expand all&lt;/button&gt;
-                  &lt;button type=&quot;button&quot; onclick=&quot;document.querySelectorAll(&#x27;.tree details&#x27;).forEach(d =&gt; d.open = false)&quot;&gt;Collapse all&lt;/button&gt;
+                  &lt;button type=&quot;button&quot; onclick=&quot;codereviewerExpandAll()&quot;&gt;Expand all&lt;/button&gt;
+                  &lt;button type=&quot;button&quot; onclick=&quot;codereviewerCollapseAll()&quot;&gt;Collapse all&lt;/button&gt;
                 &lt;/div&gt;
                 &quot;&quot;&quot;;
     }
@@ -110,7 +123,8 @@ final class TreeIndex {
             String p = PlainMode.toPosix(e.relPath().toString());
             root.addPath(p, Map.of(&quot;view&quot;, PlainMode.toPosix(e.htmlPath().toString())));
         }
-        String content = root.renderPlain(&quot;&quot;);
+        int[] stripe = new int[]{0};
+        String content = root.renderPlain(&quot;&quot;, stripe);
         return &quot;&quot;&quot;
                 &lt;div class=&quot;tree&quot;&gt;
                   %s
@@ -128,7 +142,8 @@ final class TreeIndex {
             String posix = PlainMode.toPosix(p);
             root.addPath(posix, e);
         }
-        String content = root.renderDiff(&quot;&quot;);
+        int[] stripe = new int[]{0};
+        String content = root.renderDiff(&quot;&quot;, stripe);
         return &quot;&quot;&quot;
                 &lt;div class=&quot;tree&quot;&gt;
                   %s
@@ -160,20 +175,26 @@ final class TreeIndex {
             }
         }
 
-        String renderPlain(String basePath) {
+        String renderPlain(String basePath, int[] stripe) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry&lt;String, Node&gt; d : dirs.entrySet()) {
                 String name = d.getKey();
-                sb.append(&quot;&lt;details open&gt;&lt;summary&gt;&quot;)
+                String full = basePath + name + &quot;/&quot;;
+                sb.append(&quot;&lt;details open data-folder-path=\&quot;&quot;)
+                        .append(Html.escape(PlainMode.toPosix(full))).append(&quot;\&quot;&gt;&lt;summary&gt;&quot;)
                         .append(Html.escape(name)).append(&quot;/&lt;/summary&gt;\n&quot;)
-                        .append(d.getValue().renderPlain(basePath + name + &quot;/&quot;))
+                        .append(d.getValue().renderPlain(full, stripe))
                         .append(&quot;&lt;/details&gt;\n&quot;);
             }
             for (Map.Entry&lt;String, Map&lt;String, String&gt;&gt; f : files.entrySet()) {
                 String fname = f.getKey();
                 String rel = basePath + fname;
+                String relPosix = PlainMode.toPosix(rel);
                 String view = f.getValue().getOrDefault(&quot;view&quot;, Html.escape(rel) + &quot;.html&quot;);
-                sb.append(&quot;&lt;div class=\&quot;file-row\&quot;&gt;&quot;)
+                int idx = stripe[0]++;
+                String stripeCls = (idx % 2 == 0) ? &quot;stripe-even&quot; : &quot;stripe-odd&quot;;
+                sb.append(&quot;&lt;div class=\&quot;file-row &quot;).append(stripeCls).append(&quot;\&quot; data-file-path=\&quot;&quot;)
+                        .append(Html.escape(relPosix)).append(&quot;\&quot;&gt;&quot;)
                         .append(&quot;&lt;div class=\&quot;file-name\&quot;&gt;&quot;).append(Html.escape(rel)).append(&quot;&lt;/div&gt;&quot;)
                         .append(&quot;&lt;div class=\&quot;file-links\&quot;&gt;&lt;a href=\&quot;&quot;).append(Html.escape(view)).append(&quot;\&quot;&gt;View&lt;/a&gt;&lt;/div&gt;&quot;)
                         .append(&quot;&lt;/div&gt;\n&quot;);
@@ -181,18 +202,21 @@ final class TreeIndex {
             return sb.toString();
         }
 
-        String renderDiff(String basePath) {
+        String renderDiff(String basePath, int[] stripe) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry&lt;String, Node&gt; d : dirs.entrySet()) {
                 String name = d.getKey();
-                sb.append(&quot;&lt;details open&gt;&lt;summary&gt;&quot;)
+                String full = basePath + name + &quot;/&quot;;
+                sb.append(&quot;&lt;details open data-folder-path=\&quot;&quot;)
+                        .append(Html.escape(PlainMode.toPosix(full))).append(&quot;\&quot;&gt;&lt;summary&gt;&quot;)
                         .append(Html.escape(name)).append(&quot;/&lt;/summary&gt;\n&quot;)
-                        .append(d.getValue().renderDiff(basePath + name + &quot;/&quot;))
+                        .append(d.getValue().renderDiff(full, stripe))
                         .append(&quot;&lt;/details&gt;\n&quot;);
             }
             for (Map.Entry&lt;String, Map&lt;String, String&gt;&gt; f : files.entrySet()) {
                 String fname = f.getKey();
                 String rel = basePath + fname;
+                String relPosix = PlainMode.toPosix(rel);
                 Map&lt;String, String&gt; e = f.getValue();
                 String status = e.getOrDefault(&quot;status&quot;, &quot;M&quot;);
                 String statusKey = status.isEmpty() ? &quot;M&quot; : status.substring(0, 1);
@@ -208,7 +232,10 @@ final class TreeIndex {
                 String oldL = linkOrDash(&quot;Old&quot;, e.get(&quot;old&quot;));
                 String newL = linkOrDash(&quot;New&quot;, e.get(&quot;new&quot;));
 
-                sb.append(&quot;&lt;div class=\&quot;file-row\&quot;&gt;&quot;)
+                int idx = stripe[0]++;
+                String stripeCls = (idx % 2 == 0) ? &quot;stripe-even&quot; : &quot;stripe-odd&quot;;
+                sb.append(&quot;&lt;div class=\&quot;file-row &quot;).append(stripeCls).append(&quot;\&quot; data-file-path=\&quot;&quot;)
+                        .append(Html.escape(relPosix)).append(&quot;\&quot;&gt;&quot;)
                         .append(&quot;&lt;div class=\&quot;file-name\&quot;&gt;&quot;).append(Html.escape(rel)).append(&quot;&lt;/div&gt;&quot;)
                         .append(&quot;&lt;div class=\&quot;file-meta\&quot;&gt;&quot;)
                         .append(Html.badge(status, cls))

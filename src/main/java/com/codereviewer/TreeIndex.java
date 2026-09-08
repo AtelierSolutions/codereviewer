@@ -13,8 +13,8 @@ final class TreeIndex {
     static String toolbarHtml() {
         return """
                 <div class="toolbar">
-                  <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = true)">Expand all</button>
-                  <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = false)">Collapse all</button>
+                  <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
+                  <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
                 </div>
                 """;
     }
@@ -81,9 +81,11 @@ final class TreeIndex {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, Node> d : dirs.entrySet()) {
                 String name = d.getKey();
-                sb.append("<details open><summary>")
+                String full = basePath + name + "/";
+                sb.append("<details open data-folder-path=\"")
+                        .append(Html.escape(PlainMode.toPosix(full))).append("\"><summary>")
                         .append(Html.escape(name)).append("/</summary>\n")
-                        .append(d.getValue().renderPlain(basePath + name + "/", stripe))
+                        .append(d.getValue().renderPlain(full, stripe))
                         .append("</details>\n");
             }
             for (Map.Entry<String, Map<String, String>> f : files.entrySet()) {
@@ -106,9 +108,11 @@ final class TreeIndex {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, Node> d : dirs.entrySet()) {
                 String name = d.getKey();
-                sb.append("<details open><summary>")
+                String full = basePath + name + "/";
+                sb.append("<details open data-folder-path=\"")
+                        .append(Html.escape(PlainMode.toPosix(full))).append("\"><summary>")
                         .append(Html.escape(name)).append("/</summary>\n")
-                        .append(d.getValue().renderDiff(basePath + name + "/", stripe))
+                        .append(d.getValue().renderDiff(full, stripe))
                         .append("</details>\n");
             }
             for (Map.Entry<String, Map<String, String>> f : files.entrySet()) {

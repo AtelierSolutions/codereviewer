@@ -26,13 +26,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: "Consolas", "Monaco", monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details > summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review="yellow"] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review="red"] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review="green"] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -66,40 +79,123 @@ code.hljs { padding: 3px 5px }
 <h1>Code Review: codereviewer</h1>
 
 <hr>
-<p>Prepared for offline review. 13 files with syntax highlighting.</p>
+<p>Prepared for offline review. 17 files with syntax highlighting.</p>
 <div class="tree">
   <div class="toolbar">
-  <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = true)">Expand all</button>
-  <button type="button" onclick="document.querySelectorAll('.tree details').forEach(d => d.open = false)">Collapse all</button>
+  <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
+  <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
 </div>
 
   <div class="header"><div>File</div><div>Source</div></div>
-  <details open><summary>src/</summary>
-<details open><summary>main/</summary>
-<details open><summary>java/</summary>
-<details open><summary>com/</summary>
-<details open><summary>codereviewer/</summary>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/CodeReviewer.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/CodeReviewer.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Defaults.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Defaults.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/DiffViews.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/DiffViews.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/GitMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/GitMode.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Html.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Html.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/IO.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/IO.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Lang.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Lang.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/PlainMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/PlainMode.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/SvnMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/SvnMode.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/TreeIndex.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/TreeIndex.java.html">View</a></div></div>
-<div class="file-row"><div class="file-name">src/main/java/com/codereviewer/Vcs.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Vcs.java.html">View</a></div></div>
+  <details open data-folder-path="src/"><summary>src/</summary>
+<details open data-folder-path="src/main/"><summary>main/</summary>
+<details open data-folder-path="src/main/java/"><summary>java/</summary>
+<details open data-folder-path="src/main/java/com/"><summary>com/</summary>
+<details open data-folder-path="src/main/java/com/codereviewer/"><summary>codereviewer/</summary>
+<div class="file-row stripe-even" data-file-path="src/main/java/com/codereviewer/CodeReviewer.java"><div class="file-name">src/main/java/com/codereviewer/CodeReviewer.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/CodeReviewer.java.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="src/main/java/com/codereviewer/Defaults.java"><div class="file-name">src/main/java/com/codereviewer/Defaults.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Defaults.java.html">View</a></div></div>
+<div class="file-row stripe-even" data-file-path="src/main/java/com/codereviewer/DiffLineStats.java"><div class="file-name">src/main/java/com/codereviewer/DiffLineStats.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/DiffLineStats.java.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="src/main/java/com/codereviewer/DiffViews.java"><div class="file-name">src/main/java/com/codereviewer/DiffViews.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/DiffViews.java.html">View</a></div></div>
+<div class="file-row stripe-even" data-file-path="src/main/java/com/codereviewer/GitMode.java"><div class="file-name">src/main/java/com/codereviewer/GitMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/GitMode.java.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="src/main/java/com/codereviewer/Html.java"><div class="file-name">src/main/java/com/codereviewer/Html.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Html.java.html">View</a></div></div>
+<div class="file-row stripe-even" data-file-path="src/main/java/com/codereviewer/IO.java"><div class="file-name">src/main/java/com/codereviewer/IO.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/IO.java.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="src/main/java/com/codereviewer/Lang.java"><div class="file-name">src/main/java/com/codereviewer/Lang.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Lang.java.html">View</a></div></div>
+<div class="file-row stripe-even" data-file-path="src/main/java/com/codereviewer/PlainMode.java"><div class="file-name">src/main/java/com/codereviewer/PlainMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/PlainMode.java.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="src/main/java/com/codereviewer/SvnMode.java"><div class="file-name">src/main/java/com/codereviewer/SvnMode.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/SvnMode.java.html">View</a></div></div>
+<div class="file-row stripe-even" data-file-path="src/main/java/com/codereviewer/TreeIndex.java"><div class="file-name">src/main/java/com/codereviewer/TreeIndex.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/TreeIndex.java.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="src/main/java/com/codereviewer/Vcs.java"><div class="file-name">src/main/java/com/codereviewer/Vcs.java</div><div class="file-links"><a href="src/main/java/com/codereviewer/Vcs.java.html">View</a></div></div>
+</details>
+</details>
+</details>
+</details>
+<details open data-folder-path="src/test/"><summary>test/</summary>
+<details open data-folder-path="src/test/java/"><summary>java/</summary>
+<details open data-folder-path="src/test/java/com/"><summary>com/</summary>
+<details open data-folder-path="src/test/java/com/codereviewer/"><summary>codereviewer/</summary>
+<div class="file-row stripe-even" data-file-path="src/test/java/com/codereviewer/HtmlIndexScriptTest.java"><div class="file-name">src/test/java/com/codereviewer/HtmlIndexScriptTest.java</div><div class="file-links"><a href="src/test/java/com/codereviewer/HtmlIndexScriptTest.java.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="src/test/java/com/codereviewer/TreeIndexTest.java"><div class="file-name">src/test/java/com/codereviewer/TreeIndexTest.java</div><div class="file-links"><a href="src/test/java/com/codereviewer/TreeIndexTest.java.html">View</a></div></div>
 </details>
 </details>
 </details>
 </details>
 </details>
-<div class="file-row"><div class="file-name">README.md</div><div class="file-links"><a href="README.md.html">View</a></div></div>
-<div class="file-row"><div class="file-name">codereviewer.py</div><div class="file-links"><a href="codereviewer.py.html">View</a></div></div>
+<div class="file-row stripe-even" data-file-path="README.md"><div class="file-name">README.md</div><div class="file-links"><a href="README.md.html">View</a></div></div>
+<div class="file-row stripe-odd" data-file-path="codereviewer.py"><div class="file-name">codereviewer.py</div><div class="file-links"><a href="codereviewer.py.html">View</a></div></div>
+<div class="file-row stripe-even" data-file-path="test_codereviewer_tree.py"><div class="file-name">test_codereviewer_tree.py</div><div class="file-links"><a href="test_codereviewer_tree.py.html">View</a></div></div>
 
 </div>
 <hr>
+<script>
+(function(){
+var KEY='codereviewer-index-review-v1';
+var TREE_KEY='codereviewer-index-tree-v1';
+var ORDER=['','yellow','red','green'];
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
+function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+function loadTree(){try{return JSON.parse(localStorage.getItem(TREE_KEY)||'{}');}catch(e){return {};}}
+function saveTree(m){try{localStorage.setItem(TREE_KEY,JSON.stringify(m));}catch(e){}}
+function apply(){
+  var m=load();
+  document.querySelectorAll('.tree .file-row[data-file-path]').forEach(function(row){
+    var p=row.getAttribute('data-file-path');
+    if(m[p]) row.setAttribute('data-review',m[p]); else row.removeAttribute('data-review');
+  });
+}
+function applyTree(){
+  var collapsed=loadTree();
+  document.querySelectorAll('.tree details[data-folder-path]').forEach(function(d){
+    var p=d.getAttribute('data-folder-path');
+    d.open=!collapsed[p];
+  });
+}
+function persistTreeState(){
+  var collapsed={};
+  document.querySelectorAll('.tree details[data-folder-path]').forEach(function(d){
+    var p=d.getAttribute('data-folder-path');
+    if(p&&!d.open) collapsed[p]=true;
+  });
+  saveTree(collapsed);
+}
+function cycle(row){
+  var p=row.getAttribute('data-file-path');
+  if(!p) return;
+  var cur=row.getAttribute('data-review')||'';
+  var i=ORDER.indexOf(cur); if(i<0) i=0;
+  var next=ORDER[(i+1)%ORDER.length];
+  var m=load();
+  if(next) m[p]=next; else delete m[p];
+  save(m);
+  if(next) row.setAttribute('data-review',next); else row.removeAttribute('data-review');
+}
+window.codereviewerExpandAll=function(){
+  document.querySelectorAll('.tree details').forEach(function(d){d.open=true;});
+  saveTree({});
+};
+window.codereviewerCollapseAll=function(){
+  document.querySelectorAll('.tree details').forEach(function(d){d.open=false;});
+  persistTreeState();
+};
+document.addEventListener('DOMContentLoaded',function(){
+  apply();
+  applyTree();
+  var tree=document.querySelector('.tree');
+  if(tree){
+    tree.addEventListener('toggle',function(e){
+      var d=e.target;
+      if(!d||d.tagName!=='DETAILS'||!d.hasAttribute('data-folder-path')) return;
+      persistTreeState();
+    },true);
+  }
+});
+document.addEventListener('click',function(e){
+  var tree=document.querySelector('.tree');
+  if(!tree||!tree.contains(e.target)) return;
+  if(e.target.closest('a')||e.target.closest('button')) return;
+  var row=e.target.closest('.file-row');
+  if(row) cycle(row);
+});
+})();
+</script>
 
 </body>
 </html>

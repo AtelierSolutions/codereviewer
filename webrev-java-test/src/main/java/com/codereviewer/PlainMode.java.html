@@ -26,13 +26,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: "Consolas", "Monaco", monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details > summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review="yellow"] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review="red"] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review="green"] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -81,7 +94,7 @@ ready(function(){
 </head>
 <body>
 <h1>Source: src\main\java\com\codereviewer\PlainMode.java</h1>
-<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<div class="nav"><a href="../../../../../index.html">&#8592; Back to index</a></div>
 <hr>
 <pre><code class="language-java">package com.codereviewer;
 
@@ -115,8 +128,10 @@ final class PlainMode {
                 Path full = root.resolve(rel);
                 try {
                     String content = IO.readText(full);
-                    Path out = outputDir.resolve(withExtraSuffix(rel, &quot;.html&quot;));
-                    String html = Html.sourcePage(rel.toString(), &quot;Source&quot;, content, Lang.languageClassFor(rel));
+                    Path outRel = withExtraSuffix(rel, &quot;.html&quot;);
+                    Path out = outputDir.resolve(outRel);
+                    String html = Html.sourcePage(rel.toString(), &quot;Source&quot;, content, Lang.languageClassFor(rel),
+                            Html.hrefToIndex(outRel));
                     IO.writeText(out, html);
                     index.add(new IndexEntry(rel, withExtraSuffix(rel, &quot;.html&quot;)));
                     System.out.println(&quot;  &quot; + rel);
@@ -128,7 +143,8 @@ final class PlainMode {
             StringBuilder rows = new StringBuilder();
             String body = &quot;&lt;p&gt;Prepared for offline review. &quot; + index.size() + &quot; files with syntax highlighting.&lt;/p&gt;\n&quot;
                     + TreeIndex.renderPlain(index)
-                    + &quot;&lt;hr&gt;\n&quot;;
+                    + &quot;&lt;hr&gt;\n&quot;
+                    + Html.indexReviewScript();
             String indexHtml = Html.doc(&quot;Code Review - &quot; + root.getFileName(), &quot;Code Review: &quot; + Html.escape(root.getFileName().toString()),
                     &quot;&quot;, body, &quot;&quot;);
             IO.writeText(outputDir.resolve(&quot;index.html&quot;), indexHtml);

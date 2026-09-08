@@ -26,13 +26,26 @@ table.index tr:hover { background: #f1f3f5; }
 .badge-modified { background: #bbdefb; color: #1565c0; }
 .badge-deleted { background: #ffcdd2; color: #c62828; }
 .summary { background: #fff; padding: 1em; border-radius: 4px; border: 1px solid #ddd; margin: 1em 0; }
+.line-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; margin-top: 0.75em; max-width: 42rem; }
+.line-stat { background: #fafbfc; border: 1px solid #dde3e8; border-radius: 6px; padding: 0.5em 0.75em; text-align: center; }
+.line-stat-label { display: block; font-size: 0.8em; color: #555; margin-bottom: 0.25em; }
+.line-stat-value { font-size: 1.25em; font-weight: 700; font-family: "Consolas", "Monaco", monospace; }
+.line-stat-added .line-stat-value { color: #2e7d32; }
+.line-stat-modified .line-stat-value { color: #1565c0; }
+.line-stat-removed .line-stat-value { color: #c62828; }
 
 /* Collapsible file tree */
 .tree { margin-top: 1em; font-size: 0.95em; }
 .tree details { margin-left: 1.25em; }
 .tree details > summary { cursor: pointer; user-select: none; padding: 0.15em 0; }
 .tree details > summary:hover { text-decoration: underline; }
-.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.15em 0; margin-left: 2.5em; }
+.tree .file-row { display: grid; grid-template-columns: 1fr auto; gap: 1em; padding: 0.35em 0.5em; margin-left: 2.5em;
+  border-bottom: 1px solid #dde3e8; cursor: pointer; user-select: none; border-radius: 4px; }
+.tree .file-row.stripe-even:not([data-review]) { background: #e8eef2; }
+.tree .file-row.stripe-odd:not([data-review]) { background: #e3f2fd; }
+.tree .file-row[data-review="yellow"] { background: #fff9c4 !important; border-left: 4px solid #f9a825; }
+.tree .file-row[data-review="red"] { background: #ffcdd2 !important; border-left: 4px solid #c62828; }
+.tree .file-row[data-review="green"] { background: #c8e6c9 !important; border-left: 4px solid #2e7d32; }
 .tree .file-name { font-family: "Consolas", "Monaco", "Courier New", monospace; }
 .tree .file-links a { margin-left: 0.75em; white-space: nowrap; }
 .tree .file-links a:first-child { margin-left: 0; }
@@ -81,7 +94,7 @@ ready(function(){
 </head>
 <body>
 <h1>Source: src\main\java\com\codereviewer\SvnMode.java</h1>
-<div class="nav"><a href="index.html">&#8592; Back to index</a></div>
+<div class="nav"><a href="../../../../../index.html">&#8592; Back to index</a></div>
 <hr>
 <pre><code class="language-java">package com.codereviewer;
 
@@ -115,8 +128,9 @@ final class SvnMode {
 
             // changes.patch
             IO.ExecResult patch = IO.exec(List.of(&quot;svn&quot;, &quot;diff&quot;, &quot;-r&quot;, base + &quot;:&quot; + head), wcRoot);
+            String patchText = (patch.exitCode() == 0) ? patch.stdout() : &quot;&quot;;
             if (patch.exitCode() == 0) {
-                IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patch.stdout());
+                IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patchText);
             }
 
             List&lt;Map&lt;String, String&gt;&gt; indexEntries = new ArrayList&lt;&gt;();
@@ -137,20 +151,27 @@ final class SvnMode {
                 entry.put(&quot;status&quot;, cf.status);
 
                 if (!oldContent.isEmpty()) {
-                    String oldHtml = Html.sourcePage(relPath.toString(), &quot;Old (r&quot; + base + &quot;)&quot;, oldContent, Lang.languageClassFor(relPath));
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;-.html&quot;), oldHtml);
+                    Path oldOutRel = Path.of(pathPosix + &quot;-.html&quot;);
+                    String oldHtml = Html.sourcePage(relPath.toString(), &quot;Old (r&quot; + base + &quot;)&quot;, oldContent,
+                            Lang.languageClassFor(relPath), Html.hrefToIndex(oldOutRel));
+                    IO.writeText(outputDir.resolve(oldOutRel), oldHtml);
                     entry.put(&quot;old&quot;, pathPosix + &quot;-.html&quot;);
                 }
                 if (!newContent.isEmpty()) {
-                    String newHtml = Html.sourcePage(relPath.toString(), &quot;New (r&quot; + head + &quot;)&quot;, newContent, Lang.languageClassFor(relPath));
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;.html&quot;), newHtml);
+                    Path newOutRel = Path.of(pathPosix + &quot;.html&quot;);
+                    String newHtml = Html.sourcePage(relPath.toString(), &quot;New (r&quot; + head + &quot;)&quot;, newContent,
+                            Lang.languageClassFor(relPath), Html.hrefToIndex(newOutRel));
+                    IO.writeText(outputDir.resolve(newOutRel), newHtml);
                     entry.put(&quot;new&quot;, pathPosix + &quot;.html&quot;);
                 }
                 if (!oldContent.isEmpty() &amp;&amp; !newContent.isEmpty()) {
-                    String udiffHtml = DiffViews.unifiedDiffPage(relPath, oldContent, newContent);
-                    String sdiffHtml = DiffViews.sideBySideDiffPage(relPath, oldContent, newContent, &quot;r&quot; + base, &quot;r&quot; + head);
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;.udiff.html&quot;), udiffHtml);
-                    IO.writeText(outputDir.resolve(pathPosix + &quot;.sdiff.html&quot;), sdiffHtml);
+                    Path udiffOutRel = Path.of(pathPosix + &quot;.udiff.html&quot;);
+                    Path sdiffOutRel = Path.of(pathPosix + &quot;.sdiff.html&quot;);
+                    String udiffHtml = DiffViews.unifiedDiffPage(relPath, oldContent, newContent, Html.hrefToIndex(udiffOutRel));
+                    String sdiffHtml = DiffViews.sideBySideDiffPage(relPath, oldContent, newContent, &quot;r&quot; + base, &quot;r&quot; + head,
+                            Html.hrefToIndex(sdiffOutRel));
+                    IO.writeText(outputDir.resolve(udiffOutRel), udiffHtml);
+                    IO.writeText(outputDir.resolve(sdiffOutRel), sdiffHtml);
                     entry.put(&quot;udiff&quot;, pathPosix + &quot;.udiff.html&quot;);
                     entry.put(&quot;sdiff&quot;, pathPosix + &quot;.sdiff.html&quot;);
                 }
@@ -159,7 +180,8 @@ final class SvnMode {
                 System.out.println(&quot;  &quot; + cf.path + &quot; (&quot; + cf.status + &quot;)&quot;);
             }
 
-            String indexHtml = buildIndex(wcRoot.getFileName().toString(), base, head, indexEntries);
+            DiffLineStats.Result lineStats = DiffLineStats.fromUnifiedPatch(patchText);
+            String indexHtml = buildIndex(wcRoot.getFileName().toString(), base, head, indexEntries, lineStats);
             IO.writeText(outputDir.resolve(&quot;index.html&quot;), indexHtml);
             System.out.println(&quot;\nDone. Output: &quot; + outputDir);
             System.out.println(&quot;Open &quot; + outputDir.resolve(&quot;index.html&quot;) + &quot; in a browser.&quot;);
@@ -170,15 +192,18 @@ final class SvnMode {
         }
     }
 
-    private static String buildIndex(String name, String base, String head, List&lt;Map&lt;String, String&gt;&gt; entries) {
+    private static String buildIndex(String name, String base, String head, List&lt;Map&lt;String, String&gt;&gt; entries,
+                                     DiffLineStats.Result lineStats) {
         String summary = &quot;&quot;&quot;
                 &lt;div class=&quot;summary&quot;&gt;
                 &lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; r%s &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; r%s&lt;/p&gt;
                 &lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; %d&lt;/p&gt;
                 &lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
+                %s
                 &lt;/div&gt;
-                &quot;&quot;&quot;.formatted(Html.escape(base), Html.escape(head), entries.size());
-        String body = summary + TreeIndex.renderDiff(entries) + &quot;&lt;hr&gt;\n&quot;;
+                &quot;&quot;&quot;.formatted(Html.escape(base), Html.escape(head), entries.size(),
+                Html.lineStatsSummary(lineStats.added(), lineStats.modified(), lineStats.removed()));
+        String body = summary + TreeIndex.renderDiff(entries) + &quot;&lt;hr&gt;\n&quot; + Html.indexReviewScript();
         return Html.doc(&quot;Code Review - &quot; + name, &quot;Code Review: &quot; + Html.escape(name), &quot;&quot;, body, &quot;&quot;);
     }
 
