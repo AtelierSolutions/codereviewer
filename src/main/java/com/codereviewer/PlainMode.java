@@ -33,7 +33,7 @@ final class PlainMode {
                     Path outRel = withExtraSuffix(rel, ".html");
                     Path out = outputDir.resolve(outRel);
                     String html = Html.sourcePage(rel.toString(), "Source", content, Lang.languageClassFor(rel),
-                            Html.hrefToIndex(outRel));
+                            Html.hrefToIndex(outRel), "source");
                     IO.writeText(out, html);
                     index.add(new IndexEntry(rel, withExtraSuffix(rel, ".html")));
                     System.out.println("  " + rel);
@@ -46,7 +46,8 @@ final class PlainMode {
             String body = "<p>Prepared for offline review. " + index.size() + " files with syntax highlighting.</p>\n"
                     + TreeIndex.renderPlain(index)
                     + "<hr>\n"
-                    + Html.indexReviewScript();
+                    + Html.indexReviewScript()
+                    + Html.lineCommentScript();
             String indexHtml = Html.doc("Code Review - " + root.getFileName(), "Code Review: " + Html.escape(root.getFileName().toString()),
                     "", body, "");
             IO.writeText(outputDir.resolve("index.html"), indexHtml);

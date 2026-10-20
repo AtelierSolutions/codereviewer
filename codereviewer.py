@@ -91,6 +91,23 @@ table.index tr:hover { background: #f1f3f5; }
 .tree .toolbar { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; }
 .tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
 .tree button:hover { background: #f1f3f5; }
+
+/* Per-line source comments */
+table.source { border-collapse: collapse; width: 100%; background: #fff; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85em; }
+table.source td { vertical-align: top; }
+table.source td.ln { width: 1%; white-space: nowrap; text-align: right; border-right: 1px solid #e6e6e6; background: #fafbfc; }
+table.source button.ln-btn { border: 0; background: transparent; color: #666; font: inherit; font-family: "Consolas", "Monaco", "Courier New", monospace; cursor: pointer; padding: 0 0.65em; min-width: 3em; text-align: right; }
+table.source button.ln-btn:hover { color: #0066cc; background: #eef5fb; }
+table.source tr.has-comment > td.ln { background: #e3f2fd; }
+table.source tr.has-comment > td.ln button.ln-btn { color: #1565c0; font-weight: 700; }
+table.source td.code { padding: 0 0.75em; white-space: pre; background: #fff; }
+table.source td.code code { white-space: pre; font-family: "Consolas", "Monaco", "Courier New", monospace; }
+table.source td.code code.hljs { padding: 0; display: inline; background: transparent; }
+table.source tr.comment-row td { background: #fff8e1; padding: 0.35em 0.75em 0.5em; }
+table.source tr.comment-row textarea { width: 100%; box-sizing: border-box; min-height: 3.2em; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 0.95em; border: 1px solid #e0c36a; border-radius: 4px; padding: 0.4em 0.5em; }
+.review-actions { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; align-items: center; }
+.review-actions button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.review-actions button:hover { background: #f1f3f5; }
 """
 
 # Inline on index.html only: row review marks + folder expand state (keep in sync with Html.indexReviewScript() in Java).
@@ -167,6 +184,134 @@ document.addEventListener('click',function(e){
 })();
 </script>
 """
+
+# Inline on source pages and index.html. Keep in sync with Html.lineCommentScript() in Java.
+LINE_COMMENT_SCRIPT = r"""
+<script>
+(function(){
+var KEY='codereviewer-line-comments-v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
+function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+function viewTag(view){
+  if(view==='old') return '[old] ';
+  if(view==='new') return '[new] ';
+  return '';
+}
+function formatComments(map){
+  var items=[];
+  Object.keys(map||{}).forEach(function(key){
+    var idx=key.indexOf(':');
+    var view=idx<0?'source':key.slice(0,idx);
+    var path=idx<0?key:key.slice(idx+1);
+    var lines=map[key]||{};
+    Object.keys(lines).forEach(function(ln){
+      var text=String(lines[ln]||'').replace(/\s+$/,'');
+      if(!text.trim()) return;
+      items.push({path:path, view:view, line:parseInt(ln,10)||0, text:text});
+    });
+  });
+  var order={source:0,old:1,new:2};
+  items.sort(function(a,b){
+    if(a.path<b.path) return -1;
+    if(a.path>b.path) return 1;
+    var va=Object.prototype.hasOwnProperty.call(order,a.view)?order[a.view]:9;
+    var vb=Object.prototype.hasOwnProperty.call(order,b.view)?order[b.view]:9;
+    if(va!==vb) return va-vb;
+    return a.line-b.line;
+  });
+  var body=items.map(function(it){
+    var parts=it.text.split(/\r?\n/);
+    var first=it.path+':'+it.line+': '+viewTag(it.view)+parts[0];
+    var rest=parts.slice(1).map(function(l){return '  '+l;});
+    return [first].concat(rest).join('\n');
+  }).join('\n');
+  var n=items.length;
+  var noun=n===1?'item':'items';
+  var out='Review comments\n'+n+' '+noun+'. Each line is path:line: comment.\n\n';
+  if(body) out+=body+'\n';
+  return out;
+}
+function download(text){
+  var blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='review-comments.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},0);
+}
+function setComment(path, view, line, text){
+  var m=load();
+  var key=view+':'+path;
+  if(!m[key]) m[key]={};
+  if(text) m[key][String(line)]=text;
+  else delete m[key][String(line)];
+  if(!Object.keys(m[key]).length) delete m[key];
+  save(m);
+}
+function bindSource(table){
+  var path=table.getAttribute('data-file-path')||'';
+  var view=table.getAttribute('data-view')||'source';
+  var stored=(load()[view+':'+path])||{};
+  table.querySelectorAll('tr.source-line[data-line]').forEach(function(row){
+    var line=row.getAttribute('data-line');
+    var editor=table.querySelector('tr.comment-row[data-line="'+line+'"]');
+    var btn=row.querySelector('.ln-btn');
+    var ta=editor?editor.querySelector('textarea'):null;
+    if(stored[line]){
+      if(ta) ta.value=stored[line];
+      row.classList.add('has-comment');
+      if(editor) editor.removeAttribute('hidden');
+    }
+    if(btn && editor){
+      btn.addEventListener('click', function(){
+        if(editor.hasAttribute('hidden')){
+          editor.removeAttribute('hidden');
+          if(ta) ta.focus();
+        } else {
+          editor.setAttribute('hidden','');
+        }
+      });
+    }
+    if(ta){
+      ta.addEventListener('input', function(){
+        var text=ta.value.replace(/\s+$/,'');
+        if(text.trim()){
+          setComment(path, view, line, text);
+          row.classList.add('has-comment');
+        } else {
+          setComment(path, view, line, '');
+          row.classList.remove('has-comment');
+        }
+      });
+    }
+  });
+}
+function bindDownload(){
+  var btn=document.getElementById('download-review-comments');
+  if(!btn || btn.getAttribute('data-bound')) return;
+  btn.setAttribute('data-bound','1');
+  btn.addEventListener('click', function(){ download(formatComments(load())); });
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var table=document.querySelector('table.source');
+  if(table) bindSource(table);
+  bindDownload();
+});
+})();
+</script>
+"""
+
+INDEX_TOOLBAR = """  <div class="toolbar">
+    <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
+    <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
+    <button type="button" id="download-review-comments">Download review comments</button>
+  </div>"""
+
+REVIEW_ACTIONS = """<div class="review-actions">
+<button type="button" id="download-review-comments">Download review comments</button>
+</div>"""
 
 
 def href_to_index(output_file_rel: Path) -> str:
@@ -338,24 +483,55 @@ def get_lexer_for_file(filepath: Path, content: str):
             return TextLexer()
 
 
+def highlighted_source_lines(filepath: Path, content: str) -> list[str]:
+    """Pygments HTML for each source line. A trailing newline does not add a row."""
+    lines = content.splitlines()
+    if not lines:
+        return []
+    lexer = get_lexer_for_file(filepath, content)
+    formatter = HtmlFormatter(nowrap=True)
+    highlighted = highlight(content, lexer, formatter)
+    parts = highlighted.split("\n")
+    if len(parts) == len(lines) + 1 and parts[-1] == "":
+        parts = parts[:-1]
+    if len(parts) != len(lines):
+        return [html.escape(line) for line in lines]
+    return parts
+
+
+def render_source_table(filepath: Path, content: str, view: str) -> str:
+    """One row per source line, with a line-number button and a hidden comment row."""
+    file_path = filepath.as_posix()
+    rows: list[str] = []
+    for i, line_html in enumerate(highlighted_source_lines(filepath, content), start=1):
+        rows.append(
+            f'<tr class="source-line" data-line="{i}">'
+            f'<td class="ln"><button type="button" class="ln-btn" id="L{i}" '
+            f'aria-label="Comment on line {i}">{i}</button></td>'
+            f'<td class="code">{line_html}</td></tr>'
+            f'<tr class="comment-row" data-line="{i}" hidden>'
+            f'<td class="ln"></td>'
+            f'<td><textarea aria-label="Comment for line {i}" data-line="{i}"></textarea></td></tr>'
+        )
+    body = "\n".join(rows)
+    return (
+        f'<div class="highlight"><table class="source" data-file-path="{html.escape(file_path)}" '
+        f'data-view="{html.escape(view)}">\n<tbody>\n{body}\n</tbody>\n</table></div>'
+    )
+
+
 def source_to_html(
     filepath: Path,
     content: str,
     title: str = "Source",
     index_href: str = "index.html",
+    view: str = "source",
 ) -> str:
-    """Convert source code to HTML with syntax highlighting."""
-    lexer = get_lexer_for_file(filepath, content)
-    formatter = HtmlFormatter(
-        full=False,
-        cssclass="highlight",
-        linenos="table",
-        linenostart=1,
-        anchorlinenos=True,
-        lineanchors="line",
-    )
-    highlighted = highlight(content, lexer, formatter)
-    css = formatter.get_style_defs(".highlight")
+    """Convert source code to HTML with syntax highlighting and per-line comments."""
+    if view not in {"source", "old", "new"}:
+        view = "source"
+    css = HtmlFormatter(cssclass="highlight").get_style_defs(".highlight")
+    table = render_source_table(filepath, content, view)
     return f"""<!DOCTYPE html>
 <html>
 <head>
@@ -368,7 +544,9 @@ def source_to_html(
 <h1>{html.escape(title)}: {html.escape(str(filepath))}</h1>
 <div class="nav"><a href="{html.escape(index_href)}">← Back to index</a></div>
 <hr>
-{highlighted}
+{REVIEW_ACTIONS}
+{table}
+{LINE_COMMENT_SCRIPT}
 </body>
 </html>"""
 
@@ -571,7 +749,7 @@ def run_plain_mode(args: argparse.Namespace) -> None:
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_rel = rel_path.with_suffix(rel_path.suffix + ".html")
 
-        html_content = source_to_html(rel_path, content, "Source", href_to_index(out_rel))
+        html_content = source_to_html(rel_path, content, "Source", href_to_index(out_rel), view="source")
         out_path.write_text(html_content, encoding="utf-8")
         
         index_entries.append((str(rel_path), rel_path.with_suffix(rel_path.suffix + ".html")))
@@ -591,15 +769,13 @@ def run_plain_mode(args: argparse.Namespace) -> None:
 <h1>Code Review: {html.escape(str(root.name))}</h1>
 <p>Prepared for offline review. {len(index_entries)} files with syntax highlighting.</p>
 <div class="tree">
-  <div class="toolbar">
-    <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
-    <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
-  </div>
+{INDEX_TOOLBAR}
   <div class="header"><div>File</div><div>Source</div></div>
   {tree_html}
 </div>
 <hr>
 {INDEX_REVIEW_SCRIPT}
+{LINE_COMMENT_SCRIPT}
 </body></html>"""
     
     (output_dir / "index.html").write_text(index_html, encoding="utf-8")
@@ -813,14 +989,14 @@ def run_git_mode(args: argparse.Namespace) -> None:
             if old_content:
                 old_out_rel = Path(f"{path_posix}-.html")
                 old_html = source_to_html(
-                    rel_path, old_content, f"Old ({base})", href_to_index(old_out_rel)
+                    rel_path, old_content, f"Old ({base})", href_to_index(old_out_rel), view="old"
                 )
                 (output_dir / old_out_rel).write_text(old_html, encoding="utf-8")
                 entry["old"] = old_out_rel.as_posix()
             if new_content:
                 new_out_rel = Path(f"{path_posix}.html")
                 new_html = source_to_html(
-                    rel_path, new_content, f"New ({head})", href_to_index(new_out_rel)
+                    rel_path, new_content, f"New ({head})", href_to_index(new_out_rel), view="new"
                 )
                 (output_dir / new_out_rel).write_text(new_html, encoding="utf-8")
                 entry["new"] = new_out_rel.as_posix()
@@ -873,15 +1049,13 @@ def run_git_mode(args: argparse.Namespace) -> None:
 {line_stats_html}
 </div>
 <div class="tree">
-  <div class="toolbar">
-    <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
-    <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
-  </div>
+{INDEX_TOOLBAR}
   <div class="header"><div>File</div><div>Links</div></div>
   {tree_html}
 </div>
 <hr>
 {INDEX_REVIEW_SCRIPT}
+{LINE_COMMENT_SCRIPT}
 </body></html>"""
     
     (output_dir / "index.html").write_text(index_html, encoding="utf-8")
@@ -994,14 +1168,14 @@ def run_svn_mode(args: argparse.Namespace) -> None:
             if old_content:
                 old_out_rel = Path(f"{path_posix}-.html")
                 old_html = source_to_html(
-                    rel_path, old_content, f"Old (r{base})", href_to_index(old_out_rel)
+                    rel_path, old_content, f"Old (r{base})", href_to_index(old_out_rel), view="old"
                 )
                 (output_dir / old_out_rel).write_text(old_html, encoding="utf-8")
                 entry["old"] = old_out_rel.as_posix()
             if new_content:
                 new_out_rel = Path(f"{path_posix}.html")
                 new_html = source_to_html(
-                    rel_path, new_content, f"New (r{head})", href_to_index(new_out_rel)
+                    rel_path, new_content, f"New (r{head})", href_to_index(new_out_rel), view="new"
                 )
                 (output_dir / new_out_rel).write_text(new_html, encoding="utf-8")
                 entry["new"] = new_out_rel.as_posix()
@@ -1052,15 +1226,13 @@ def run_svn_mode(args: argparse.Namespace) -> None:
 {line_stats_html}
 </div>
 <div class="tree">
-  <div class="toolbar">
-    <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
-    <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
-  </div>
+{INDEX_TOOLBAR}
   <div class="header"><div>File</div><div>Links</div></div>
   {tree_html}
 </div>
 <hr>
 {INDEX_REVIEW_SCRIPT}
+{LINE_COMMENT_SCRIPT}
 </body></html>"""
     
     (output_dir / "index.html").write_text(index_html, encoding="utf-8")

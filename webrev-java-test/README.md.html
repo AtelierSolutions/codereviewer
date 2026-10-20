@@ -56,6 +56,23 @@ table.index tr:hover { background: #f1f3f5; }
 .tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
 .tree button:hover { background: #f1f3f5; }
 
+/* Per-line source comments */
+table.source { border-collapse: collapse; width: 100%; background: #fff; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85em; }
+table.source td { vertical-align: top; }
+table.source td.ln { width: 1%; white-space: nowrap; text-align: right; border-right: 1px solid #e6e6e6; background: #fafbfc; }
+table.source button.ln-btn { border: 0; background: transparent; color: #666; font: inherit; font-family: "Consolas", "Monaco", "Courier New", monospace; cursor: pointer; padding: 0 0.65em; min-width: 3em; text-align: right; }
+table.source button.ln-btn:hover { color: #0066cc; background: #eef5fb; }
+table.source tr.has-comment > td.ln { background: #e3f2fd; }
+table.source tr.has-comment > td.ln button.ln-btn { color: #1565c0; font-weight: 700; }
+table.source td.code { padding: 0 0.75em; white-space: pre; background: #fff; }
+table.source td.code code { white-space: pre; font-family: "Consolas", "Monaco", "Courier New", monospace; }
+table.source td.code code.hljs { padding: 0; display: inline; background: transparent; }
+table.source tr.comment-row td { background: #fff8e1; padding: 0.35em 0.75em 0.5em; }
+table.source tr.comment-row textarea { width: 100%; box-sizing: border-box; min-height: 3.2em; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 0.95em; border: 1px solid #e0c36a; border-radius: 4px; padding: 0.4em 0.5em; }
+.review-actions { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; align-items: center; }
+.review-actions button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.review-actions button:hover { background: #f1f3f5; }
+
 /* highlight.js base styling */
 pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
 code.hljs { padding: 3px 5px }
@@ -73,176 +90,440 @@ code.hljs { padding: 3px 5px }
 .hljs-addition { background-color: #e6ffed; }
 .hljs-deletion { background-color: #ffeef0; }
 </style>
-<script>/*! highlight.js v11.9.0 (minified subset placeholder)
- * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
- * For full highlighting, replace this with a full highlight.js build if desired.
- */
-(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
-function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+<script>(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
 ready(function(){
-  document.querySelectorAll('pre code').forEach(function(block){
-    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
-    // Generator always escapes, so this is mostly defensive.
-    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
-      block.innerHTML = escapeHtml(block.textContent || '');
-    }
+  document.querySelectorAll('pre code, table.source td.code code').forEach(function(block){
     block.classList.add('hljs');
   });
 });})();
 </script>
-
 </head>
 <body>
 <h1>Source: README.md</h1>
 <div class="nav"><a href="index.html">&#8592; Back to index</a></div>
 <hr>
-<pre><code class="language-markdown"># Code Reviewer
+<div class="review-actions">
+<button type="button" id="download-review-comments">Download review comments</button>
+</div>
 
-An offline code review utility for generating HTML code reviews with syntax highlighting.
+<table class="source" data-file-path="README.md" data-view="source">
+<tbody>
+<tr class="source-line" data-line="1"><td class="ln"><button type="button" class="ln-btn" id="L1" aria-label="Comment on line 1">1</button></td><td class="code"><code class="language-markdown"># Code Reviewer</code></td></tr>
+<tr class="comment-row" data-line="1" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 1" data-line="1"></textarea></td></tr>
+<tr class="source-line" data-line="2"><td class="ln"><button type="button" class="ln-btn" id="L2" aria-label="Comment on line 2">2</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="2" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 2" data-line="2"></textarea></td></tr>
+<tr class="source-line" data-line="3"><td class="ln"><button type="button" class="ln-btn" id="L3" aria-label="Comment on line 3">3</button></td><td class="code"><code class="language-markdown">An offline code review utility for generating HTML code reviews with syntax highlighting.</code></td></tr>
+<tr class="comment-row" data-line="3" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 3" data-line="3"></textarea></td></tr>
+<tr class="source-line" data-line="4"><td class="ln"><button type="button" class="ln-btn" id="L4" aria-label="Comment on line 4">4</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="4" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 4" data-line="4"></textarea></td></tr>
+<tr class="source-line" data-line="5"><td class="ln"><button type="button" class="ln-btn" id="L5" aria-label="Comment on line 5">5</button></td><td class="code"><code class="language-markdown">Inspired by [OpenJDK&#x27;s webrev](https://openjdk.org/projects/code-tools/webrev/) tool.</code></td></tr>
+<tr class="comment-row" data-line="5" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 5" data-line="5"></textarea></td></tr>
+<tr class="source-line" data-line="6"><td class="ln"><button type="button" class="ln-btn" id="L6" aria-label="Comment on line 6">6</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="6" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 6" data-line="6"></textarea></td></tr>
+<tr class="source-line" data-line="7"><td class="ln"><button type="button" class="ln-btn" id="L7" aria-label="Comment on line 7">7</button></td><td class="code"><code class="language-markdown">## Features</code></td></tr>
+<tr class="comment-row" data-line="7" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 7" data-line="7"></textarea></td></tr>
+<tr class="source-line" data-line="8"><td class="ln"><button type="button" class="ln-btn" id="L8" aria-label="Comment on line 8">8</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="8" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 8" data-line="8"></textarea></td></tr>
+<tr class="source-line" data-line="9"><td class="ln"><button type="button" class="ln-btn" id="L9" aria-label="Comment on line 9">9</button></td><td class="code"><code class="language-markdown">- **Plain directory mode**: Generate syntax-highlighted HTML for all code files in a directory</code></td></tr>
+<tr class="comment-row" data-line="9" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 9" data-line="9"></textarea></td></tr>
+<tr class="source-line" data-line="10"><td class="ln"><button type="button" class="ln-btn" id="L10" aria-label="Comment on line 10">10</button></td><td class="code"><code class="language-markdown">- **Git support**: Generate diffs between commits with per-file old/new views and unified/side-by-side diffs</code></td></tr>
+<tr class="comment-row" data-line="10" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 10" data-line="10"></textarea></td></tr>
+<tr class="source-line" data-line="11"><td class="ln"><button type="button" class="ln-btn" id="L11" aria-label="Comment on line 11">11</button></td><td class="code"><code class="language-markdown">- **Subversion support**: Generate diffs between revisions with the same per-file views</code></td></tr>
+<tr class="comment-row" data-line="11" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 11" data-line="11"></textarea></td></tr>
+<tr class="source-line" data-line="12"><td class="ln"><button type="button" class="ln-btn" id="L12" aria-label="Comment on line 12">12</button></td><td class="code"><code class="language-markdown">- **Offline-friendly**: Self-contained HTML output—no server required; share as a zip or folder</code></td></tr>
+<tr class="comment-row" data-line="12" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 12" data-line="12"></textarea></td></tr>
+<tr class="source-line" data-line="13"><td class="ln"><button type="button" class="ln-btn" id="L13" aria-label="Comment on line 13">13</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="13" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 13" data-line="13"></textarea></td></tr>
+<tr class="source-line" data-line="14"><td class="ln"><button type="button" class="ln-btn" id="L14" aria-label="Comment on line 14">14</button></td><td class="code"><code class="language-markdown">Note: the Java port keeps output self-contained. Java, HTML, and XML source pages are syntax-colored when the review is generated. Other languages use the same layout with plain code styling.</code></td></tr>
+<tr class="comment-row" data-line="14" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 14" data-line="14"></textarea></td></tr>
+<tr class="source-line" data-line="15"><td class="ln"><button type="button" class="ln-btn" id="L15" aria-label="Comment on line 15">15</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="15" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 15" data-line="15"></textarea></td></tr>
+<tr class="source-line" data-line="16"><td class="ln"><button type="button" class="ln-btn" id="L16" aria-label="Comment on line 16">16</button></td><td class="code"><code class="language-markdown">## Installation</code></td></tr>
+<tr class="comment-row" data-line="16" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 16" data-line="16"></textarea></td></tr>
+<tr class="source-line" data-line="17"><td class="ln"><button type="button" class="ln-btn" id="L17" aria-label="Comment on line 17">17</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="17" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 17" data-line="17"></textarea></td></tr>
+<tr class="source-line" data-line="18"><td class="ln"><button type="button" class="ln-btn" id="L18" aria-label="Comment on line 18">18</button></td><td class="code"><code class="language-markdown">### Java (JDK 17)</code></td></tr>
+<tr class="comment-row" data-line="18" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 18" data-line="18"></textarea></td></tr>
+<tr class="source-line" data-line="19"><td class="ln"><button type="button" class="ln-btn" id="L19" aria-label="Comment on line 19">19</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="19" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 19" data-line="19"></textarea></td></tr>
+<tr class="source-line" data-line="20"><td class="ln"><button type="button" class="ln-btn" id="L20" aria-label="Comment on line 20">20</button></td><td class="code"><code class="language-markdown">Build a runnable CLI JAR:</code></td></tr>
+<tr class="comment-row" data-line="20" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 20" data-line="20"></textarea></td></tr>
+<tr class="source-line" data-line="21"><td class="ln"><button type="button" class="ln-btn" id="L21" aria-label="Comment on line 21">21</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="21" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 21" data-line="21"></textarea></td></tr>
+<tr class="source-line" data-line="22"><td class="ln"><button type="button" class="ln-btn" id="L22" aria-label="Comment on line 22">22</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="22" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 22" data-line="22"></textarea></td></tr>
+<tr class="source-line" data-line="23"><td class="ln"><button type="button" class="ln-btn" id="L23" aria-label="Comment on line 23">23</button></td><td class="code"><code class="language-markdown">mvn -q -DskipTests package</code></td></tr>
+<tr class="comment-row" data-line="23" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 23" data-line="23"></textarea></td></tr>
+<tr class="source-line" data-line="24"><td class="ln"><button type="button" class="ln-btn" id="L24" aria-label="Comment on line 24">24</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="24" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 24" data-line="24"></textarea></td></tr>
+<tr class="source-line" data-line="25"><td class="ln"><button type="button" class="ln-btn" id="L25" aria-label="Comment on line 25">25</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="25" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 25" data-line="25"></textarea></td></tr>
+<tr class="source-line" data-line="26"><td class="ln"><button type="button" class="ln-btn" id="L26" aria-label="Comment on line 26">26</button></td><td class="code"><code class="language-markdown">Run it:</code></td></tr>
+<tr class="comment-row" data-line="26" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 26" data-line="26"></textarea></td></tr>
+<tr class="source-line" data-line="27"><td class="ln"><button type="button" class="ln-btn" id="L27" aria-label="Comment on line 27">27</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="27" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 27" data-line="27"></textarea></td></tr>
+<tr class="source-line" data-line="28"><td class="ln"><button type="button" class="ln-btn" id="L28" aria-label="Comment on line 28">28</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="28" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 28" data-line="28"></textarea></td></tr>
+<tr class="source-line" data-line="29"><td class="ln"><button type="button" class="ln-btn" id="L29" aria-label="Comment on line 29">29</button></td><td class="code"><code class="language-markdown">java -jar target/codereviewer-1.0.0-shaded.jar --help</code></td></tr>
+<tr class="comment-row" data-line="29" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 29" data-line="29"></textarea></td></tr>
+<tr class="source-line" data-line="30"><td class="ln"><button type="button" class="ln-btn" id="L30" aria-label="Comment on line 30">30</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="30" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 30" data-line="30"></textarea></td></tr>
+<tr class="source-line" data-line="31"><td class="ln"><button type="button" class="ln-btn" id="L31" aria-label="Comment on line 31">31</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="31" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 31" data-line="31"></textarea></td></tr>
+<tr class="source-line" data-line="32"><td class="ln"><button type="button" class="ln-btn" id="L32" aria-label="Comment on line 32">32</button></td><td class="code"><code class="language-markdown">### Python (original)</code></td></tr>
+<tr class="comment-row" data-line="32" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 32" data-line="32"></textarea></td></tr>
+<tr class="source-line" data-line="33"><td class="ln"><button type="button" class="ln-btn" id="L33" aria-label="Comment on line 33">33</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="33" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 33" data-line="33"></textarea></td></tr>
+<tr class="source-line" data-line="34"><td class="ln"><button type="button" class="ln-btn" id="L34" aria-label="Comment on line 34">34</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="34" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 34" data-line="34"></textarea></td></tr>
+<tr class="source-line" data-line="35"><td class="ln"><button type="button" class="ln-btn" id="L35" aria-label="Comment on line 35">35</button></td><td class="code"><code class="language-markdown">pip install -r requirements.txt</code></td></tr>
+<tr class="comment-row" data-line="35" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 35" data-line="35"></textarea></td></tr>
+<tr class="source-line" data-line="36"><td class="ln"><button type="button" class="ln-btn" id="L36" aria-label="Comment on line 36">36</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="36" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 36" data-line="36"></textarea></td></tr>
+<tr class="source-line" data-line="37"><td class="ln"><button type="button" class="ln-btn" id="L37" aria-label="Comment on line 37">37</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="37" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 37" data-line="37"></textarea></td></tr>
+<tr class="source-line" data-line="38"><td class="ln"><button type="button" class="ln-btn" id="L38" aria-label="Comment on line 38">38</button></td><td class="code"><code class="language-markdown">Or install Pygments directly:</code></td></tr>
+<tr class="comment-row" data-line="38" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 38" data-line="38"></textarea></td></tr>
+<tr class="source-line" data-line="39"><td class="ln"><button type="button" class="ln-btn" id="L39" aria-label="Comment on line 39">39</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="39" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 39" data-line="39"></textarea></td></tr>
+<tr class="source-line" data-line="40"><td class="ln"><button type="button" class="ln-btn" id="L40" aria-label="Comment on line 40">40</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="40" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 40" data-line="40"></textarea></td></tr>
+<tr class="source-line" data-line="41"><td class="ln"><button type="button" class="ln-btn" id="L41" aria-label="Comment on line 41">41</button></td><td class="code"><code class="language-markdown">pip install pygments</code></td></tr>
+<tr class="comment-row" data-line="41" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 41" data-line="41"></textarea></td></tr>
+<tr class="source-line" data-line="42"><td class="ln"><button type="button" class="ln-btn" id="L42" aria-label="Comment on line 42">42</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="42" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 42" data-line="42"></textarea></td></tr>
+<tr class="source-line" data-line="43"><td class="ln"><button type="button" class="ln-btn" id="L43" aria-label="Comment on line 43">43</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="43" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 43" data-line="43"></textarea></td></tr>
+<tr class="source-line" data-line="44"><td class="ln"><button type="button" class="ln-btn" id="L44" aria-label="Comment on line 44">44</button></td><td class="code"><code class="language-markdown">## Usage</code></td></tr>
+<tr class="comment-row" data-line="44" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 44" data-line="44"></textarea></td></tr>
+<tr class="source-line" data-line="45"><td class="ln"><button type="button" class="ln-btn" id="L45" aria-label="Comment on line 45">45</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="45" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 45" data-line="45"></textarea></td></tr>
+<tr class="source-line" data-line="46"><td class="ln"><button type="button" class="ln-btn" id="L46" aria-label="Comment on line 46">46</button></td><td class="code"><code class="language-markdown">### Java CLI</code></td></tr>
+<tr class="comment-row" data-line="46" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 46" data-line="46"></textarea></td></tr>
+<tr class="source-line" data-line="47"><td class="ln"><button type="button" class="ln-btn" id="L47" aria-label="Comment on line 47">47</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="47" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 47" data-line="47"></textarea></td></tr>
+<tr class="source-line" data-line="48"><td class="ln"><button type="button" class="ln-btn" id="L48" aria-label="Comment on line 48">48</button></td><td class="code"><code class="language-markdown">Plain directory mode:</code></td></tr>
+<tr class="comment-row" data-line="48" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 48" data-line="48"></textarea></td></tr>
+<tr class="source-line" data-line="49"><td class="ln"><button type="button" class="ln-btn" id="L49" aria-label="Comment on line 49">49</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="49" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 49" data-line="49"></textarea></td></tr>
+<tr class="source-line" data-line="50"><td class="ln"><button type="button" class="ln-btn" id="L50" aria-label="Comment on line 50">50</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="50" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 50" data-line="50"></textarea></td></tr>
+<tr class="source-line" data-line="51"><td class="ln"><button type="button" class="ln-btn" id="L51" aria-label="Comment on line 51">51</button></td><td class="code"><code class="language-markdown">java -jar target/codereviewer-1.0.0-shaded.jar ./myproject -o ./review</code></td></tr>
+<tr class="comment-row" data-line="51" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 51" data-line="51"></textarea></td></tr>
+<tr class="source-line" data-line="52"><td class="ln"><button type="button" class="ln-btn" id="L52" aria-label="Comment on line 52">52</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="52" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 52" data-line="52"></textarea></td></tr>
+<tr class="source-line" data-line="53"><td class="ln"><button type="button" class="ln-btn" id="L53" aria-label="Comment on line 53">53</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="53" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 53" data-line="53"></textarea></td></tr>
+<tr class="source-line" data-line="54"><td class="ln"><button type="button" class="ln-btn" id="L54" aria-label="Comment on line 54">54</button></td><td class="code"><code class="language-markdown">Git diff mode:</code></td></tr>
+<tr class="comment-row" data-line="54" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 54" data-line="54"></textarea></td></tr>
+<tr class="source-line" data-line="55"><td class="ln"><button type="button" class="ln-btn" id="L55" aria-label="Comment on line 55">55</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="55" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 55" data-line="55"></textarea></td></tr>
+<tr class="source-line" data-line="56"><td class="ln"><button type="button" class="ln-btn" id="L56" aria-label="Comment on line 56">56</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="56" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 56" data-line="56"></textarea></td></tr>
+<tr class="source-line" data-line="57"><td class="ln"><button type="button" class="ln-btn" id="L57" aria-label="Comment on line 57">57</button></td><td class="code"><code class="language-markdown">java -jar target/codereviewer-1.0.0-shaded.jar . -o ./review --base main --head feature-branch</code></td></tr>
+<tr class="comment-row" data-line="57" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 57" data-line="57"></textarea></td></tr>
+<tr class="source-line" data-line="58"><td class="ln"><button type="button" class="ln-btn" id="L58" aria-label="Comment on line 58">58</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="58" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 58" data-line="58"></textarea></td></tr>
+<tr class="source-line" data-line="59"><td class="ln"><button type="button" class="ln-btn" id="L59" aria-label="Comment on line 59">59</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="59" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 59" data-line="59"></textarea></td></tr>
+<tr class="source-line" data-line="60"><td class="ln"><button type="button" class="ln-btn" id="L60" aria-label="Comment on line 60">60</button></td><td class="code"><code class="language-markdown">SVN diff mode:</code></td></tr>
+<tr class="comment-row" data-line="60" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 60" data-line="60"></textarea></td></tr>
+<tr class="source-line" data-line="61"><td class="ln"><button type="button" class="ln-btn" id="L61" aria-label="Comment on line 61">61</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="61" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 61" data-line="61"></textarea></td></tr>
+<tr class="source-line" data-line="62"><td class="ln"><button type="button" class="ln-btn" id="L62" aria-label="Comment on line 62">62</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="62" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 62" data-line="62"></textarea></td></tr>
+<tr class="source-line" data-line="63"><td class="ln"><button type="button" class="ln-btn" id="L63" aria-label="Comment on line 63">63</button></td><td class="code"><code class="language-markdown">java -jar target/codereviewer-1.0.0-shaded.jar . -o ./review --base 1000 --head 1050</code></td></tr>
+<tr class="comment-row" data-line="63" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 63" data-line="63"></textarea></td></tr>
+<tr class="source-line" data-line="64"><td class="ln"><button type="button" class="ln-btn" id="L64" aria-label="Comment on line 64">64</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="64" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 64" data-line="64"></textarea></td></tr>
+<tr class="source-line" data-line="65"><td class="ln"><button type="button" class="ln-btn" id="L65" aria-label="Comment on line 65">65</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="65" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 65" data-line="65"></textarea></td></tr>
+<tr class="source-line" data-line="66"><td class="ln"><button type="button" class="ln-btn" id="L66" aria-label="Comment on line 66">66</button></td><td class="code"><code class="language-markdown">### Plain Directory (no VCS)</code></td></tr>
+<tr class="comment-row" data-line="66" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 66" data-line="66"></textarea></td></tr>
+<tr class="source-line" data-line="67"><td class="ln"><button type="button" class="ln-btn" id="L67" aria-label="Comment on line 67">67</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="67" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 67" data-line="67"></textarea></td></tr>
+<tr class="source-line" data-line="68"><td class="ln"><button type="button" class="ln-btn" id="L68" aria-label="Comment on line 68">68</button></td><td class="code"><code class="language-markdown">Generate HTML versions of all code files with syntax highlighting:</code></td></tr>
+<tr class="comment-row" data-line="68" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 68" data-line="68"></textarea></td></tr>
+<tr class="source-line" data-line="69"><td class="ln"><button type="button" class="ln-btn" id="L69" aria-label="Comment on line 69">69</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="69" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 69" data-line="69"></textarea></td></tr>
+<tr class="source-line" data-line="70"><td class="ln"><button type="button" class="ln-btn" id="L70" aria-label="Comment on line 70">70</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="70" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 70" data-line="70"></textarea></td></tr>
+<tr class="source-line" data-line="71"><td class="ln"><button type="button" class="ln-btn" id="L71" aria-label="Comment on line 71">71</button></td><td class="code"><code class="language-markdown">python codereviewer.py ./myproject -o ./review</code></td></tr>
+<tr class="comment-row" data-line="71" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 71" data-line="71"></textarea></td></tr>
+<tr class="source-line" data-line="72"><td class="ln"><button type="button" class="ln-btn" id="L72" aria-label="Comment on line 72">72</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="72" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 72" data-line="72"></textarea></td></tr>
+<tr class="source-line" data-line="73"><td class="ln"><button type="button" class="ln-btn" id="L73" aria-label="Comment on line 73">73</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="73" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 73" data-line="73"></textarea></td></tr>
+<tr class="source-line" data-line="74"><td class="ln"><button type="button" class="ln-btn" id="L74" aria-label="Comment on line 74">74</button></td><td class="code"><code class="language-markdown">### Git Repository</code></td></tr>
+<tr class="comment-row" data-line="74" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 74" data-line="74"></textarea></td></tr>
+<tr class="source-line" data-line="75"><td class="ln"><button type="button" class="ln-btn" id="L75" aria-label="Comment on line 75">75</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="75" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 75" data-line="75"></textarea></td></tr>
+<tr class="source-line" data-line="76"><td class="ln"><button type="button" class="ln-btn" id="L76" aria-label="Comment on line 76">76</button></td><td class="code"><code class="language-markdown">Compare two commits (base and head):</code></td></tr>
+<tr class="comment-row" data-line="76" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 76" data-line="76"></textarea></td></tr>
+<tr class="source-line" data-line="77"><td class="ln"><button type="button" class="ln-btn" id="L77" aria-label="Comment on line 77">77</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="77" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 77" data-line="77"></textarea></td></tr>
+<tr class="source-line" data-line="78"><td class="ln"><button type="button" class="ln-btn" id="L78" aria-label="Comment on line 78">78</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="78" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 78" data-line="78"></textarea></td></tr>
+<tr class="source-line" data-line="79"><td class="ln"><button type="button" class="ln-btn" id="L79" aria-label="Comment on line 79">79</button></td><td class="code"><code class="language-markdown"># Diff between main and feature branch</code></td></tr>
+<tr class="comment-row" data-line="79" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 79" data-line="79"></textarea></td></tr>
+<tr class="source-line" data-line="80"><td class="ln"><button type="button" class="ln-btn" id="L80" aria-label="Comment on line 80">80</button></td><td class="code"><code class="language-markdown">python codereviewer.py ./myproject -o ./review --base main --head feature-branch</code></td></tr>
+<tr class="comment-row" data-line="80" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 80" data-line="80"></textarea></td></tr>
+<tr class="source-line" data-line="81"><td class="ln"><button type="button" class="ln-btn" id="L81" aria-label="Comment on line 81">81</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="81" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 81" data-line="81"></textarea></td></tr>
+<tr class="source-line" data-line="82"><td class="ln"><button type="button" class="ln-btn" id="L82" aria-label="Comment on line 82">82</button></td><td class="code"><code class="language-markdown"># Diff between previous commit and HEAD</code></td></tr>
+<tr class="comment-row" data-line="82" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 82" data-line="82"></textarea></td></tr>
+<tr class="source-line" data-line="83"><td class="ln"><button type="button" class="ln-btn" id="L83" aria-label="Comment on line 83">83</button></td><td class="code"><code class="language-markdown">python codereviewer.py . -o ./review --base HEAD~1 --head HEAD</code></td></tr>
+<tr class="comment-row" data-line="83" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 83" data-line="83"></textarea></td></tr>
+<tr class="source-line" data-line="84"><td class="ln"><button type="button" class="ln-btn" id="L84" aria-label="Comment on line 84">84</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="84" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 84" data-line="84"></textarea></td></tr>
+<tr class="source-line" data-line="85"><td class="ln"><button type="button" class="ln-btn" id="L85" aria-label="Comment on line 85">85</button></td><td class="code"><code class="language-markdown"># Diff between two specific commits</code></td></tr>
+<tr class="comment-row" data-line="85" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 85" data-line="85"></textarea></td></tr>
+<tr class="source-line" data-line="86"><td class="ln"><button type="button" class="ln-btn" id="L86" aria-label="Comment on line 86">86</button></td><td class="code"><code class="language-markdown">python codereviewer.py . -o ./review --base abc123 --head def456</code></td></tr>
+<tr class="comment-row" data-line="86" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 86" data-line="86"></textarea></td></tr>
+<tr class="source-line" data-line="87"><td class="ln"><button type="button" class="ln-btn" id="L87" aria-label="Comment on line 87">87</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="87" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 87" data-line="87"></textarea></td></tr>
+<tr class="source-line" data-line="88"><td class="ln"><button type="button" class="ln-btn" id="L88" aria-label="Comment on line 88">88</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="88" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 88" data-line="88"></textarea></td></tr>
+<tr class="source-line" data-line="89"><td class="ln"><button type="button" class="ln-btn" id="L89" aria-label="Comment on line 89">89</button></td><td class="code"><code class="language-markdown">### Subversion Repository</code></td></tr>
+<tr class="comment-row" data-line="89" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 89" data-line="89"></textarea></td></tr>
+<tr class="source-line" data-line="90"><td class="ln"><button type="button" class="ln-btn" id="L90" aria-label="Comment on line 90">90</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="90" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 90" data-line="90"></textarea></td></tr>
+<tr class="source-line" data-line="91"><td class="ln"><button type="button" class="ln-btn" id="L91" aria-label="Comment on line 91">91</button></td><td class="code"><code class="language-markdown">Compare two revisions:</code></td></tr>
+<tr class="comment-row" data-line="91" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 91" data-line="91"></textarea></td></tr>
+<tr class="source-line" data-line="92"><td class="ln"><button type="button" class="ln-btn" id="L92" aria-label="Comment on line 92">92</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="92" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 92" data-line="92"></textarea></td></tr>
+<tr class="source-line" data-line="93"><td class="ln"><button type="button" class="ln-btn" id="L93" aria-label="Comment on line 93">93</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="93" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 93" data-line="93"></textarea></td></tr>
+<tr class="source-line" data-line="94"><td class="ln"><button type="button" class="ln-btn" id="L94" aria-label="Comment on line 94">94</button></td><td class="code"><code class="language-markdown"># Diff between revision 1000 and 1050</code></td></tr>
+<tr class="comment-row" data-line="94" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 94" data-line="94"></textarea></td></tr>
+<tr class="source-line" data-line="95"><td class="ln"><button type="button" class="ln-btn" id="L95" aria-label="Comment on line 95">95</button></td><td class="code"><code class="language-markdown">python codereviewer.py ./myproject -o ./review --base 1000 --head 1050</code></td></tr>
+<tr class="comment-row" data-line="95" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 95" data-line="95"></textarea></td></tr>
+<tr class="source-line" data-line="96"><td class="ln"><button type="button" class="ln-btn" id="L96" aria-label="Comment on line 96">96</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="96" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 96" data-line="96"></textarea></td></tr>
+<tr class="source-line" data-line="97"><td class="ln"><button type="button" class="ln-btn" id="L97" aria-label="Comment on line 97">97</button></td><td class="code"><code class="language-markdown"># Diff between BASE (working copy base) and HEAD (latest)</code></td></tr>
+<tr class="comment-row" data-line="97" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 97" data-line="97"></textarea></td></tr>
+<tr class="source-line" data-line="98"><td class="ln"><button type="button" class="ln-btn" id="L98" aria-label="Comment on line 98">98</button></td><td class="code"><code class="language-markdown">python codereviewer.py . -o ./review --base BASE --head HEAD</code></td></tr>
+<tr class="comment-row" data-line="98" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 98" data-line="98"></textarea></td></tr>
+<tr class="source-line" data-line="99"><td class="ln"><button type="button" class="ln-btn" id="L99" aria-label="Comment on line 99">99</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="99" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 99" data-line="99"></textarea></td></tr>
+<tr class="source-line" data-line="100"><td class="ln"><button type="button" class="ln-btn" id="L100" aria-label="Comment on line 100">100</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="100" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 100" data-line="100"></textarea></td></tr>
+<tr class="source-line" data-line="101"><td class="ln"><button type="button" class="ln-btn" id="L101" aria-label="Comment on line 101">101</button></td><td class="code"><code class="language-markdown">### Force Plain Mode</code></td></tr>
+<tr class="comment-row" data-line="101" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 101" data-line="101"></textarea></td></tr>
+<tr class="source-line" data-line="102"><td class="ln"><button type="button" class="ln-btn" id="L102" aria-label="Comment on line 102">102</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="102" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 102" data-line="102"></textarea></td></tr>
+<tr class="source-line" data-line="103"><td class="ln"><button type="button" class="ln-btn" id="L103" aria-label="Comment on line 103">103</button></td><td class="code"><code class="language-markdown">Ignore VCS and treat as plain directory:</code></td></tr>
+<tr class="comment-row" data-line="103" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 103" data-line="103"></textarea></td></tr>
+<tr class="source-line" data-line="104"><td class="ln"><button type="button" class="ln-btn" id="L104" aria-label="Comment on line 104">104</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="104" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 104" data-line="104"></textarea></td></tr>
+<tr class="source-line" data-line="105"><td class="ln"><button type="button" class="ln-btn" id="L105" aria-label="Comment on line 105">105</button></td><td class="code"><code class="language-markdown">```bash</code></td></tr>
+<tr class="comment-row" data-line="105" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 105" data-line="105"></textarea></td></tr>
+<tr class="source-line" data-line="106"><td class="ln"><button type="button" class="ln-btn" id="L106" aria-label="Comment on line 106">106</button></td><td class="code"><code class="language-markdown">python codereviewer.py ./git-repo -o ./review --plain</code></td></tr>
+<tr class="comment-row" data-line="106" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 106" data-line="106"></textarea></td></tr>
+<tr class="source-line" data-line="107"><td class="ln"><button type="button" class="ln-btn" id="L107" aria-label="Comment on line 107">107</button></td><td class="code"><code class="language-markdown">```</code></td></tr>
+<tr class="comment-row" data-line="107" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 107" data-line="107"></textarea></td></tr>
+<tr class="source-line" data-line="108"><td class="ln"><button type="button" class="ln-btn" id="L108" aria-label="Comment on line 108">108</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="108" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 108" data-line="108"></textarea></td></tr>
+<tr class="source-line" data-line="109"><td class="ln"><button type="button" class="ln-btn" id="L109" aria-label="Comment on line 109">109</button></td><td class="code"><code class="language-markdown">## Output Structure</code></td></tr>
+<tr class="comment-row" data-line="109" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 109" data-line="109"></textarea></td></tr>
+<tr class="source-line" data-line="110"><td class="ln"><button type="button" class="ln-btn" id="L110" aria-label="Comment on line 110">110</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="110" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 110" data-line="110"></textarea></td></tr>
+<tr class="source-line" data-line="111"><td class="ln"><button type="button" class="ln-btn" id="L111" aria-label="Comment on line 111">111</button></td><td class="code"><code class="language-markdown">### Plain Mode</code></td></tr>
+<tr class="comment-row" data-line="111" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 111" data-line="111"></textarea></td></tr>
+<tr class="source-line" data-line="112"><td class="ln"><button type="button" class="ln-btn" id="L112" aria-label="Comment on line 112">112</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="112" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 112" data-line="112"></textarea></td></tr>
+<tr class="source-line" data-line="113"><td class="ln"><button type="button" class="ln-btn" id="L113" aria-label="Comment on line 113">113</button></td><td class="code"><code class="language-markdown">- `index.html` — Index of all files with links to syntax-highlighted source</code></td></tr>
+<tr class="comment-row" data-line="113" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 113" data-line="113"></textarea></td></tr>
+<tr class="source-line" data-line="114"><td class="ln"><button type="button" class="ln-btn" id="L114" aria-label="Comment on line 114">114</button></td><td class="code"><code class="language-markdown">- `path/to/file.py.html` — HTML version of each code file</code></td></tr>
+<tr class="comment-row" data-line="114" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 114" data-line="114"></textarea></td></tr>
+<tr class="source-line" data-line="115"><td class="ln"><button type="button" class="ln-btn" id="L115" aria-label="Comment on line 115">115</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="115" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 115" data-line="115"></textarea></td></tr>
+<tr class="source-line" data-line="116"><td class="ln"><button type="button" class="ln-btn" id="L116" aria-label="Comment on line 116">116</button></td><td class="code"><code class="language-markdown">On **`index.html`** (Python and Java): file rows use alternating light gray and light blue backgrounds so each file lines up with its links. Click a row **outside** a link or button to cycle review highlight: unmarked, then yellow, red, green, then clear again. That state is saved in the browser under the `localStorage` key `codereviewer-index-review-v1`, so it survives refresh while you keep the same output folder path. Folder expand/collapse is likewise persisted under `codereviewer-index-tree-v1` (collapsed folders only; default remains expanded), including after you open a file and return via **Back to index**. Expand all / Collapse all update that stored state as well.</code></td></tr>
+<tr class="comment-row" data-line="116" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 116" data-line="116"></textarea></td></tr>
+<tr class="source-line" data-line="117"><td class="ln"><button type="button" class="ln-btn" id="L117" aria-label="Comment on line 117">117</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="117" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 117" data-line="117"></textarea></td></tr>
+<tr class="source-line" data-line="118"><td class="ln"><button type="button" class="ln-btn" id="L118" aria-label="Comment on line 118">118</button></td><td class="code"><code class="language-markdown">Each generated source page numbers every line. Click a line number to leave a comment. Comments stay in the browser under `codereviewer-line-comments-v1` and remain on that line after a reload. **Download review comments**, on a source page or on `index.html`, writes one `review-comments.txt` from every comment stored in that browser: a list of `path:line: comment` items to send to the author. Old and new revisions are tagged `[old]` and `[new]`.</code></td></tr>
+<tr class="comment-row" data-line="118" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 118" data-line="118"></textarea></td></tr>
+<tr class="source-line" data-line="119"><td class="ln"><button type="button" class="ln-btn" id="L119" aria-label="Comment on line 119">119</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="119" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 119" data-line="119"></textarea></td></tr>
+<tr class="source-line" data-line="120"><td class="ln"><button type="button" class="ln-btn" id="L120" aria-label="Comment on line 120">120</button></td><td class="code"><code class="language-markdown">### Git/SVN Diff Mode</code></td></tr>
+<tr class="comment-row" data-line="120" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 120" data-line="120"></textarea></td></tr>
+<tr class="source-line" data-line="121"><td class="ln"><button type="button" class="ln-btn" id="L121" aria-label="Comment on line 121">121</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="121" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 121" data-line="121"></textarea></td></tr>
+<tr class="source-line" data-line="122"><td class="ln"><button type="button" class="ln-btn" id="L122" aria-label="Comment on line 122">122</button></td><td class="code"><code class="language-markdown">- `index.html` — Summary with links to each changed file&#x27;s views, plus **line statistics** (added / modified / removed) estimated from the unified patch: within each file, paired `+` and `-` lines count toward **modified**, and any surplus counts toward **added** or **removed**.</code></td></tr>
+<tr class="comment-row" data-line="122" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 122" data-line="122"></textarea></td></tr>
+<tr class="source-line" data-line="123"><td class="ln"><button type="button" class="ln-btn" id="L123" aria-label="Comment on line 123">123</button></td><td class="code"><code class="language-markdown">- `changes.patch` — Full unified diff</code></td></tr>
+<tr class="comment-row" data-line="123" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 123" data-line="123"></textarea></td></tr>
+<tr class="source-line" data-line="124"><td class="ln"><button type="button" class="ln-btn" id="L124" aria-label="Comment on line 124">124</button></td><td class="code"><code class="language-markdown">- Per-file:</code></td></tr>
+<tr class="comment-row" data-line="124" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 124" data-line="124"></textarea></td></tr>
+<tr class="source-line" data-line="125"><td class="ln"><button type="button" class="ln-btn" id="L125" aria-label="Comment on line 125">125</button></td><td class="code"><code class="language-markdown">  - `path/to/file.py-.html` — Old version (syntax highlighted, per-line comments tagged `[old]` in the review file)</code></td></tr>
+<tr class="comment-row" data-line="125" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 125" data-line="125"></textarea></td></tr>
+<tr class="source-line" data-line="126"><td class="ln"><button type="button" class="ln-btn" id="L126" aria-label="Comment on line 126">126</button></td><td class="code"><code class="language-markdown">  - `path/to/file.py.html` — New version (syntax highlighted, per-line comments tagged `[new]` in the review file)</code></td></tr>
+<tr class="comment-row" data-line="126" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 126" data-line="126"></textarea></td></tr>
+<tr class="source-line" data-line="127"><td class="ln"><button type="button" class="ln-btn" id="L127" aria-label="Comment on line 127">127</button></td><td class="code"><code class="language-markdown">  - `path/to/file.py.udiff.html` — Unified diff view</code></td></tr>
+<tr class="comment-row" data-line="127" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 127" data-line="127"></textarea></td></tr>
+<tr class="source-line" data-line="128"><td class="ln"><button type="button" class="ln-btn" id="L128" aria-label="Comment on line 128">128</button></td><td class="code"><code class="language-markdown">  - `path/to/file.py.sdiff.html` — Side-by-side diff view</code></td></tr>
+<tr class="comment-row" data-line="128" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 128" data-line="128"></textarea></td></tr>
+<tr class="source-line" data-line="129"><td class="ln"><button type="button" class="ln-btn" id="L129" aria-label="Comment on line 129">129</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="129" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 129" data-line="129"></textarea></td></tr>
+<tr class="source-line" data-line="130"><td class="ln"><button type="button" class="ln-btn" id="L130" aria-label="Comment on line 130">130</button></td><td class="code"><code class="language-markdown">## Options</code></td></tr>
+<tr class="comment-row" data-line="130" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 130" data-line="130"></textarea></td></tr>
+<tr class="source-line" data-line="131"><td class="ln"><button type="button" class="ln-btn" id="L131" aria-label="Comment on line 131">131</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="131" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 131" data-line="131"></textarea></td></tr>
+<tr class="source-line" data-line="132"><td class="ln"><button type="button" class="ln-btn" id="L132" aria-label="Comment on line 132">132</button></td><td class="code"><code class="language-markdown">| Option | Description |</code></td></tr>
+<tr class="comment-row" data-line="132" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 132" data-line="132"></textarea></td></tr>
+<tr class="source-line" data-line="133"><td class="ln"><button type="button" class="ln-btn" id="L133" aria-label="Comment on line 133">133</button></td><td class="code"><code class="language-markdown">|--------|-------------|</code></td></tr>
+<tr class="comment-row" data-line="133" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 133" data-line="133"></textarea></td></tr>
+<tr class="source-line" data-line="134"><td class="ln"><button type="button" class="ln-btn" id="L134" aria-label="Comment on line 134">134</button></td><td class="code"><code class="language-markdown">| `directory` | Target directory (default: current) |</code></td></tr>
+<tr class="comment-row" data-line="134" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 134" data-line="134"></textarea></td></tr>
+<tr class="source-line" data-line="135"><td class="ln"><button type="button" class="ln-btn" id="L135" aria-label="Comment on line 135">135</button></td><td class="code"><code class="language-markdown">| `-o`, `--output` | Output directory (default: `review`) |</code></td></tr>
+<tr class="comment-row" data-line="135" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 135" data-line="135"></textarea></td></tr>
+<tr class="source-line" data-line="136"><td class="ln"><button type="button" class="ln-btn" id="L136" aria-label="Comment on line 136">136</button></td><td class="code"><code class="language-markdown">| `--base` | Base revision for diff (commit hash or SVN rev) |</code></td></tr>
+<tr class="comment-row" data-line="136" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 136" data-line="136"></textarea></td></tr>
+<tr class="source-line" data-line="137"><td class="ln"><button type="button" class="ln-btn" id="L137" aria-label="Comment on line 137">137</button></td><td class="code"><code class="language-markdown">| `--head` | Head revision for diff |</code></td></tr>
+<tr class="comment-row" data-line="137" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 137" data-line="137"></textarea></td></tr>
+<tr class="source-line" data-line="138"><td class="ln"><button type="button" class="ln-btn" id="L138" aria-label="Comment on line 138">138</button></td><td class="code"><code class="language-markdown">| `--plain` | Force plain mode, ignore VCS |</code></td></tr>
+<tr class="comment-row" data-line="138" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 138" data-line="138"></textarea></td></tr>
+<tr class="source-line" data-line="139"><td class="ln"><button type="button" class="ln-btn" id="L139" aria-label="Comment on line 139">139</button></td><td class="code"><code class="language-markdown">| `--extensions` | File extensions for plain mode (space-separated) |</code></td></tr>
+<tr class="comment-row" data-line="139" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 139" data-line="139"></textarea></td></tr>
+<tr class="source-line" data-line="140"><td class="ln"><button type="button" class="ln-btn" id="L140" aria-label="Comment on line 140">140</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="140" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 140" data-line="140"></textarea></td></tr>
+<tr class="source-line" data-line="141"><td class="ln"><button type="button" class="ln-btn" id="L141" aria-label="Comment on line 141">141</button></td><td class="code"><code class="language-markdown">## Supported File Types</code></td></tr>
+<tr class="comment-row" data-line="141" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 141" data-line="141"></textarea></td></tr>
+<tr class="source-line" data-line="142"><td class="ln"><button type="button" class="ln-btn" id="L142" aria-label="Comment on line 142">142</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="142" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 142" data-line="142"></textarea></td></tr>
+<tr class="source-line" data-line="143"><td class="ln"><button type="button" class="ln-btn" id="L143" aria-label="Comment on line 143">143</button></td><td class="code"><code class="language-markdown">Plain mode includes common code extensions by default: `.py`, `.js`, `.ts`, `.java`, `.c`, `.cpp`, `.go`, `.rs`, `.rb`, `.php`, `.html`, `.css`, `.json`, `.yaml`, `.md`, and many more. Use `--extensions` to customize.</code></td></tr>
+<tr class="comment-row" data-line="143" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 143" data-line="143"></textarea></td></tr>
+<tr class="source-line" data-line="144"><td class="ln"><button type="button" class="ln-btn" id="L144" aria-label="Comment on line 144">144</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="144" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 144" data-line="144"></textarea></td></tr>
+<tr class="source-line" data-line="145"><td class="ln"><button type="button" class="ln-btn" id="L145" aria-label="Comment on line 145">145</button></td><td class="code"><code class="language-markdown">## Requirements</code></td></tr>
+<tr class="comment-row" data-line="145" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 145" data-line="145"></textarea></td></tr>
+<tr class="source-line" data-line="146"><td class="ln"><button type="button" class="ln-btn" id="L146" aria-label="Comment on line 146">146</button></td><td class="code"><code class="language-markdown"></code></td></tr>
+<tr class="comment-row" data-line="146" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 146" data-line="146"></textarea></td></tr>
+<tr class="source-line" data-line="147"><td class="ln"><button type="button" class="ln-btn" id="L147" aria-label="Comment on line 147">147</button></td><td class="code"><code class="language-markdown">- Python 3.10+</code></td></tr>
+<tr class="comment-row" data-line="147" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 147" data-line="147"></textarea></td></tr>
+<tr class="source-line" data-line="148"><td class="ln"><button type="button" class="ln-btn" id="L148" aria-label="Comment on line 148">148</button></td><td class="code"><code class="language-markdown">- Pygments (for syntax highlighting)</code></td></tr>
+<tr class="comment-row" data-line="148" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 148" data-line="148"></textarea></td></tr>
+<tr class="source-line" data-line="149"><td class="ln"><button type="button" class="ln-btn" id="L149" aria-label="Comment on line 149">149</button></td><td class="code"><code class="language-markdown">- Git or Subversion (for diff mode; must be in PATH)</code></td></tr>
+<tr class="comment-row" data-line="149" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 149" data-line="149"></textarea></td></tr>
 
-Inspired by [OpenJDK&#x27;s webrev](https://openjdk.org/projects/code-tools/webrev/) tool.
+</tbody>
+</table>
 
-## Features
+<script>
+(function(){
+var KEY='codereviewer-line-comments-v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
+function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+function viewTag(view){
+  if(view==='old') return '[old] ';
+  if(view==='new') return '[new] ';
+  return '';
+}
+function formatComments(map){
+  var items=[];
+  Object.keys(map||{}).forEach(function(key){
+    var idx=key.indexOf(':');
+    var view=idx<0?'source':key.slice(0,idx);
+    var path=idx<0?key:key.slice(idx+1);
+    var lines=map[key]||{};
+    Object.keys(lines).forEach(function(ln){
+      var text=String(lines[ln]||'').replace(/\s+$/,'');
+      if(!text.trim()) return;
+      items.push({path:path, view:view, line:parseInt(ln,10)||0, text:text});
+    });
+  });
+  var order={source:0,old:1,new:2};
+  items.sort(function(a,b){
+    if(a.path<b.path) return -1;
+    if(a.path>b.path) return 1;
+    var va=Object.prototype.hasOwnProperty.call(order,a.view)?order[a.view]:9;
+    var vb=Object.prototype.hasOwnProperty.call(order,b.view)?order[b.view]:9;
+    if(va!==vb) return va-vb;
+    return a.line-b.line;
+  });
+  var body=items.map(function(it){
+    var parts=it.text.split(/\r?\n/);
+    var first=it.path+':'+it.line+': '+viewTag(it.view)+parts[0];
+    var rest=parts.slice(1).map(function(l){return '  '+l;});
+    return [first].concat(rest).join('\n');
+  }).join('\n');
+  var n=items.length;
+  var noun=n===1?'item':'items';
+  var out='Review comments\n'+n+' '+noun+'. Each line is path:line: comment.\n\n';
+  if(body) out+=body+'\n';
+  return out;
+}
+function download(text){
+  var blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='review-comments.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},0);
+}
+function setComment(path, view, line, text){
+  var m=load();
+  var key=view+':'+path;
+  if(!m[key]) m[key]={};
+  if(text) m[key][String(line)]=text;
+  else delete m[key][String(line)];
+  if(!Object.keys(m[key]).length) delete m[key];
+  save(m);
+}
+function bindSource(table){
+  var path=table.getAttribute('data-file-path')||'';
+  var view=table.getAttribute('data-view')||'source';
+  var stored=(load()[view+':'+path])||{};
+  table.querySelectorAll('tr.source-line[data-line]').forEach(function(row){
+    var line=row.getAttribute('data-line');
+    var editor=table.querySelector('tr.comment-row[data-line="'+line+'"]');
+    var btn=row.querySelector('.ln-btn');
+    var ta=editor?editor.querySelector('textarea'):null;
+    if(stored[line]){
+      if(ta) ta.value=stored[line];
+      row.classList.add('has-comment');
+      if(editor) editor.removeAttribute('hidden');
+    }
+    if(btn && editor){
+      btn.addEventListener('click', function(){
+        if(editor.hasAttribute('hidden')){
+          editor.removeAttribute('hidden');
+          if(ta) ta.focus();
+        } else {
+          editor.setAttribute('hidden','');
+        }
+      });
+    }
+    if(ta){
+      ta.addEventListener('input', function(){
+        var text=ta.value.replace(/\s+$/,'');
+        if(text.trim()){
+          setComment(path, view, line, text);
+          row.classList.add('has-comment');
+        } else {
+          setComment(path, view, line, '');
+          row.classList.remove('has-comment');
+        }
+      });
+    }
+  });
+}
+function bindDownload(){
+  var btn=document.getElementById('download-review-comments');
+  if(!btn || btn.getAttribute('data-bound')) return;
+  btn.setAttribute('data-bound','1');
+  btn.addEventListener('click', function(){ download(formatComments(load())); });
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var table=document.querySelector('table.source');
+  if(table) bindSource(table);
+  bindDownload();
+});
+})();
+</script>
 
-- **Plain directory mode**: Generate syntax-highlighted HTML for all code files in a directory
-- **Git support**: Generate diffs between commits with per-file old/new views and unified/side-by-side diffs
-- **Subversion support**: Generate diffs between revisions with the same per-file views
-- **Offline-friendly**: Self-contained HTML output—no server required; share as a zip or folder
-
-Note: the Java port keeps output self-contained; it ships with basic code styling and can be extended to full client-side syntax highlighting by swapping in a full `highlight.js` build in `Defaults.HIGHLIGHT_JS_MIN`.
-
-## Installation
-
-### Java (JDK 17)
-
-Build a runnable CLI JAR:
-
-```bash
-mvn -q -DskipTests package
-```
-
-Run it:
-
-```bash
-java -jar target/codereviewer-1.0.0-shaded.jar --help
-```
-
-### Python (original)
-
-```bash
-pip install -r requirements.txt
-```
-
-Or install Pygments directly:
-
-```bash
-pip install pygments
-```
-
-## Usage
-
-### Java CLI
-
-Plain directory mode:
-
-```bash
-java -jar target/codereviewer-1.0.0-shaded.jar ./myproject -o ./review
-```
-
-Git diff mode:
-
-```bash
-java -jar target/codereviewer-1.0.0-shaded.jar . -o ./review --base main --head feature-branch
-```
-
-SVN diff mode:
-
-```bash
-java -jar target/codereviewer-1.0.0-shaded.jar . -o ./review --base 1000 --head 1050
-```
-
-### Plain Directory (no VCS)
-
-Generate HTML versions of all code files with syntax highlighting:
-
-```bash
-python codereviewer.py ./myproject -o ./review
-```
-
-### Git Repository
-
-Compare two commits (base and head):
-
-```bash
-# Diff between main and feature branch
-python codereviewer.py ./myproject -o ./review --base main --head feature-branch
-
-# Diff between previous commit and HEAD
-python codereviewer.py . -o ./review --base HEAD~1 --head HEAD
-
-# Diff between two specific commits
-python codereviewer.py . -o ./review --base abc123 --head def456
-```
-
-### Subversion Repository
-
-Compare two revisions:
-
-```bash
-# Diff between revision 1000 and 1050
-python codereviewer.py ./myproject -o ./review --base 1000 --head 1050
-
-# Diff between BASE (working copy base) and HEAD (latest)
-python codereviewer.py . -o ./review --base BASE --head HEAD
-```
-
-### Force Plain Mode
-
-Ignore VCS and treat as plain directory:
-
-```bash
-python codereviewer.py ./git-repo -o ./review --plain
-```
-
-## Output Structure
-
-### Plain Mode
-
-- `index.html` — Index of all files with links to syntax-highlighted source
-- `path/to/file.py.html` — HTML version of each code file
-
-On **`index.html`** (Python and Java): file rows use alternating light gray and light blue backgrounds so each file lines up with its links. Click a row **outside** a link or button to cycle review highlight: unmarked, then yellow, red, green, then clear again. That state is saved in the browser under the `localStorage` key `codereviewer-index-review-v1`, so it survives refresh while you keep the same output folder path. Folder expand/collapse is likewise persisted under `codereviewer-index-tree-v1` (collapsed folders only; default remains expanded), including after you open a file and return via **Back to index**. Expand all / Collapse all update that stored state as well.
-
-### Git/SVN Diff Mode
-
-- `index.html` — Summary with links to each changed file&#x27;s views, plus **line statistics** (added / modified / removed) estimated from the unified patch: within each file, paired `+` and `-` lines count toward **modified**, and any surplus counts toward **added** or **removed**.
-- `changes.patch` — Full unified diff
-- Per-file:
-  - `path/to/file.py-.html` — Old version (syntax highlighted)
-  - `path/to/file.py.html` — New version (syntax highlighted)
-  - `path/to/file.py.udiff.html` — Unified diff view
-  - `path/to/file.py.sdiff.html` — Side-by-side diff view
-
-## Options
-
-| Option | Description |
-|--------|-------------|
-| `directory` | Target directory (default: current) |
-| `-o`, `--output` | Output directory (default: `review`) |
-| `--base` | Base revision for diff (commit hash or SVN rev) |
-| `--head` | Head revision for diff |
-| `--plain` | Force plain mode, ignore VCS |
-| `--extensions` | File extensions for plain mode (space-separated) |
-
-## Supported File Types
-
-Plain mode includes common code extensions by default: `.py`, `.js`, `.ts`, `.java`, `.c`, `.cpp`, `.go`, `.rs`, `.rb`, `.php`, `.html`, `.css`, `.json`, `.yaml`, `.md`, and many more. Use `--extensions` to customize.
-
-## Requirements
-
-- Python 3.10+
-- Pygments (for syntax highlighting)
-- Git or Subversion (for diff mode; must be in PATH)
-</code></pre>
 </body>
 </html>

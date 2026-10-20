@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 import codereviewer
 
@@ -42,6 +43,40 @@ class TreeMarkupTests(unittest.TestCase):
         self.assertIn("addEventListener('toggle'", script)
         self.assertIn("data-folder-path", script)
         self.assertIn("codereviewer-index-review-v1", script)
+
+    def test_source_to_html_emits_line_comments(self) -> None:
+        page = codereviewer.source_to_html(
+            Path("src/App.py"),
+            "def a():\n    return 1\n\n",
+            "Source",
+            "index.html",
+            view="old",
+        )
+        self.assertIn('data-file-path="src/App.py"', page)
+        self.assertIn('data-view="old"', page)
+        self.assertIn('data-line="1"', page)
+        self.assertIn('data-line="2"', page)
+        self.assertIn('data-line="3"', page)
+        self.assertNotIn('data-line="4"', page)
+        self.assertIn('id="L1"', page)
+        self.assertIn('id="L3"', page)
+        self.assertIn('class="k"', page)
+        self.assertIn("codereviewer-line-comments-v1", page)
+        self.assertIn("review-comments.txt", page)
+        self.assertIn('id="download-review-comments"', page)
+
+    def test_line_comment_script_exports_review_file(self) -> None:
+        script = codereviewer.LINE_COMMENT_SCRIPT
+        self.assertIn("codereviewer-line-comments-v1", script)
+        self.assertIn("review-comments.txt", script)
+        self.assertIn("download(formatComments(load()))", script)
+        self.assertNotIn("combine-review-comments", script)
+        self.assertIn("[old]", script)
+        self.assertIn("[new]", script)
+        self.assertIn("Each line is path:line: comment.", script)
+        toolbar = codereviewer.INDEX_TOOLBAR
+        self.assertIn('id="download-review-comments"', toolbar)
+        self.assertNotIn("combine-review-comments", toolbar)
 
 
 if __name__ == "__main__":

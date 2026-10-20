@@ -56,6 +56,23 @@ table.index tr:hover { background: #f1f3f5; }
 .tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
 .tree button:hover { background: #f1f3f5; }
 
+/* Per-line source comments */
+table.source { border-collapse: collapse; width: 100%; background: #fff; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85em; }
+table.source td { vertical-align: top; }
+table.source td.ln { width: 1%; white-space: nowrap; text-align: right; border-right: 1px solid #e6e6e6; background: #fafbfc; }
+table.source button.ln-btn { border: 0; background: transparent; color: #666; font: inherit; font-family: "Consolas", "Monaco", "Courier New", monospace; cursor: pointer; padding: 0 0.65em; min-width: 3em; text-align: right; }
+table.source button.ln-btn:hover { color: #0066cc; background: #eef5fb; }
+table.source tr.has-comment > td.ln { background: #e3f2fd; }
+table.source tr.has-comment > td.ln button.ln-btn { color: #1565c0; font-weight: 700; }
+table.source td.code { padding: 0 0.75em; white-space: pre; background: #fff; }
+table.source td.code code { white-space: pre; font-family: "Consolas", "Monaco", "Courier New", monospace; }
+table.source td.code code.hljs { padding: 0; display: inline; background: transparent; }
+table.source tr.comment-row td { background: #fff8e1; padding: 0.35em 0.75em 0.5em; }
+table.source tr.comment-row textarea { width: 100%; box-sizing: border-box; min-height: 3.2em; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 0.95em; border: 1px solid #e0c36a; border-radius: 4px; padding: 0.4em 0.5em; }
+.review-actions { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; align-items: center; }
+.review-actions button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+.review-actions button:hover { background: #f1f3f5; }
+
 /* highlight.js base styling */
 pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
 code.hljs { padding: 3px 5px }
@@ -73,271 +90,628 @@ code.hljs { padding: 3px 5px }
 .hljs-addition { background-color: #e6ffed; }
 .hljs-deletion { background-color: #ffeef0; }
 </style>
-<script>/*! highlight.js v11.9.0 (minified subset placeholder)
- * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
- * For full highlighting, replace this with a full highlight.js build if desired.
- */
-(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
-function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+<script>(function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
 ready(function(){
-  document.querySelectorAll('pre code').forEach(function(block){
-    // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
-    // Generator always escapes, so this is mostly defensive.
-    if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
-      block.innerHTML = escapeHtml(block.textContent || '');
-    }
+  document.querySelectorAll('pre code, table.source td.code code').forEach(function(block){
     block.classList.add('hljs');
   });
 });})();
 </script>
-
 </head>
 <body>
 <h1>Source: src\main\java\com\codereviewer\GitMode.java</h1>
 <div class="nav"><a href="../../../../../index.html">&#8592; Back to index</a></div>
 <hr>
-<pre><code class="language-java">package com.codereviewer;
+<div class="review-actions">
+<button type="button" id="download-review-comments">Download review comments</button>
+</div>
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+<table class="source" data-file-path="src/main/java/com/codereviewer/GitMode.java" data-view="source">
+<tbody>
+<tr class="source-line" data-line="1"><td class="ln"><button type="button" class="ln-btn" id="L1" aria-label="Comment on line 1">1</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">package</span> com.codereviewer;</code></td></tr>
+<tr class="comment-row" data-line="1" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 1" data-line="1"></textarea></td></tr>
+<tr class="source-line" data-line="2"><td class="ln"><button type="button" class="ln-btn" id="L2" aria-label="Comment on line 2">2</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="2" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 2" data-line="2"></textarea></td></tr>
+<tr class="source-line" data-line="3"><td class="ln"><button type="button" class="ln-btn" id="L3" aria-label="Comment on line 3">3</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">import</span> java.nio.file.<span class="hljs-type">Files</span>;</code></td></tr>
+<tr class="comment-row" data-line="3" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 3" data-line="3"></textarea></td></tr>
+<tr class="source-line" data-line="4"><td class="ln"><button type="button" class="ln-btn" id="L4" aria-label="Comment on line 4">4</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">import</span> java.nio.file.<span class="hljs-type">Path</span>;</code></td></tr>
+<tr class="comment-row" data-line="4" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 4" data-line="4"></textarea></td></tr>
+<tr class="source-line" data-line="5"><td class="ln"><button type="button" class="ln-btn" id="L5" aria-label="Comment on line 5">5</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">import</span> java.util.<span class="hljs-type">ArrayList</span>;</code></td></tr>
+<tr class="comment-row" data-line="5" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 5" data-line="5"></textarea></td></tr>
+<tr class="source-line" data-line="6"><td class="ln"><button type="button" class="ln-btn" id="L6" aria-label="Comment on line 6">6</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">import</span> java.util.<span class="hljs-type">HashMap</span>;</code></td></tr>
+<tr class="comment-row" data-line="6" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 6" data-line="6"></textarea></td></tr>
+<tr class="source-line" data-line="7"><td class="ln"><button type="button" class="ln-btn" id="L7" aria-label="Comment on line 7">7</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">import</span> java.util.<span class="hljs-type">List</span>;</code></td></tr>
+<tr class="comment-row" data-line="7" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 7" data-line="7"></textarea></td></tr>
+<tr class="source-line" data-line="8"><td class="ln"><button type="button" class="ln-btn" id="L8" aria-label="Comment on line 8">8</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">import</span> java.util.<span class="hljs-type">Map</span>;</code></td></tr>
+<tr class="comment-row" data-line="8" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 8" data-line="8"></textarea></td></tr>
+<tr class="source-line" data-line="9"><td class="ln"><button type="button" class="ln-btn" id="L9" aria-label="Comment on line 9">9</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="9" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 9" data-line="9"></textarea></td></tr>
+<tr class="source-line" data-line="10"><td class="ln"><button type="button" class="ln-btn" id="L10" aria-label="Comment on line 10">10</button></td><td class="code"><code class="language-java"><span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-type">GitMode</span> {</code></td></tr>
+<tr class="comment-row" data-line="10" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 10" data-line="10"></textarea></td></tr>
+<tr class="source-line" data-line="11"><td class="ln"><button type="button" class="ln-btn" id="L11" aria-label="Comment on line 11">11</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-type">GitMode</span>() {}</code></td></tr>
+<tr class="comment-row" data-line="11" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 11" data-line="11"></textarea></td></tr>
+<tr class="source-line" data-line="12"><td class="ln"><button type="button" class="ln-btn" id="L12" aria-label="Comment on line 12">12</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="12" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 12" data-line="12"></textarea></td></tr>
+<tr class="source-line" data-line="13"><td class="ln"><button type="button" class="ln-btn" id="L13" aria-label="Comment on line 13">13</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> run(<span class="hljs-type">Path</span> root, <span class="hljs-type">Path</span> outputDir, <span class="hljs-type">String</span> baseArg, <span class="hljs-type">String</span> headArg, <span class="hljs-keyword">boolean</span> worktree) {</code></td></tr>
+<tr class="comment-row" data-line="13" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 13" data-line="13"></textarea></td></tr>
+<tr class="source-line" data-line="14"><td class="ln"><button type="button" class="ln-btn" id="L14" aria-label="Comment on line 14">14</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">try</span> {</code></td></tr>
+<tr class="comment-row" data-line="14" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 14" data-line="14"></textarea></td></tr>
+<tr class="source-line" data-line="15"><td class="ln"><button type="button" class="ln-btn" id="L15" aria-label="Comment on line 15">15</button></td><td class="code"><code class="language-java">            <span class="hljs-type">Path</span> repoRoot = getRepoRoot(root);</code></td></tr>
+<tr class="comment-row" data-line="15" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 15" data-line="15"></textarea></td></tr>
+<tr class="source-line" data-line="16"><td class="ln"><button type="button" class="ln-btn" id="L16" aria-label="Comment on line 16">16</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (repoRoot == <span class="hljs-literal">null</span>) {</code></td></tr>
+<tr class="comment-row" data-line="16" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 16" data-line="16"></textarea></td></tr>
+<tr class="source-line" data-line="17"><td class="ln"><button type="button" class="ln-btn" id="L17" aria-label="Comment on line 17">17</button></td><td class="code"><code class="language-java">                <span class="hljs-type">System</span>.err.println(<span class="hljs-string">&quot;Not a git repository. Use plain mode or specify a git directory.&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="17" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 17" data-line="17"></textarea></td></tr>
+<tr class="source-line" data-line="18"><td class="ln"><button type="button" class="ln-btn" id="L18" aria-label="Comment on line 18">18</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</code></td></tr>
+<tr class="comment-row" data-line="18" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 18" data-line="18"></textarea></td></tr>
+<tr class="source-line" data-line="19"><td class="ln"><button type="button" class="ln-btn" id="L19" aria-label="Comment on line 19">19</button></td><td class="code"><code class="language-java">            }</code></td></tr>
+<tr class="comment-row" data-line="19" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 19" data-line="19"></textarea></td></tr>
+<tr class="source-line" data-line="20"><td class="ln"><button type="button" class="ln-btn" id="L20" aria-label="Comment on line 20">20</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="20" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 20" data-line="20"></textarea></td></tr>
+<tr class="source-line" data-line="21"><td class="ln"><button type="button" class="ln-btn" id="L21" aria-label="Comment on line 21">21</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span> base = (baseArg == <span class="hljs-literal">null</span> || baseArg.isBlank()) ? (worktree ? <span class="hljs-string">&quot;HEAD&quot;</span> : <span class="hljs-string">&quot;HEAD~1&quot;</span>) : baseArg;</code></td></tr>
+<tr class="comment-row" data-line="21" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 21" data-line="21"></textarea></td></tr>
+<tr class="source-line" data-line="22"><td class="ln"><button type="button" class="ln-btn" id="L22" aria-label="Comment on line 22">22</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span> head = worktree ? <span class="hljs-string">&quot;WORKTREE&quot;</span> : ((headArg == <span class="hljs-literal">null</span> || headArg.isBlank()) ? <span class="hljs-string">&quot;HEAD&quot;</span> : headArg);</code></td></tr>
+<tr class="comment-row" data-line="22" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 22" data-line="22"></textarea></td></tr>
+<tr class="source-line" data-line="23"><td class="ln"><button type="button" class="ln-btn" id="L23" aria-label="Comment on line 23">23</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="23" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 23" data-line="23"></textarea></td></tr>
+<tr class="source-line" data-line="24"><td class="ln"><button type="button" class="ln-btn" id="L24" aria-label="Comment on line 24">24</button></td><td class="code"><code class="language-java">            <span class="hljs-type">IO</span>.mkdirs(outputDir);</code></td></tr>
+<tr class="comment-row" data-line="24" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 24" data-line="24"></textarea></td></tr>
+<tr class="source-line" data-line="25"><td class="ln"><button type="button" class="ln-btn" id="L25" aria-label="Comment on line 25">25</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="25" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 25" data-line="25"></textarea></td></tr>
+<tr class="source-line" data-line="26"><td class="ln"><button type="button" class="ln-btn" id="L26" aria-label="Comment on line 26">26</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span> patchText = <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="26" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 26" data-line="26"></textarea></td></tr>
+<tr class="source-line" data-line="27"><td class="ln"><button type="button" class="ln-btn" id="L27" aria-label="Comment on line 27">27</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="27" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 27" data-line="27"></textarea></td></tr>
+<tr class="source-line" data-line="28"><td class="ln"><button type="button" class="ln-btn" id="L28" aria-label="Comment on line 28">28</button></td><td class="code"><code class="language-java">            <span class="hljs-type">List</span>&lt;<span class="hljs-type">ChangedFile</span>&gt; changed = worktree ? getWorktreeChangedFiles(repoRoot, base) : getChangedFiles(repoRoot, base, head);</code></td></tr>
+<tr class="comment-row" data-line="28" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 28" data-line="28"></textarea></td></tr>
+<tr class="source-line" data-line="29"><td class="ln"><button type="button" class="ln-btn" id="L29" aria-label="Comment on line 29">29</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (changed.isEmpty()) {</code></td></tr>
+<tr class="comment-row" data-line="29" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 29" data-line="29"></textarea></td></tr>
+<tr class="source-line" data-line="30"><td class="ln"><button type="button" class="ln-btn" id="L30" aria-label="Comment on line 30">30</button></td><td class="code"><code class="language-java">                <span class="hljs-type">System</span>.out.println(<span class="hljs-string">&quot;No changes found between revisions.&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="30" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 30" data-line="30"></textarea></td></tr>
+<tr class="source-line" data-line="31"><td class="ln"><button type="button" class="ln-btn" id="L31" aria-label="Comment on line 31">31</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</code></td></tr>
+<tr class="comment-row" data-line="31" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 31" data-line="31"></textarea></td></tr>
+<tr class="source-line" data-line="32"><td class="ln"><button type="button" class="ln-btn" id="L32" aria-label="Comment on line 32">32</button></td><td class="code"><code class="language-java">            }</code></td></tr>
+<tr class="comment-row" data-line="32" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 32" data-line="32"></textarea></td></tr>
+<tr class="source-line" data-line="33"><td class="ln"><button type="button" class="ln-btn" id="L33" aria-label="Comment on line 33">33</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="33" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 33" data-line="33"></textarea></td></tr>
+<tr class="source-line" data-line="34"><td class="ln"><button type="button" class="ln-btn" id="L34" aria-label="Comment on line 34">34</button></td><td class="code"><code class="language-java">            <span class="hljs-type">System</span>.out.println(<span class="hljs-string">&quot;Processing &quot;</span> + changed.size() + <span class="hljs-string">&quot; changed files...&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="34" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 34" data-line="34"></textarea></td></tr>
+<tr class="source-line" data-line="35"><td class="ln"><button type="button" class="ln-btn" id="L35" aria-label="Comment on line 35">35</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="35" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 35" data-line="35"></textarea></td></tr>
+<tr class="source-line" data-line="36"><td class="ln"><button type="button" class="ln-btn" id="L36" aria-label="Comment on line 36">36</button></td><td class="code"><code class="language-java">            <span class="hljs-comment">// changes.patch</span></code></td></tr>
+<tr class="comment-row" data-line="36" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 36" data-line="36"></textarea></td></tr>
+<tr class="source-line" data-line="37"><td class="ln"><button type="button" class="ln-btn" id="L37" aria-label="Comment on line 37">37</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (worktree) {</code></td></tr>
+<tr class="comment-row" data-line="37" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 37" data-line="37"></textarea></td></tr>
+<tr class="source-line" data-line="38"><td class="ln"><button type="button" class="ln-btn" id="L38" aria-label="Comment on line 38">38</button></td><td class="code"><code class="language-java">                <span class="hljs-type">StringBuilder</span> patchBuf = <span class="hljs-keyword">new</span> <span class="hljs-type">StringBuilder</span>();</code></td></tr>
+<tr class="comment-row" data-line="38" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 38" data-line="38"></textarea></td></tr>
+<tr class="source-line" data-line="39"><td class="ln"><button type="button" class="ln-btn" id="L39" aria-label="Comment on line 39">39</button></td><td class="code"><code class="language-java">                <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> cached = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;diff&quot;</span>, <span class="hljs-string">&quot;--cached&quot;</span>, base), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="39" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 39" data-line="39"></textarea></td></tr>
+<tr class="source-line" data-line="40"><td class="ln"><button type="button" class="ln-btn" id="L40" aria-label="Comment on line 40">40</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (cached.exitCode() == <span class="hljs-number">0</span> &amp;&amp; !cached.stdout().isBlank()) patchBuf.append(cached.stdout());</code></td></tr>
+<tr class="comment-row" data-line="40" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 40" data-line="40"></textarea></td></tr>
+<tr class="source-line" data-line="41"><td class="ln"><button type="button" class="ln-btn" id="L41" aria-label="Comment on line 41">41</button></td><td class="code"><code class="language-java">                <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> unstaged = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;diff&quot;</span>, base), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="41" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 41" data-line="41"></textarea></td></tr>
+<tr class="source-line" data-line="42"><td class="ln"><button type="button" class="ln-btn" id="L42" aria-label="Comment on line 42">42</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (unstaged.exitCode() == <span class="hljs-number">0</span> &amp;&amp; !unstaged.stdout().isBlank()) {</code></td></tr>
+<tr class="comment-row" data-line="42" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 42" data-line="42"></textarea></td></tr>
+<tr class="source-line" data-line="43"><td class="ln"><button type="button" class="ln-btn" id="L43" aria-label="Comment on line 43">43</button></td><td class="code"><code class="language-java">                    <span class="hljs-keyword">if</span> (!patchBuf.isEmpty() &amp;&amp; !patchBuf.toString().endsWith(<span class="hljs-string">&quot;\n&quot;</span>)) patchBuf.append(<span class="hljs-string">&quot;\n&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="43" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 43" data-line="43"></textarea></td></tr>
+<tr class="source-line" data-line="44"><td class="ln"><button type="button" class="ln-btn" id="L44" aria-label="Comment on line 44">44</button></td><td class="code"><code class="language-java">                    patchBuf.append(unstaged.stdout());</code></td></tr>
+<tr class="comment-row" data-line="44" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 44" data-line="44"></textarea></td></tr>
+<tr class="source-line" data-line="45"><td class="ln"><button type="button" class="ln-btn" id="L45" aria-label="Comment on line 45">45</button></td><td class="code"><code class="language-java">                }</code></td></tr>
+<tr class="comment-row" data-line="45" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 45" data-line="45"></textarea></td></tr>
+<tr class="source-line" data-line="46"><td class="ln"><button type="button" class="ln-btn" id="L46" aria-label="Comment on line 46">46</button></td><td class="code"><code class="language-java">                patchText = patchBuf.toString();</code></td></tr>
+<tr class="comment-row" data-line="46" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 46" data-line="46"></textarea></td></tr>
+<tr class="source-line" data-line="47"><td class="ln"><button type="button" class="ln-btn" id="L47" aria-label="Comment on line 47">47</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (!patchText.isBlank()) {</code></td></tr>
+<tr class="comment-row" data-line="47" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 47" data-line="47"></textarea></td></tr>
+<tr class="source-line" data-line="48"><td class="ln"><button type="button" class="ln-btn" id="L48" aria-label="Comment on line 48">48</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">IO</span>.writeText(outputDir.resolve(<span class="hljs-string">&quot;changes.patch&quot;</span>), patchText);</code></td></tr>
+<tr class="comment-row" data-line="48" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 48" data-line="48"></textarea></td></tr>
+<tr class="source-line" data-line="49"><td class="ln"><button type="button" class="ln-btn" id="L49" aria-label="Comment on line 49">49</button></td><td class="code"><code class="language-java">                }</code></td></tr>
+<tr class="comment-row" data-line="49" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 49" data-line="49"></textarea></td></tr>
+<tr class="source-line" data-line="50"><td class="ln"><button type="button" class="ln-btn" id="L50" aria-label="Comment on line 50">50</button></td><td class="code"><code class="language-java">            } <span class="hljs-keyword">else</span> {</code></td></tr>
+<tr class="comment-row" data-line="50" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 50" data-line="50"></textarea></td></tr>
+<tr class="source-line" data-line="51"><td class="ln"><button type="button" class="ln-btn" id="L51" aria-label="Comment on line 51">51</button></td><td class="code"><code class="language-java">                <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> patch = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;diff&quot;</span>, base + <span class="hljs-string">&quot;...&quot;</span> + head), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="51" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 51" data-line="51"></textarea></td></tr>
+<tr class="source-line" data-line="52"><td class="ln"><button type="button" class="ln-btn" id="L52" aria-label="Comment on line 52">52</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (patch.exitCode() == <span class="hljs-number">0</span>) {</code></td></tr>
+<tr class="comment-row" data-line="52" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 52" data-line="52"></textarea></td></tr>
+<tr class="source-line" data-line="53"><td class="ln"><button type="button" class="ln-btn" id="L53" aria-label="Comment on line 53">53</button></td><td class="code"><code class="language-java">                    patchText = patch.stdout();</code></td></tr>
+<tr class="comment-row" data-line="53" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 53" data-line="53"></textarea></td></tr>
+<tr class="source-line" data-line="54"><td class="ln"><button type="button" class="ln-btn" id="L54" aria-label="Comment on line 54">54</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">IO</span>.writeText(outputDir.resolve(<span class="hljs-string">&quot;changes.patch&quot;</span>), patchText);</code></td></tr>
+<tr class="comment-row" data-line="54" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 54" data-line="54"></textarea></td></tr>
+<tr class="source-line" data-line="55"><td class="ln"><button type="button" class="ln-btn" id="L55" aria-label="Comment on line 55">55</button></td><td class="code"><code class="language-java">                }</code></td></tr>
+<tr class="comment-row" data-line="55" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 55" data-line="55"></textarea></td></tr>
+<tr class="source-line" data-line="56"><td class="ln"><button type="button" class="ln-btn" id="L56" aria-label="Comment on line 56">56</button></td><td class="code"><code class="language-java">            }</code></td></tr>
+<tr class="comment-row" data-line="56" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 56" data-line="56"></textarea></td></tr>
+<tr class="source-line" data-line="57"><td class="ln"><button type="button" class="ln-btn" id="L57" aria-label="Comment on line 57">57</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="57" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 57" data-line="57"></textarea></td></tr>
+<tr class="source-line" data-line="58"><td class="ln"><button type="button" class="ln-btn" id="L58" aria-label="Comment on line 58">58</button></td><td class="code"><code class="language-java">            <span class="hljs-type">List</span>&lt;<span class="hljs-type">Map</span>&lt;<span class="hljs-type">String</span>, <span class="hljs-type">String</span>&gt;&gt; indexEntries = <span class="hljs-keyword">new</span> <span class="hljs-type">ArrayList</span>&lt;&gt;();</code></td></tr>
+<tr class="comment-row" data-line="58" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 58" data-line="58"></textarea></td></tr>
+<tr class="source-line" data-line="59"><td class="ln"><button type="button" class="ln-btn" id="L59" aria-label="Comment on line 59">59</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">for</span> (<span class="hljs-type">ChangedFile</span> cf : changed) {</code></td></tr>
+<tr class="comment-row" data-line="59" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 59" data-line="59"></textarea></td></tr>
+<tr class="source-line" data-line="60"><td class="ln"><button type="button" class="ln-btn" id="L60" aria-label="Comment on line 60">60</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (cf.path == <span class="hljs-literal">null</span> || cf.path.isBlank() || <span class="hljs-string">&quot;/dev/null&quot;</span>.equals(cf.path)) <span class="hljs-keyword">continue</span>;</code></td></tr>
+<tr class="comment-row" data-line="60" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 60" data-line="60"></textarea></td></tr>
+<tr class="source-line" data-line="61"><td class="ln"><button type="button" class="ln-btn" id="L61" aria-label="Comment on line 61">61</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (isBinaryLike(cf.path)) <span class="hljs-keyword">continue</span>;</code></td></tr>
+<tr class="comment-row" data-line="61" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 61" data-line="61"></textarea></td></tr>
+<tr class="source-line" data-line="62"><td class="ln"><button type="button" class="ln-btn" id="L62" aria-label="Comment on line 62">62</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="62" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 62" data-line="62"></textarea></td></tr>
+<tr class="source-line" data-line="63"><td class="ln"><button type="button" class="ln-btn" id="L63" aria-label="Comment on line 63">63</button></td><td class="code"><code class="language-java">                <span class="hljs-type">String</span> oldContent = (!cf.status.startsWith(<span class="hljs-string">&quot;A&quot;</span>)) ? getFileContent(repoRoot, base, cf.oldPath) : <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="63" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 63" data-line="63"></textarea></td></tr>
+<tr class="source-line" data-line="64"><td class="ln"><button type="button" class="ln-btn" id="L64" aria-label="Comment on line 64">64</button></td><td class="code"><code class="language-java">                <span class="hljs-type">String</span> newContent = worktree ? readWorktreeFile(repoRoot, cf.path) : ((!cf.status.startsWith(<span class="hljs-string">&quot;D&quot;</span>)) ? getFileContent(repoRoot, head, cf.path) : <span class="hljs-string">&quot;&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="64" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 64" data-line="64"></textarea></td></tr>
+<tr class="source-line" data-line="65"><td class="ln"><button type="button" class="ln-btn" id="L65" aria-label="Comment on line 65">65</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="65" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 65" data-line="65"></textarea></td></tr>
+<tr class="source-line" data-line="66"><td class="ln"><button type="button" class="ln-btn" id="L66" aria-label="Comment on line 66">66</button></td><td class="code"><code class="language-java">                <span class="hljs-type">Path</span> relPath = <span class="hljs-type">Path</span>.of(cf.path);</code></td></tr>
+<tr class="comment-row" data-line="66" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 66" data-line="66"></textarea></td></tr>
+<tr class="source-line" data-line="67"><td class="ln"><button type="button" class="ln-btn" id="L67" aria-label="Comment on line 67">67</button></td><td class="code"><code class="language-java">                <span class="hljs-type">String</span> pathPosix = <span class="hljs-type">PlainMode</span>.toPosix(relPath.toString());</code></td></tr>
+<tr class="comment-row" data-line="67" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 67" data-line="67"></textarea></td></tr>
+<tr class="source-line" data-line="68"><td class="ln"><button type="button" class="ln-btn" id="L68" aria-label="Comment on line 68">68</button></td><td class="code"><code class="language-java">                <span class="hljs-type">Path</span> outDirForFile = outputDir.resolve(relPath).getParent();</code></td></tr>
+<tr class="comment-row" data-line="68" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 68" data-line="68"></textarea></td></tr>
+<tr class="source-line" data-line="69"><td class="ln"><button type="button" class="ln-btn" id="L69" aria-label="Comment on line 69">69</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (outDirForFile != <span class="hljs-literal">null</span>) <span class="hljs-type">IO</span>.mkdirs(outDirForFile);</code></td></tr>
+<tr class="comment-row" data-line="69" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 69" data-line="69"></textarea></td></tr>
+<tr class="source-line" data-line="70"><td class="ln"><button type="button" class="ln-btn" id="L70" aria-label="Comment on line 70">70</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="70" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 70" data-line="70"></textarea></td></tr>
+<tr class="source-line" data-line="71"><td class="ln"><button type="button" class="ln-btn" id="L71" aria-label="Comment on line 71">71</button></td><td class="code"><code class="language-java">                <span class="hljs-type">Map</span>&lt;<span class="hljs-type">String</span>, <span class="hljs-type">String</span>&gt; entry = <span class="hljs-keyword">new</span> <span class="hljs-type">HashMap</span>&lt;&gt;();</code></td></tr>
+<tr class="comment-row" data-line="71" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 71" data-line="71"></textarea></td></tr>
+<tr class="source-line" data-line="72"><td class="ln"><button type="button" class="ln-btn" id="L72" aria-label="Comment on line 72">72</button></td><td class="code"><code class="language-java">                entry.put(<span class="hljs-string">&quot;path&quot;</span>, cf.path);</code></td></tr>
+<tr class="comment-row" data-line="72" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 72" data-line="72"></textarea></td></tr>
+<tr class="source-line" data-line="73"><td class="ln"><button type="button" class="ln-btn" id="L73" aria-label="Comment on line 73">73</button></td><td class="code"><code class="language-java">                entry.put(<span class="hljs-string">&quot;status&quot;</span>, cf.status);</code></td></tr>
+<tr class="comment-row" data-line="73" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 73" data-line="73"></textarea></td></tr>
+<tr class="source-line" data-line="74"><td class="ln"><button type="button" class="ln-btn" id="L74" aria-label="Comment on line 74">74</button></td><td class="code"><code class="language-java">                entry.put(<span class="hljs-string">&quot;old_path&quot;</span>, cf.oldPath);</code></td></tr>
+<tr class="comment-row" data-line="74" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 74" data-line="74"></textarea></td></tr>
+<tr class="source-line" data-line="75"><td class="ln"><button type="button" class="ln-btn" id="L75" aria-label="Comment on line 75">75</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="75" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 75" data-line="75"></textarea></td></tr>
+<tr class="source-line" data-line="76"><td class="ln"><button type="button" class="ln-btn" id="L76" aria-label="Comment on line 76">76</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (!oldContent.isEmpty()) {</code></td></tr>
+<tr class="comment-row" data-line="76" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 76" data-line="76"></textarea></td></tr>
+<tr class="source-line" data-line="77"><td class="ln"><button type="button" class="ln-btn" id="L77" aria-label="Comment on line 77">77</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">Path</span> oldOutRel = <span class="hljs-type">Path</span>.of(pathPosix + <span class="hljs-string">&quot;-.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="77" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 77" data-line="77"></textarea></td></tr>
+<tr class="source-line" data-line="78"><td class="ln"><button type="button" class="ln-btn" id="L78" aria-label="Comment on line 78">78</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">String</span> oldHtml = <span class="hljs-type">Html</span>.sourcePage(relPath.toString(), <span class="hljs-string">&quot;Old (&quot;</span> + base + <span class="hljs-string">&quot;)&quot;</span>, oldContent,</code></td></tr>
+<tr class="comment-row" data-line="78" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 78" data-line="78"></textarea></td></tr>
+<tr class="source-line" data-line="79"><td class="ln"><button type="button" class="ln-btn" id="L79" aria-label="Comment on line 79">79</button></td><td class="code"><code class="language-java">                            <span class="hljs-type">Lang</span>.languageClassFor(relPath), <span class="hljs-type">Html</span>.hrefToIndex(oldOutRel), <span class="hljs-string">&quot;old&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="79" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 79" data-line="79"></textarea></td></tr>
+<tr class="source-line" data-line="80"><td class="ln"><button type="button" class="ln-btn" id="L80" aria-label="Comment on line 80">80</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">IO</span>.writeText(outputDir.resolve(oldOutRel), oldHtml);</code></td></tr>
+<tr class="comment-row" data-line="80" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 80" data-line="80"></textarea></td></tr>
+<tr class="source-line" data-line="81"><td class="ln"><button type="button" class="ln-btn" id="L81" aria-label="Comment on line 81">81</button></td><td class="code"><code class="language-java">                    entry.put(<span class="hljs-string">&quot;old&quot;</span>, pathPosix + <span class="hljs-string">&quot;-.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="81" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 81" data-line="81"></textarea></td></tr>
+<tr class="source-line" data-line="82"><td class="ln"><button type="button" class="ln-btn" id="L82" aria-label="Comment on line 82">82</button></td><td class="code"><code class="language-java">                }</code></td></tr>
+<tr class="comment-row" data-line="82" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 82" data-line="82"></textarea></td></tr>
+<tr class="source-line" data-line="83"><td class="ln"><button type="button" class="ln-btn" id="L83" aria-label="Comment on line 83">83</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (!newContent.isEmpty()) {</code></td></tr>
+<tr class="comment-row" data-line="83" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 83" data-line="83"></textarea></td></tr>
+<tr class="source-line" data-line="84"><td class="ln"><button type="button" class="ln-btn" id="L84" aria-label="Comment on line 84">84</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">Path</span> newOutRel = <span class="hljs-type">Path</span>.of(pathPosix + <span class="hljs-string">&quot;.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="84" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 84" data-line="84"></textarea></td></tr>
+<tr class="source-line" data-line="85"><td class="ln"><button type="button" class="ln-btn" id="L85" aria-label="Comment on line 85">85</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">String</span> newHtml = <span class="hljs-type">Html</span>.sourcePage(relPath.toString(), <span class="hljs-string">&quot;New (&quot;</span> + head + <span class="hljs-string">&quot;)&quot;</span>, newContent,</code></td></tr>
+<tr class="comment-row" data-line="85" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 85" data-line="85"></textarea></td></tr>
+<tr class="source-line" data-line="86"><td class="ln"><button type="button" class="ln-btn" id="L86" aria-label="Comment on line 86">86</button></td><td class="code"><code class="language-java">                            <span class="hljs-type">Lang</span>.languageClassFor(relPath), <span class="hljs-type">Html</span>.hrefToIndex(newOutRel), <span class="hljs-string">&quot;new&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="86" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 86" data-line="86"></textarea></td></tr>
+<tr class="source-line" data-line="87"><td class="ln"><button type="button" class="ln-btn" id="L87" aria-label="Comment on line 87">87</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">IO</span>.writeText(outputDir.resolve(newOutRel), newHtml);</code></td></tr>
+<tr class="comment-row" data-line="87" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 87" data-line="87"></textarea></td></tr>
+<tr class="source-line" data-line="88"><td class="ln"><button type="button" class="ln-btn" id="L88" aria-label="Comment on line 88">88</button></td><td class="code"><code class="language-java">                    entry.put(<span class="hljs-string">&quot;new&quot;</span>, pathPosix + <span class="hljs-string">&quot;.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="88" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 88" data-line="88"></textarea></td></tr>
+<tr class="source-line" data-line="89"><td class="ln"><button type="button" class="ln-btn" id="L89" aria-label="Comment on line 89">89</button></td><td class="code"><code class="language-java">                }</code></td></tr>
+<tr class="comment-row" data-line="89" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 89" data-line="89"></textarea></td></tr>
+<tr class="source-line" data-line="90"><td class="ln"><button type="button" class="ln-btn" id="L90" aria-label="Comment on line 90">90</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">if</span> (!oldContent.isEmpty() &amp;&amp; !newContent.isEmpty()) {</code></td></tr>
+<tr class="comment-row" data-line="90" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 90" data-line="90"></textarea></td></tr>
+<tr class="source-line" data-line="91"><td class="ln"><button type="button" class="ln-btn" id="L91" aria-label="Comment on line 91">91</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">Path</span> udiffOutRel = <span class="hljs-type">Path</span>.of(pathPosix + <span class="hljs-string">&quot;.udiff.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="91" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 91" data-line="91"></textarea></td></tr>
+<tr class="source-line" data-line="92"><td class="ln"><button type="button" class="ln-btn" id="L92" aria-label="Comment on line 92">92</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">Path</span> sdiffOutRel = <span class="hljs-type">Path</span>.of(pathPosix + <span class="hljs-string">&quot;.sdiff.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="92" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 92" data-line="92"></textarea></td></tr>
+<tr class="source-line" data-line="93"><td class="ln"><button type="button" class="ln-btn" id="L93" aria-label="Comment on line 93">93</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">String</span> udiffHtml = <span class="hljs-type">DiffViews</span>.unifiedDiffPage(relPath, oldContent, newContent, <span class="hljs-type">Html</span>.hrefToIndex(udiffOutRel));</code></td></tr>
+<tr class="comment-row" data-line="93" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 93" data-line="93"></textarea></td></tr>
+<tr class="source-line" data-line="94"><td class="ln"><button type="button" class="ln-btn" id="L94" aria-label="Comment on line 94">94</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">String</span> sdiffHtml = <span class="hljs-type">DiffViews</span>.sideBySideDiffPage(relPath, oldContent, newContent, base, head,</code></td></tr>
+<tr class="comment-row" data-line="94" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 94" data-line="94"></textarea></td></tr>
+<tr class="source-line" data-line="95"><td class="ln"><button type="button" class="ln-btn" id="L95" aria-label="Comment on line 95">95</button></td><td class="code"><code class="language-java">                            <span class="hljs-type">Html</span>.hrefToIndex(sdiffOutRel));</code></td></tr>
+<tr class="comment-row" data-line="95" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 95" data-line="95"></textarea></td></tr>
+<tr class="source-line" data-line="96"><td class="ln"><button type="button" class="ln-btn" id="L96" aria-label="Comment on line 96">96</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">IO</span>.writeText(outputDir.resolve(udiffOutRel), udiffHtml);</code></td></tr>
+<tr class="comment-row" data-line="96" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 96" data-line="96"></textarea></td></tr>
+<tr class="source-line" data-line="97"><td class="ln"><button type="button" class="ln-btn" id="L97" aria-label="Comment on line 97">97</button></td><td class="code"><code class="language-java">                    <span class="hljs-type">IO</span>.writeText(outputDir.resolve(sdiffOutRel), sdiffHtml);</code></td></tr>
+<tr class="comment-row" data-line="97" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 97" data-line="97"></textarea></td></tr>
+<tr class="source-line" data-line="98"><td class="ln"><button type="button" class="ln-btn" id="L98" aria-label="Comment on line 98">98</button></td><td class="code"><code class="language-java">                    entry.put(<span class="hljs-string">&quot;udiff&quot;</span>, pathPosix + <span class="hljs-string">&quot;.udiff.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="98" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 98" data-line="98"></textarea></td></tr>
+<tr class="source-line" data-line="99"><td class="ln"><button type="button" class="ln-btn" id="L99" aria-label="Comment on line 99">99</button></td><td class="code"><code class="language-java">                    entry.put(<span class="hljs-string">&quot;sdiff&quot;</span>, pathPosix + <span class="hljs-string">&quot;.sdiff.html&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="99" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 99" data-line="99"></textarea></td></tr>
+<tr class="source-line" data-line="100"><td class="ln"><button type="button" class="ln-btn" id="L100" aria-label="Comment on line 100">100</button></td><td class="code"><code class="language-java">                }</code></td></tr>
+<tr class="comment-row" data-line="100" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 100" data-line="100"></textarea></td></tr>
+<tr class="source-line" data-line="101"><td class="ln"><button type="button" class="ln-btn" id="L101" aria-label="Comment on line 101">101</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="101" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 101" data-line="101"></textarea></td></tr>
+<tr class="source-line" data-line="102"><td class="ln"><button type="button" class="ln-btn" id="L102" aria-label="Comment on line 102">102</button></td><td class="code"><code class="language-java">                indexEntries.add(entry);</code></td></tr>
+<tr class="comment-row" data-line="102" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 102" data-line="102"></textarea></td></tr>
+<tr class="source-line" data-line="103"><td class="ln"><button type="button" class="ln-btn" id="L103" aria-label="Comment on line 103">103</button></td><td class="code"><code class="language-java">                <span class="hljs-type">System</span>.out.println(<span class="hljs-string">&quot;  &quot;</span> + cf.path + <span class="hljs-string">&quot; (&quot;</span> + cf.status + <span class="hljs-string">&quot;)&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="103" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 103" data-line="103"></textarea></td></tr>
+<tr class="source-line" data-line="104"><td class="ln"><button type="button" class="ln-btn" id="L104" aria-label="Comment on line 104">104</button></td><td class="code"><code class="language-java">            }</code></td></tr>
+<tr class="comment-row" data-line="104" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 104" data-line="104"></textarea></td></tr>
+<tr class="source-line" data-line="105"><td class="ln"><button type="button" class="ln-btn" id="L105" aria-label="Comment on line 105">105</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="105" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 105" data-line="105"></textarea></td></tr>
+<tr class="source-line" data-line="106"><td class="ln"><button type="button" class="ln-btn" id="L106" aria-label="Comment on line 106">106</button></td><td class="code"><code class="language-java">            <span class="hljs-type">DiffLineStats</span>.<span class="hljs-type">Result</span> lineStats = <span class="hljs-type">DiffLineStats</span>.fromUnifiedPatch(patchText);</code></td></tr>
+<tr class="comment-row" data-line="106" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 106" data-line="106"></textarea></td></tr>
+<tr class="source-line" data-line="107"><td class="ln"><button type="button" class="ln-btn" id="L107" aria-label="Comment on line 107">107</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span> indexHtml = buildIndex(repoRoot.getFileName().toString(), base, head, indexEntries, lineStats);</code></td></tr>
+<tr class="comment-row" data-line="107" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 107" data-line="107"></textarea></td></tr>
+<tr class="source-line" data-line="108"><td class="ln"><button type="button" class="ln-btn" id="L108" aria-label="Comment on line 108">108</button></td><td class="code"><code class="language-java">            <span class="hljs-type">IO</span>.writeText(outputDir.resolve(<span class="hljs-string">&quot;index.html&quot;</span>), indexHtml);</code></td></tr>
+<tr class="comment-row" data-line="108" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 108" data-line="108"></textarea></td></tr>
+<tr class="source-line" data-line="109"><td class="ln"><button type="button" class="ln-btn" id="L109" aria-label="Comment on line 109">109</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="109" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 109" data-line="109"></textarea></td></tr>
+<tr class="source-line" data-line="110"><td class="ln"><button type="button" class="ln-btn" id="L110" aria-label="Comment on line 110">110</button></td><td class="code"><code class="language-java">            <span class="hljs-type">System</span>.out.println(<span class="hljs-string">&quot;\nDone. Output: &quot;</span> + outputDir);</code></td></tr>
+<tr class="comment-row" data-line="110" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 110" data-line="110"></textarea></td></tr>
+<tr class="source-line" data-line="111"><td class="ln"><button type="button" class="ln-btn" id="L111" aria-label="Comment on line 111">111</button></td><td class="code"><code class="language-java">            <span class="hljs-type">System</span>.out.println(<span class="hljs-string">&quot;Open &quot;</span> + outputDir.resolve(<span class="hljs-string">&quot;index.html&quot;</span>) + <span class="hljs-string">&quot; in a browser.&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="111" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 111" data-line="111"></textarea></td></tr>
+<tr class="source-line" data-line="112"><td class="ln"><button type="button" class="ln-btn" id="L112" aria-label="Comment on line 112">112</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</code></td></tr>
+<tr class="comment-row" data-line="112" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 112" data-line="112"></textarea></td></tr>
+<tr class="source-line" data-line="113"><td class="ln"><button type="button" class="ln-btn" id="L113" aria-label="Comment on line 113">113</button></td><td class="code"><code class="language-java">        } <span class="hljs-keyword">catch</span> (<span class="hljs-type">Exception</span> e) {</code></td></tr>
+<tr class="comment-row" data-line="113" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 113" data-line="113"></textarea></td></tr>
+<tr class="source-line" data-line="114"><td class="ln"><button type="button" class="ln-btn" id="L114" aria-label="Comment on line 114">114</button></td><td class="code"><code class="language-java">            <span class="hljs-type">System</span>.err.println(<span class="hljs-string">&quot;Error: &quot;</span> + e.getMessage());</code></td></tr>
+<tr class="comment-row" data-line="114" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 114" data-line="114"></textarea></td></tr>
+<tr class="source-line" data-line="115"><td class="ln"><button type="button" class="ln-btn" id="L115" aria-label="Comment on line 115">115</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</code></td></tr>
+<tr class="comment-row" data-line="115" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 115" data-line="115"></textarea></td></tr>
+<tr class="source-line" data-line="116"><td class="ln"><button type="button" class="ln-btn" id="L116" aria-label="Comment on line 116">116</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="116" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 116" data-line="116"></textarea></td></tr>
+<tr class="source-line" data-line="117"><td class="ln"><button type="button" class="ln-btn" id="L117" aria-label="Comment on line 117">117</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="117" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 117" data-line="117"></textarea></td></tr>
+<tr class="source-line" data-line="118"><td class="ln"><button type="button" class="ln-btn" id="L118" aria-label="Comment on line 118">118</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="118" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 118" data-line="118"></textarea></td></tr>
+<tr class="source-line" data-line="119"><td class="ln"><button type="button" class="ln-btn" id="L119" aria-label="Comment on line 119">119</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">String</span> buildIndex(<span class="hljs-type">String</span> repoName, <span class="hljs-type">String</span> base, <span class="hljs-type">String</span> head, <span class="hljs-type">List</span>&lt;<span class="hljs-type">Map</span>&lt;<span class="hljs-type">String</span>, <span class="hljs-type">String</span>&gt;&gt; entries,</code></td></tr>
+<tr class="comment-row" data-line="119" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 119" data-line="119"></textarea></td></tr>
+<tr class="source-line" data-line="120"><td class="ln"><button type="button" class="ln-btn" id="L120" aria-label="Comment on line 120">120</button></td><td class="code"><code class="language-java">                                     <span class="hljs-type">DiffLineStats</span>.<span class="hljs-type">Result</span> lineStats) {</code></td></tr>
+<tr class="comment-row" data-line="120" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 120" data-line="120"></textarea></td></tr>
+<tr class="source-line" data-line="121"><td class="ln"><button type="button" class="ln-btn" id="L121" aria-label="Comment on line 121">121</button></td><td class="code"><code class="language-java">        <span class="hljs-type">String</span> summary = <span class="hljs-string">&quot;&quot;&quot;</span></code></td></tr>
+<tr class="comment-row" data-line="121" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 121" data-line="121"></textarea></td></tr>
+<tr class="source-line" data-line="122"><td class="ln"><button type="button" class="ln-btn" id="L122" aria-label="Comment on line 122">122</button></td><td class="code"><code class="language-java"><span class="hljs-string">                &lt;div class=&quot;summary&quot;&gt;</span></code></td></tr>
+<tr class="comment-row" data-line="122" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 122" data-line="122"></textarea></td></tr>
+<tr class="source-line" data-line="123"><td class="ln"><button type="button" class="ln-btn" id="L123" aria-label="Comment on line 123">123</button></td><td class="code"><code class="language-java"><span class="hljs-string">                &lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; %s &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; %s&lt;/p&gt;</span></code></td></tr>
+<tr class="comment-row" data-line="123" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 123" data-line="123"></textarea></td></tr>
+<tr class="source-line" data-line="124"><td class="ln"><button type="button" class="ln-btn" id="L124" aria-label="Comment on line 124">124</button></td><td class="code"><code class="language-java"><span class="hljs-string">                &lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; %d&lt;/p&gt;</span></code></td></tr>
+<tr class="comment-row" data-line="124" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 124" data-line="124"></textarea></td></tr>
+<tr class="source-line" data-line="125"><td class="ln"><button type="button" class="ln-btn" id="L125" aria-label="Comment on line 125">125</button></td><td class="code"><code class="language-java"><span class="hljs-string">                &lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;</span></code></td></tr>
+<tr class="comment-row" data-line="125" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 125" data-line="125"></textarea></td></tr>
+<tr class="source-line" data-line="126"><td class="ln"><button type="button" class="ln-btn" id="L126" aria-label="Comment on line 126">126</button></td><td class="code"><code class="language-java"><span class="hljs-string">                %s</span></code></td></tr>
+<tr class="comment-row" data-line="126" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 126" data-line="126"></textarea></td></tr>
+<tr class="source-line" data-line="127"><td class="ln"><button type="button" class="ln-btn" id="L127" aria-label="Comment on line 127">127</button></td><td class="code"><code class="language-java"><span class="hljs-string">                &lt;/div&gt;</span></code></td></tr>
+<tr class="comment-row" data-line="127" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 127" data-line="127"></textarea></td></tr>
+<tr class="source-line" data-line="128"><td class="ln"><button type="button" class="ln-btn" id="L128" aria-label="Comment on line 128">128</button></td><td class="code"><code class="language-java"><span class="hljs-string">                &quot;&quot;&quot;</span>.formatted(<span class="hljs-type">Html</span>.escape(base), <span class="hljs-type">Html</span>.escape(head), entries.size(),</code></td></tr>
+<tr class="comment-row" data-line="128" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 128" data-line="128"></textarea></td></tr>
+<tr class="source-line" data-line="129"><td class="ln"><button type="button" class="ln-btn" id="L129" aria-label="Comment on line 129">129</button></td><td class="code"><code class="language-java">                <span class="hljs-type">Html</span>.lineStatsSummary(lineStats.added(), lineStats.modified(), lineStats.removed()));</code></td></tr>
+<tr class="comment-row" data-line="129" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 129" data-line="129"></textarea></td></tr>
+<tr class="source-line" data-line="130"><td class="ln"><button type="button" class="ln-btn" id="L130" aria-label="Comment on line 130">130</button></td><td class="code"><code class="language-java">        <span class="hljs-type">String</span> body = summary + <span class="hljs-type">TreeIndex</span>.renderDiff(entries) + <span class="hljs-string">&quot;&lt;hr&gt;\n&quot;</span> + <span class="hljs-type">Html</span>.indexReviewScript()</code></td></tr>
+<tr class="comment-row" data-line="130" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 130" data-line="130"></textarea></td></tr>
+<tr class="source-line" data-line="131"><td class="ln"><button type="button" class="ln-btn" id="L131" aria-label="Comment on line 131">131</button></td><td class="code"><code class="language-java">                + <span class="hljs-type">Html</span>.lineCommentScript();</code></td></tr>
+<tr class="comment-row" data-line="131" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 131" data-line="131"></textarea></td></tr>
+<tr class="source-line" data-line="132"><td class="ln"><button type="button" class="ln-btn" id="L132" aria-label="Comment on line 132">132</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> <span class="hljs-type">Html</span>.doc(<span class="hljs-string">&quot;Code Review - &quot;</span> + repoName, <span class="hljs-string">&quot;Code Review: &quot;</span> + <span class="hljs-type">Html</span>.escape(repoName), <span class="hljs-string">&quot;&quot;</span>, body, <span class="hljs-string">&quot;&quot;</span>);</code></td></tr>
+<tr class="comment-row" data-line="132" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 132" data-line="132"></textarea></td></tr>
+<tr class="source-line" data-line="133"><td class="ln"><button type="button" class="ln-btn" id="L133" aria-label="Comment on line 133">133</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="133" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 133" data-line="133"></textarea></td></tr>
+<tr class="source-line" data-line="134"><td class="ln"><button type="button" class="ln-btn" id="L134" aria-label="Comment on line 134">134</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="134" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 134" data-line="134"></textarea></td></tr>
+<tr class="source-line" data-line="135"><td class="ln"><button type="button" class="ln-btn" id="L135" aria-label="Comment on line 135">135</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">boolean</span> isBinaryLike(<span class="hljs-type">String</span> path) {</code></td></tr>
+<tr class="comment-row" data-line="135" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 135" data-line="135"></textarea></td></tr>
+<tr class="source-line" data-line="136"><td class="ln"><button type="button" class="ln-btn" id="L136" aria-label="Comment on line 136">136</button></td><td class="code"><code class="language-java">        <span class="hljs-type">String</span> p = path.toLowerCase();</code></td></tr>
+<tr class="comment-row" data-line="136" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 136" data-line="136"></textarea></td></tr>
+<tr class="source-line" data-line="137"><td class="ln"><button type="button" class="ln-btn" id="L137" aria-label="Comment on line 137">137</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">for</span> (<span class="hljs-type">String</span> ext : <span class="hljs-type">Defaults</span>.<span class="hljs-type">BINARY_EXTENSIONS</span>) {</code></td></tr>
+<tr class="comment-row" data-line="137" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 137" data-line="137"></textarea></td></tr>
+<tr class="source-line" data-line="138"><td class="ln"><button type="button" class="ln-btn" id="L138" aria-label="Comment on line 138">138</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (p.endsWith(ext)) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;</code></td></tr>
+<tr class="comment-row" data-line="138" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 138" data-line="138"></textarea></td></tr>
+<tr class="source-line" data-line="139"><td class="ln"><button type="button" class="ln-btn" id="L139" aria-label="Comment on line 139">139</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="139" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 139" data-line="139"></textarea></td></tr>
+<tr class="source-line" data-line="140"><td class="ln"><button type="button" class="ln-btn" id="L140" aria-label="Comment on line 140">140</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;</code></td></tr>
+<tr class="comment-row" data-line="140" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 140" data-line="140"></textarea></td></tr>
+<tr class="source-line" data-line="141"><td class="ln"><button type="button" class="ln-btn" id="L141" aria-label="Comment on line 141">141</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="141" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 141" data-line="141"></textarea></td></tr>
+<tr class="source-line" data-line="142"><td class="ln"><button type="button" class="ln-btn" id="L142" aria-label="Comment on line 142">142</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="142" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 142" data-line="142"></textarea></td></tr>
+<tr class="source-line" data-line="143"><td class="ln"><button type="button" class="ln-btn" id="L143" aria-label="Comment on line 143">143</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">Path</span> getRepoRoot(<span class="hljs-type">Path</span> path) <span class="hljs-keyword">throws</span> <span class="hljs-type">Exception</span> {</code></td></tr>
+<tr class="comment-row" data-line="143" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 143" data-line="143"></textarea></td></tr>
+<tr class="source-line" data-line="144"><td class="ln"><button type="button" class="ln-btn" id="L144" aria-label="Comment on line 144">144</button></td><td class="code"><code class="language-java">        <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> res = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;rev-parse&quot;</span>, <span class="hljs-string">&quot;--show-toplevel&quot;</span>), path);</code></td></tr>
+<tr class="comment-row" data-line="144" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 144" data-line="144"></textarea></td></tr>
+<tr class="source-line" data-line="145"><td class="ln"><button type="button" class="ln-btn" id="L145" aria-label="Comment on line 145">145</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">if</span> (res.exitCode() == <span class="hljs-number">0</span>) {</code></td></tr>
+<tr class="comment-row" data-line="145" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 145" data-line="145"></textarea></td></tr>
+<tr class="source-line" data-line="146"><td class="ln"><button type="button" class="ln-btn" id="L146" aria-label="Comment on line 146">146</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span> s = res.stdout().trim();</code></td></tr>
+<tr class="comment-row" data-line="146" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 146" data-line="146"></textarea></td></tr>
+<tr class="source-line" data-line="147"><td class="ln"><button type="button" class="ln-btn" id="L147" aria-label="Comment on line 147">147</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (!s.isEmpty()) <span class="hljs-keyword">return</span> <span class="hljs-type">Path</span>.of(s);</code></td></tr>
+<tr class="comment-row" data-line="147" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 147" data-line="147"></textarea></td></tr>
+<tr class="source-line" data-line="148"><td class="ln"><button type="button" class="ln-btn" id="L148" aria-label="Comment on line 148">148</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="148" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 148" data-line="148"></textarea></td></tr>
+<tr class="source-line" data-line="149"><td class="ln"><button type="button" class="ln-btn" id="L149" aria-label="Comment on line 149">149</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;</code></td></tr>
+<tr class="comment-row" data-line="149" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 149" data-line="149"></textarea></td></tr>
+<tr class="source-line" data-line="150"><td class="ln"><button type="button" class="ln-btn" id="L150" aria-label="Comment on line 150">150</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="150" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 150" data-line="150"></textarea></td></tr>
+<tr class="source-line" data-line="151"><td class="ln"><button type="button" class="ln-btn" id="L151" aria-label="Comment on line 151">151</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="151" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 151" data-line="151"></textarea></td></tr>
+<tr class="source-line" data-line="152"><td class="ln"><button type="button" class="ln-btn" id="L152" aria-label="Comment on line 152">152</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">List</span>&lt;<span class="hljs-type">ChangedFile</span>&gt; getChangedFiles(<span class="hljs-type">Path</span> repoRoot, <span class="hljs-type">String</span> base, <span class="hljs-type">String</span> head) <span class="hljs-keyword">throws</span> <span class="hljs-type">Exception</span> {</code></td></tr>
+<tr class="comment-row" data-line="152" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 152" data-line="152"></textarea></td></tr>
+<tr class="source-line" data-line="153"><td class="ln"><button type="button" class="ln-btn" id="L153" aria-label="Comment on line 153">153</button></td><td class="code"><code class="language-java">        <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> res = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;diff&quot;</span>, <span class="hljs-string">&quot;--name-status&quot;</span>, base + <span class="hljs-string">&quot;...&quot;</span> + head), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="153" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 153" data-line="153"></textarea></td></tr>
+<tr class="source-line" data-line="154"><td class="ln"><button type="button" class="ln-btn" id="L154" aria-label="Comment on line 154">154</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">if</span> (res.exitCode() != <span class="hljs-number">0</span>) {</code></td></tr>
+<tr class="comment-row" data-line="154" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 154" data-line="154"></textarea></td></tr>
+<tr class="source-line" data-line="155"><td class="ln"><button type="button" class="ln-btn" id="L155" aria-label="Comment on line 155">155</button></td><td class="code"><code class="language-java">            res = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;diff&quot;</span>, <span class="hljs-string">&quot;--name-status&quot;</span>, base, head), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="155" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 155" data-line="155"></textarea></td></tr>
+<tr class="source-line" data-line="156"><td class="ln"><button type="button" class="ln-btn" id="L156" aria-label="Comment on line 156">156</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="156" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 156" data-line="156"></textarea></td></tr>
+<tr class="source-line" data-line="157"><td class="ln"><button type="button" class="ln-btn" id="L157" aria-label="Comment on line 157">157</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">if</span> (res.exitCode() != <span class="hljs-number">0</span>) {</code></td></tr>
+<tr class="comment-row" data-line="157" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 157" data-line="157"></textarea></td></tr>
+<tr class="source-line" data-line="158"><td class="ln"><button type="button" class="ln-btn" id="L158" aria-label="Comment on line 158">158</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">RuntimeException</span>(<span class="hljs-string">&quot;git diff failed: &quot;</span> + res.stderr());</code></td></tr>
+<tr class="comment-row" data-line="158" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 158" data-line="158"></textarea></td></tr>
+<tr class="source-line" data-line="159"><td class="ln"><button type="button" class="ln-btn" id="L159" aria-label="Comment on line 159">159</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="159" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 159" data-line="159"></textarea></td></tr>
+<tr class="source-line" data-line="160"><td class="ln"><button type="button" class="ln-btn" id="L160" aria-label="Comment on line 160">160</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="160" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 160" data-line="160"></textarea></td></tr>
+<tr class="source-line" data-line="161"><td class="ln"><button type="button" class="ln-btn" id="L161" aria-label="Comment on line 161">161</button></td><td class="code"><code class="language-java">        <span class="hljs-type">List</span>&lt;<span class="hljs-type">ChangedFile</span>&gt; out = <span class="hljs-keyword">new</span> <span class="hljs-type">ArrayList</span>&lt;&gt;();</code></td></tr>
+<tr class="comment-row" data-line="161" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 161" data-line="161"></textarea></td></tr>
+<tr class="source-line" data-line="162"><td class="ln"><button type="button" class="ln-btn" id="L162" aria-label="Comment on line 162">162</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">for</span> (<span class="hljs-type">String</span> line : res.stdout().split(<span class="hljs-string">&quot;\\R&quot;</span>)) {</code></td></tr>
+<tr class="comment-row" data-line="162" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 162" data-line="162"></textarea></td></tr>
+<tr class="source-line" data-line="163"><td class="ln"><button type="button" class="ln-btn" id="L163" aria-label="Comment on line 163">163</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (line == <span class="hljs-literal">null</span> || line.isBlank()) <span class="hljs-keyword">continue</span>;</code></td></tr>
+<tr class="comment-row" data-line="163" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 163" data-line="163"></textarea></td></tr>
+<tr class="source-line" data-line="164"><td class="ln"><button type="button" class="ln-btn" id="L164" aria-label="Comment on line 164">164</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span>[] parts = line.split(<span class="hljs-string">&quot;\\t&quot;</span>, <span class="hljs-number">3</span>);</code></td></tr>
+<tr class="comment-row" data-line="164" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 164" data-line="164"></textarea></td></tr>
+<tr class="source-line" data-line="165"><td class="ln"><button type="button" class="ln-btn" id="L165" aria-label="Comment on line 165">165</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span> status = parts.length &gt; <span class="hljs-number">0</span> ? parts[<span class="hljs-number">0</span>] : <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="165" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 165" data-line="165"></textarea></td></tr>
+<tr class="source-line" data-line="166"><td class="ln"><button type="button" class="ln-btn" id="L166" aria-label="Comment on line 166">166</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (status.startsWith(<span class="hljs-string">&quot;R&quot;</span>) &amp;&amp; parts.length &gt; <span class="hljs-number">2</span>) {</code></td></tr>
+<tr class="comment-row" data-line="166" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 166" data-line="166"></textarea></td></tr>
+<tr class="source-line" data-line="167"><td class="ln"><button type="button" class="ln-btn" id="L167" aria-label="Comment on line 167">167</button></td><td class="code"><code class="language-java">                out.add(<span class="hljs-keyword">new</span> <span class="hljs-type">ChangedFile</span>(parts[<span class="hljs-number">2</span>], status, parts[<span class="hljs-number">1</span>]));</code></td></tr>
+<tr class="comment-row" data-line="167" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 167" data-line="167"></textarea></td></tr>
+<tr class="source-line" data-line="168"><td class="ln"><button type="button" class="ln-btn" id="L168" aria-label="Comment on line 168">168</button></td><td class="code"><code class="language-java">            } <span class="hljs-keyword">else</span> {</code></td></tr>
+<tr class="comment-row" data-line="168" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 168" data-line="168"></textarea></td></tr>
+<tr class="source-line" data-line="169"><td class="ln"><button type="button" class="ln-btn" id="L169" aria-label="Comment on line 169">169</button></td><td class="code"><code class="language-java">                <span class="hljs-type">String</span> p = parts.length &gt; <span class="hljs-number">1</span> ? parts[<span class="hljs-number">1</span>] : <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="169" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 169" data-line="169"></textarea></td></tr>
+<tr class="source-line" data-line="170"><td class="ln"><button type="button" class="ln-btn" id="L170" aria-label="Comment on line 170">170</button></td><td class="code"><code class="language-java">                out.add(<span class="hljs-keyword">new</span> <span class="hljs-type">ChangedFile</span>(p, status, p));</code></td></tr>
+<tr class="comment-row" data-line="170" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 170" data-line="170"></textarea></td></tr>
+<tr class="source-line" data-line="171"><td class="ln"><button type="button" class="ln-btn" id="L171" aria-label="Comment on line 171">171</button></td><td class="code"><code class="language-java">            }</code></td></tr>
+<tr class="comment-row" data-line="171" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 171" data-line="171"></textarea></td></tr>
+<tr class="source-line" data-line="172"><td class="ln"><button type="button" class="ln-btn" id="L172" aria-label="Comment on line 172">172</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="172" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 172" data-line="172"></textarea></td></tr>
+<tr class="source-line" data-line="173"><td class="ln"><button type="button" class="ln-btn" id="L173" aria-label="Comment on line 173">173</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> out;</code></td></tr>
+<tr class="comment-row" data-line="173" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 173" data-line="173"></textarea></td></tr>
+<tr class="source-line" data-line="174"><td class="ln"><button type="button" class="ln-btn" id="L174" aria-label="Comment on line 174">174</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="174" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 174" data-line="174"></textarea></td></tr>
+<tr class="source-line" data-line="175"><td class="ln"><button type="button" class="ln-btn" id="L175" aria-label="Comment on line 175">175</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="175" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 175" data-line="175"></textarea></td></tr>
+<tr class="source-line" data-line="176"><td class="ln"><button type="button" class="ln-btn" id="L176" aria-label="Comment on line 176">176</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">List</span>&lt;<span class="hljs-type">ChangedFile</span>&gt; getWorktreeChangedFiles(<span class="hljs-type">Path</span> repoRoot, <span class="hljs-type">String</span> base) <span class="hljs-keyword">throws</span> <span class="hljs-type">Exception</span> {</code></td></tr>
+<tr class="comment-row" data-line="176" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 176" data-line="176"></textarea></td></tr>
+<tr class="source-line" data-line="177"><td class="ln"><button type="button" class="ln-btn" id="L177" aria-label="Comment on line 177">177</button></td><td class="code"><code class="language-java">        <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> staged = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;diff&quot;</span>, <span class="hljs-string">&quot;--name-status&quot;</span>, <span class="hljs-string">&quot;-M&quot;</span>, <span class="hljs-string">&quot;--cached&quot;</span>, base), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="177" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 177" data-line="177"></textarea></td></tr>
+<tr class="source-line" data-line="178"><td class="ln"><button type="button" class="ln-btn" id="L178" aria-label="Comment on line 178">178</button></td><td class="code"><code class="language-java">        <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> unstaged = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;diff&quot;</span>, <span class="hljs-string">&quot;--name-status&quot;</span>, <span class="hljs-string">&quot;-M&quot;</span>, base), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="178" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 178" data-line="178"></textarea></td></tr>
+<tr class="source-line" data-line="179"><td class="ln"><button type="button" class="ln-btn" id="L179" aria-label="Comment on line 179">179</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">if</span> (staged.exitCode() != <span class="hljs-number">0</span> &amp;&amp; unstaged.exitCode() != <span class="hljs-number">0</span>) {</code></td></tr>
+<tr class="comment-row" data-line="179" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 179" data-line="179"></textarea></td></tr>
+<tr class="source-line" data-line="180"><td class="ln"><button type="button" class="ln-btn" id="L180" aria-label="Comment on line 180">180</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-type">RuntimeException</span>(<span class="hljs-string">&quot;git diff failed: &quot;</span> + (unstaged.stderr().isBlank() ? staged.stderr() : unstaged.stderr()));</code></td></tr>
+<tr class="comment-row" data-line="180" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 180" data-line="180"></textarea></td></tr>
+<tr class="source-line" data-line="181"><td class="ln"><button type="button" class="ln-btn" id="L181" aria-label="Comment on line 181">181</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="181" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 181" data-line="181"></textarea></td></tr>
+<tr class="source-line" data-line="182"><td class="ln"><button type="button" class="ln-btn" id="L182" aria-label="Comment on line 182">182</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="182" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 182" data-line="182"></textarea></td></tr>
+<tr class="source-line" data-line="183"><td class="ln"><button type="button" class="ln-btn" id="L183" aria-label="Comment on line 183">183</button></td><td class="code"><code class="language-java">        <span class="hljs-type">Map</span>&lt;<span class="hljs-type">String</span>, <span class="hljs-type">ChangedFile</span>&gt; merged = <span class="hljs-keyword">new</span> <span class="hljs-type">HashMap</span>&lt;&gt;();</code></td></tr>
+<tr class="comment-row" data-line="183" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 183" data-line="183"></textarea></td></tr>
+<tr class="source-line" data-line="184"><td class="ln"><button type="button" class="ln-btn" id="L184" aria-label="Comment on line 184">184</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">for</span> (<span class="hljs-type">ChangedFile</span> cf : parseNameStatus(staged.stdout())) {</code></td></tr>
+<tr class="comment-row" data-line="184" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 184" data-line="184"></textarea></td></tr>
+<tr class="source-line" data-line="185"><td class="ln"><button type="button" class="ln-btn" id="L185" aria-label="Comment on line 185">185</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (cf.path != <span class="hljs-literal">null</span> &amp;&amp; !cf.path.isBlank()) merged.put(cf.path, cf);</code></td></tr>
+<tr class="comment-row" data-line="185" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 185" data-line="185"></textarea></td></tr>
+<tr class="source-line" data-line="186"><td class="ln"><button type="button" class="ln-btn" id="L186" aria-label="Comment on line 186">186</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="186" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 186" data-line="186"></textarea></td></tr>
+<tr class="source-line" data-line="187"><td class="ln"><button type="button" class="ln-btn" id="L187" aria-label="Comment on line 187">187</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">for</span> (<span class="hljs-type">ChangedFile</span> cf : parseNameStatus(unstaged.stdout())) {</code></td></tr>
+<tr class="comment-row" data-line="187" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 187" data-line="187"></textarea></td></tr>
+<tr class="source-line" data-line="188"><td class="ln"><button type="button" class="ln-btn" id="L188" aria-label="Comment on line 188">188</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (cf.path != <span class="hljs-literal">null</span> &amp;&amp; !cf.path.isBlank()) merged.put(cf.path, cf);</code></td></tr>
+<tr class="comment-row" data-line="188" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 188" data-line="188"></textarea></td></tr>
+<tr class="source-line" data-line="189"><td class="ln"><button type="button" class="ln-btn" id="L189" aria-label="Comment on line 189">189</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="189" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 189" data-line="189"></textarea></td></tr>
+<tr class="source-line" data-line="190"><td class="ln"><button type="button" class="ln-btn" id="L190" aria-label="Comment on line 190">190</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-type">ArrayList</span>&lt;&gt;(merged.values());</code></td></tr>
+<tr class="comment-row" data-line="190" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 190" data-line="190"></textarea></td></tr>
+<tr class="source-line" data-line="191"><td class="ln"><button type="button" class="ln-btn" id="L191" aria-label="Comment on line 191">191</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="191" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 191" data-line="191"></textarea></td></tr>
+<tr class="source-line" data-line="192"><td class="ln"><button type="button" class="ln-btn" id="L192" aria-label="Comment on line 192">192</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="192" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 192" data-line="192"></textarea></td></tr>
+<tr class="source-line" data-line="193"><td class="ln"><button type="button" class="ln-btn" id="L193" aria-label="Comment on line 193">193</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">List</span>&lt;<span class="hljs-type">ChangedFile</span>&gt; parseNameStatus(<span class="hljs-type">String</span> stdout) {</code></td></tr>
+<tr class="comment-row" data-line="193" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 193" data-line="193"></textarea></td></tr>
+<tr class="source-line" data-line="194"><td class="ln"><button type="button" class="ln-btn" id="L194" aria-label="Comment on line 194">194</button></td><td class="code"><code class="language-java">        <span class="hljs-type">List</span>&lt;<span class="hljs-type">ChangedFile</span>&gt; out = <span class="hljs-keyword">new</span> <span class="hljs-type">ArrayList</span>&lt;&gt;();</code></td></tr>
+<tr class="comment-row" data-line="194" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 194" data-line="194"></textarea></td></tr>
+<tr class="source-line" data-line="195"><td class="ln"><button type="button" class="ln-btn" id="L195" aria-label="Comment on line 195">195</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">if</span> (stdout == <span class="hljs-literal">null</span> || stdout.isBlank()) <span class="hljs-keyword">return</span> out;</code></td></tr>
+<tr class="comment-row" data-line="195" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 195" data-line="195"></textarea></td></tr>
+<tr class="source-line" data-line="196"><td class="ln"><button type="button" class="ln-btn" id="L196" aria-label="Comment on line 196">196</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">for</span> (<span class="hljs-type">String</span> line : stdout.split(<span class="hljs-string">&quot;\\R&quot;</span>)) {</code></td></tr>
+<tr class="comment-row" data-line="196" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 196" data-line="196"></textarea></td></tr>
+<tr class="source-line" data-line="197"><td class="ln"><button type="button" class="ln-btn" id="L197" aria-label="Comment on line 197">197</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (line == <span class="hljs-literal">null</span> || line.isBlank()) <span class="hljs-keyword">continue</span>;</code></td></tr>
+<tr class="comment-row" data-line="197" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 197" data-line="197"></textarea></td></tr>
+<tr class="source-line" data-line="198"><td class="ln"><button type="button" class="ln-btn" id="L198" aria-label="Comment on line 198">198</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span>[] parts = line.split(<span class="hljs-string">&quot;\\t&quot;</span>, <span class="hljs-number">3</span>);</code></td></tr>
+<tr class="comment-row" data-line="198" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 198" data-line="198"></textarea></td></tr>
+<tr class="source-line" data-line="199"><td class="ln"><button type="button" class="ln-btn" id="L199" aria-label="Comment on line 199">199</button></td><td class="code"><code class="language-java">            <span class="hljs-type">String</span> status = parts.length &gt; <span class="hljs-number">0</span> ? parts[<span class="hljs-number">0</span>] : <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="199" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 199" data-line="199"></textarea></td></tr>
+<tr class="source-line" data-line="200"><td class="ln"><button type="button" class="ln-btn" id="L200" aria-label="Comment on line 200">200</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (status.startsWith(<span class="hljs-string">&quot;R&quot;</span>) &amp;&amp; parts.length &gt; <span class="hljs-number">2</span>) {</code></td></tr>
+<tr class="comment-row" data-line="200" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 200" data-line="200"></textarea></td></tr>
+<tr class="source-line" data-line="201"><td class="ln"><button type="button" class="ln-btn" id="L201" aria-label="Comment on line 201">201</button></td><td class="code"><code class="language-java">                out.add(<span class="hljs-keyword">new</span> <span class="hljs-type">ChangedFile</span>(parts[<span class="hljs-number">2</span>], status, parts[<span class="hljs-number">1</span>]));</code></td></tr>
+<tr class="comment-row" data-line="201" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 201" data-line="201"></textarea></td></tr>
+<tr class="source-line" data-line="202"><td class="ln"><button type="button" class="ln-btn" id="L202" aria-label="Comment on line 202">202</button></td><td class="code"><code class="language-java">            } <span class="hljs-keyword">else</span> {</code></td></tr>
+<tr class="comment-row" data-line="202" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 202" data-line="202"></textarea></td></tr>
+<tr class="source-line" data-line="203"><td class="ln"><button type="button" class="ln-btn" id="L203" aria-label="Comment on line 203">203</button></td><td class="code"><code class="language-java">                <span class="hljs-type">String</span> p = parts.length &gt; <span class="hljs-number">1</span> ? parts[<span class="hljs-number">1</span>] : <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="203" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 203" data-line="203"></textarea></td></tr>
+<tr class="source-line" data-line="204"><td class="ln"><button type="button" class="ln-btn" id="L204" aria-label="Comment on line 204">204</button></td><td class="code"><code class="language-java">                out.add(<span class="hljs-keyword">new</span> <span class="hljs-type">ChangedFile</span>(p, status, p));</code></td></tr>
+<tr class="comment-row" data-line="204" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 204" data-line="204"></textarea></td></tr>
+<tr class="source-line" data-line="205"><td class="ln"><button type="button" class="ln-btn" id="L205" aria-label="Comment on line 205">205</button></td><td class="code"><code class="language-java">            }</code></td></tr>
+<tr class="comment-row" data-line="205" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 205" data-line="205"></textarea></td></tr>
+<tr class="source-line" data-line="206"><td class="ln"><button type="button" class="ln-btn" id="L206" aria-label="Comment on line 206">206</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="206" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 206" data-line="206"></textarea></td></tr>
+<tr class="source-line" data-line="207"><td class="ln"><button type="button" class="ln-btn" id="L207" aria-label="Comment on line 207">207</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> out;</code></td></tr>
+<tr class="comment-row" data-line="207" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 207" data-line="207"></textarea></td></tr>
+<tr class="source-line" data-line="208"><td class="ln"><button type="button" class="ln-btn" id="L208" aria-label="Comment on line 208">208</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="208" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 208" data-line="208"></textarea></td></tr>
+<tr class="source-line" data-line="209"><td class="ln"><button type="button" class="ln-btn" id="L209" aria-label="Comment on line 209">209</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="209" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 209" data-line="209"></textarea></td></tr>
+<tr class="source-line" data-line="210"><td class="ln"><button type="button" class="ln-btn" id="L210" aria-label="Comment on line 210">210</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">String</span> getFileContent(<span class="hljs-type">Path</span> repoRoot, <span class="hljs-type">String</span> rev, <span class="hljs-type">String</span> path) {</code></td></tr>
+<tr class="comment-row" data-line="210" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 210" data-line="210"></textarea></td></tr>
+<tr class="source-line" data-line="211"><td class="ln"><button type="button" class="ln-btn" id="L211" aria-label="Comment on line 211">211</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">if</span> (path == <span class="hljs-literal">null</span> || path.isBlank()) <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="211" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 211" data-line="211"></textarea></td></tr>
+<tr class="source-line" data-line="212"><td class="ln"><button type="button" class="ln-btn" id="L212" aria-label="Comment on line 212">212</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">try</span> {</code></td></tr>
+<tr class="comment-row" data-line="212" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 212" data-line="212"></textarea></td></tr>
+<tr class="source-line" data-line="213"><td class="ln"><button type="button" class="ln-btn" id="L213" aria-label="Comment on line 213">213</button></td><td class="code"><code class="language-java">            <span class="hljs-type">IO</span>.<span class="hljs-type">ExecResult</span> res = <span class="hljs-type">IO</span>.exec(<span class="hljs-type">List</span>.of(<span class="hljs-string">&quot;git&quot;</span>, <span class="hljs-string">&quot;show&quot;</span>, rev + <span class="hljs-string">&quot;:&quot;</span> + path), repoRoot);</code></td></tr>
+<tr class="comment-row" data-line="213" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 213" data-line="213"></textarea></td></tr>
+<tr class="source-line" data-line="214"><td class="ln"><button type="button" class="ln-btn" id="L214" aria-label="Comment on line 214">214</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (res.exitCode() == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> res.stdout();</code></td></tr>
+<tr class="comment-row" data-line="214" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 214" data-line="214"></textarea></td></tr>
+<tr class="source-line" data-line="215"><td class="ln"><button type="button" class="ln-btn" id="L215" aria-label="Comment on line 215">215</button></td><td class="code"><code class="language-java">        } <span class="hljs-keyword">catch</span> (<span class="hljs-type">Exception</span> ignored) {</code></td></tr>
+<tr class="comment-row" data-line="215" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 215" data-line="215"></textarea></td></tr>
+<tr class="source-line" data-line="216"><td class="ln"><button type="button" class="ln-btn" id="L216" aria-label="Comment on line 216">216</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="216" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 216" data-line="216"></textarea></td></tr>
+<tr class="source-line" data-line="217"><td class="ln"><button type="button" class="ln-btn" id="L217" aria-label="Comment on line 217">217</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="217" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 217" data-line="217"></textarea></td></tr>
+<tr class="source-line" data-line="218"><td class="ln"><button type="button" class="ln-btn" id="L218" aria-label="Comment on line 218">218</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="218" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 218" data-line="218"></textarea></td></tr>
+<tr class="source-line" data-line="219"><td class="ln"><button type="button" class="ln-btn" id="L219" aria-label="Comment on line 219">219</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="219" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 219" data-line="219"></textarea></td></tr>
+<tr class="source-line" data-line="220"><td class="ln"><button type="button" class="ln-btn" id="L220" aria-label="Comment on line 220">220</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">String</span> readWorktreeFile(<span class="hljs-type">Path</span> repoRoot, <span class="hljs-type">String</span> path) {</code></td></tr>
+<tr class="comment-row" data-line="220" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 220" data-line="220"></textarea></td></tr>
+<tr class="source-line" data-line="221"><td class="ln"><button type="button" class="ln-btn" id="L221" aria-label="Comment on line 221">221</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">if</span> (path == <span class="hljs-literal">null</span> || path.isBlank()) <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="221" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 221" data-line="221"></textarea></td></tr>
+<tr class="source-line" data-line="222"><td class="ln"><button type="button" class="ln-btn" id="L222" aria-label="Comment on line 222">222</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">try</span> {</code></td></tr>
+<tr class="comment-row" data-line="222" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 222" data-line="222"></textarea></td></tr>
+<tr class="source-line" data-line="223"><td class="ln"><button type="button" class="ln-btn" id="L223" aria-label="Comment on line 223">223</button></td><td class="code"><code class="language-java">            <span class="hljs-type">Path</span> p = repoRoot.resolve(path);</code></td></tr>
+<tr class="comment-row" data-line="223" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 223" data-line="223"></textarea></td></tr>
+<tr class="source-line" data-line="224"><td class="ln"><button type="button" class="ln-btn" id="L224" aria-label="Comment on line 224">224</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">if</span> (<span class="hljs-type">Files</span>.exists(p) &amp;&amp; <span class="hljs-type">Files</span>.isRegularFile(p)) {</code></td></tr>
+<tr class="comment-row" data-line="224" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 224" data-line="224"></textarea></td></tr>
+<tr class="source-line" data-line="225"><td class="ln"><button type="button" class="ln-btn" id="L225" aria-label="Comment on line 225">225</button></td><td class="code"><code class="language-java">                <span class="hljs-keyword">return</span> <span class="hljs-type">IO</span>.readText(p);</code></td></tr>
+<tr class="comment-row" data-line="225" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 225" data-line="225"></textarea></td></tr>
+<tr class="source-line" data-line="226"><td class="ln"><button type="button" class="ln-btn" id="L226" aria-label="Comment on line 226">226</button></td><td class="code"><code class="language-java">            }</code></td></tr>
+<tr class="comment-row" data-line="226" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 226" data-line="226"></textarea></td></tr>
+<tr class="source-line" data-line="227"><td class="ln"><button type="button" class="ln-btn" id="L227" aria-label="Comment on line 227">227</button></td><td class="code"><code class="language-java">        } <span class="hljs-keyword">catch</span> (<span class="hljs-type">Exception</span> ignored) {</code></td></tr>
+<tr class="comment-row" data-line="227" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 227" data-line="227"></textarea></td></tr>
+<tr class="source-line" data-line="228"><td class="ln"><button type="button" class="ln-btn" id="L228" aria-label="Comment on line 228">228</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="228" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 228" data-line="228"></textarea></td></tr>
+<tr class="source-line" data-line="229"><td class="ln"><button type="button" class="ln-btn" id="L229" aria-label="Comment on line 229">229</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;</code></td></tr>
+<tr class="comment-row" data-line="229" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 229" data-line="229"></textarea></td></tr>
+<tr class="source-line" data-line="230"><td class="ln"><button type="button" class="ln-btn" id="L230" aria-label="Comment on line 230">230</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="230" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 230" data-line="230"></textarea></td></tr>
+<tr class="source-line" data-line="231"><td class="ln"><button type="button" class="ln-btn" id="L231" aria-label="Comment on line 231">231</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="231" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 231" data-line="231"></textarea></td></tr>
+<tr class="source-line" data-line="232"><td class="ln"><button type="button" class="ln-btn" id="L232" aria-label="Comment on line 232">232</button></td><td class="code"><code class="language-java">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-type">ChangedFile</span> {</code></td></tr>
+<tr class="comment-row" data-line="232" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 232" data-line="232"></textarea></td></tr>
+<tr class="source-line" data-line="233"><td class="ln"><button type="button" class="ln-btn" id="L233" aria-label="Comment on line 233">233</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> path;</code></td></tr>
+<tr class="comment-row" data-line="233" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 233" data-line="233"></textarea></td></tr>
+<tr class="source-line" data-line="234"><td class="ln"><button type="button" class="ln-btn" id="L234" aria-label="Comment on line 234">234</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> status;</code></td></tr>
+<tr class="comment-row" data-line="234" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 234" data-line="234"></textarea></td></tr>
+<tr class="source-line" data-line="235"><td class="ln"><button type="button" class="ln-btn" id="L235" aria-label="Comment on line 235">235</button></td><td class="code"><code class="language-java">        <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> oldPath;</code></td></tr>
+<tr class="comment-row" data-line="235" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 235" data-line="235"></textarea></td></tr>
+<tr class="source-line" data-line="236"><td class="ln"><button type="button" class="ln-btn" id="L236" aria-label="Comment on line 236">236</button></td><td class="code"><code class="language-java"></code></td></tr>
+<tr class="comment-row" data-line="236" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 236" data-line="236"></textarea></td></tr>
+<tr class="source-line" data-line="237"><td class="ln"><button type="button" class="ln-btn" id="L237" aria-label="Comment on line 237">237</button></td><td class="code"><code class="language-java">        <span class="hljs-type">ChangedFile</span>(<span class="hljs-type">String</span> path, <span class="hljs-type">String</span> status, <span class="hljs-type">String</span> oldPath) {</code></td></tr>
+<tr class="comment-row" data-line="237" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 237" data-line="237"></textarea></td></tr>
+<tr class="source-line" data-line="238"><td class="ln"><button type="button" class="ln-btn" id="L238" aria-label="Comment on line 238">238</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">this</span>.path = path;</code></td></tr>
+<tr class="comment-row" data-line="238" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 238" data-line="238"></textarea></td></tr>
+<tr class="source-line" data-line="239"><td class="ln"><button type="button" class="ln-btn" id="L239" aria-label="Comment on line 239">239</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">this</span>.status = status == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;&quot;</span> : status;</code></td></tr>
+<tr class="comment-row" data-line="239" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 239" data-line="239"></textarea></td></tr>
+<tr class="source-line" data-line="240"><td class="ln"><button type="button" class="ln-btn" id="L240" aria-label="Comment on line 240">240</button></td><td class="code"><code class="language-java">            <span class="hljs-keyword">this</span>.oldPath = oldPath == <span class="hljs-literal">null</span> ? (path == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;&quot;</span> : path) : oldPath;</code></td></tr>
+<tr class="comment-row" data-line="240" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 240" data-line="240"></textarea></td></tr>
+<tr class="source-line" data-line="241"><td class="ln"><button type="button" class="ln-btn" id="L241" aria-label="Comment on line 241">241</button></td><td class="code"><code class="language-java">        }</code></td></tr>
+<tr class="comment-row" data-line="241" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 241" data-line="241"></textarea></td></tr>
+<tr class="source-line" data-line="242"><td class="ln"><button type="button" class="ln-btn" id="L242" aria-label="Comment on line 242">242</button></td><td class="code"><code class="language-java">    }</code></td></tr>
+<tr class="comment-row" data-line="242" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 242" data-line="242"></textarea></td></tr>
+<tr class="source-line" data-line="243"><td class="ln"><button type="button" class="ln-btn" id="L243" aria-label="Comment on line 243">243</button></td><td class="code"><code class="language-java">}</code></td></tr>
+<tr class="comment-row" data-line="243" hidden><td class="ln"></td><td><textarea aria-label="Comment for line 243" data-line="243"></textarea></td></tr>
 
-final class GitMode {
-    private GitMode() {}
+</tbody>
+</table>
 
-    static int run(Path root, Path outputDir, String baseArg, String headArg, boolean worktree) {
-        try {
-            Path repoRoot = getRepoRoot(root);
-            if (repoRoot == null) {
-                System.err.println(&quot;Not a git repository. Use plain mode or specify a git directory.&quot;);
-                return 1;
-            }
-
-            String base = (baseArg == null || baseArg.isBlank()) ? (worktree ? &quot;HEAD&quot; : &quot;HEAD~1&quot;) : baseArg;
-            String head = worktree ? &quot;WORKTREE&quot; : ((headArg == null || headArg.isBlank()) ? &quot;HEAD&quot; : headArg);
-
-            IO.mkdirs(outputDir);
-
-            String patchText = &quot;&quot;;
-
-            List&lt;ChangedFile&gt; changed = worktree ? getWorktreeChangedFiles(repoRoot, base) : getChangedFiles(repoRoot, base, head);
-            if (changed.isEmpty()) {
-                System.out.println(&quot;No changes found between revisions.&quot;);
-                return 0;
-            }
-
-            System.out.println(&quot;Processing &quot; + changed.size() + &quot; changed files...&quot;);
-
-            // changes.patch
-            if (worktree) {
-                StringBuilder patchBuf = new StringBuilder();
-                IO.ExecResult cached = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--cached&quot;, base), repoRoot);
-                if (cached.exitCode() == 0 &amp;&amp; !cached.stdout().isBlank()) patchBuf.append(cached.stdout());
-                IO.ExecResult unstaged = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, base), repoRoot);
-                if (unstaged.exitCode() == 0 &amp;&amp; !unstaged.stdout().isBlank()) {
-                    if (!patchBuf.isEmpty() &amp;&amp; !patchBuf.toString().endsWith(&quot;\n&quot;)) patchBuf.append(&quot;\n&quot;);
-                    patchBuf.append(unstaged.stdout());
-                }
-                patchText = patchBuf.toString();
-                if (!patchText.isBlank()) {
-                    IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patchText);
-                }
-            } else {
-                IO.ExecResult patch = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, base + &quot;...&quot; + head), repoRoot);
-                if (patch.exitCode() == 0) {
-                    patchText = patch.stdout();
-                    IO.writeText(outputDir.resolve(&quot;changes.patch&quot;), patchText);
-                }
-            }
-
-            List&lt;Map&lt;String, String&gt;&gt; indexEntries = new ArrayList&lt;&gt;();
-            for (ChangedFile cf : changed) {
-                if (cf.path == null || cf.path.isBlank() || &quot;/dev/null&quot;.equals(cf.path)) continue;
-                if (isBinaryLike(cf.path)) continue;
-
-                String oldContent = (!cf.status.startsWith(&quot;A&quot;)) ? getFileContent(repoRoot, base, cf.oldPath) : &quot;&quot;;
-                String newContent = worktree ? readWorktreeFile(repoRoot, cf.path) : ((!cf.status.startsWith(&quot;D&quot;)) ? getFileContent(repoRoot, head, cf.path) : &quot;&quot;);
-
-                Path relPath = Path.of(cf.path);
-                String pathPosix = PlainMode.toPosix(relPath.toString());
-                Path outDirForFile = outputDir.resolve(relPath).getParent();
-                if (outDirForFile != null) IO.mkdirs(outDirForFile);
-
-                Map&lt;String, String&gt; entry = new HashMap&lt;&gt;();
-                entry.put(&quot;path&quot;, cf.path);
-                entry.put(&quot;status&quot;, cf.status);
-                entry.put(&quot;old_path&quot;, cf.oldPath);
-
-                if (!oldContent.isEmpty()) {
-                    Path oldOutRel = Path.of(pathPosix + &quot;-.html&quot;);
-                    String oldHtml = Html.sourcePage(relPath.toString(), &quot;Old (&quot; + base + &quot;)&quot;, oldContent,
-                            Lang.languageClassFor(relPath), Html.hrefToIndex(oldOutRel));
-                    IO.writeText(outputDir.resolve(oldOutRel), oldHtml);
-                    entry.put(&quot;old&quot;, pathPosix + &quot;-.html&quot;);
-                }
-                if (!newContent.isEmpty()) {
-                    Path newOutRel = Path.of(pathPosix + &quot;.html&quot;);
-                    String newHtml = Html.sourcePage(relPath.toString(), &quot;New (&quot; + head + &quot;)&quot;, newContent,
-                            Lang.languageClassFor(relPath), Html.hrefToIndex(newOutRel));
-                    IO.writeText(outputDir.resolve(newOutRel), newHtml);
-                    entry.put(&quot;new&quot;, pathPosix + &quot;.html&quot;);
-                }
-                if (!oldContent.isEmpty() &amp;&amp; !newContent.isEmpty()) {
-                    Path udiffOutRel = Path.of(pathPosix + &quot;.udiff.html&quot;);
-                    Path sdiffOutRel = Path.of(pathPosix + &quot;.sdiff.html&quot;);
-                    String udiffHtml = DiffViews.unifiedDiffPage(relPath, oldContent, newContent, Html.hrefToIndex(udiffOutRel));
-                    String sdiffHtml = DiffViews.sideBySideDiffPage(relPath, oldContent, newContent, base, head,
-                            Html.hrefToIndex(sdiffOutRel));
-                    IO.writeText(outputDir.resolve(udiffOutRel), udiffHtml);
-                    IO.writeText(outputDir.resolve(sdiffOutRel), sdiffHtml);
-                    entry.put(&quot;udiff&quot;, pathPosix + &quot;.udiff.html&quot;);
-                    entry.put(&quot;sdiff&quot;, pathPosix + &quot;.sdiff.html&quot;);
-                }
-
-                indexEntries.add(entry);
-                System.out.println(&quot;  &quot; + cf.path + &quot; (&quot; + cf.status + &quot;)&quot;);
-            }
-
-            DiffLineStats.Result lineStats = DiffLineStats.fromUnifiedPatch(patchText);
-            String indexHtml = buildIndex(repoRoot.getFileName().toString(), base, head, indexEntries, lineStats);
-            IO.writeText(outputDir.resolve(&quot;index.html&quot;), indexHtml);
-
-            System.out.println(&quot;\nDone. Output: &quot; + outputDir);
-            System.out.println(&quot;Open &quot; + outputDir.resolve(&quot;index.html&quot;) + &quot; in a browser.&quot;);
-            return 0;
-        } catch (Exception e) {
-            System.err.println(&quot;Error: &quot; + e.getMessage());
-            return 1;
-        }
-    }
-
-    private static String buildIndex(String repoName, String base, String head, List&lt;Map&lt;String, String&gt;&gt; entries,
-                                     DiffLineStats.Result lineStats) {
-        String summary = &quot;&quot;&quot;
-                &lt;div class=&quot;summary&quot;&gt;
-                &lt;p&gt;&lt;strong&gt;Base:&lt;/strong&gt; %s &amp;nbsp;|&amp;nbsp; &lt;strong&gt;Head:&lt;/strong&gt; %s&lt;/p&gt;
-                &lt;p&gt;&lt;strong&gt;Files changed:&lt;/strong&gt; %d&lt;/p&gt;
-                &lt;p&gt;&lt;a href=&quot;changes.patch&quot;&gt;Download patch&lt;/a&gt;&lt;/p&gt;
-                %s
-                &lt;/div&gt;
-                &quot;&quot;&quot;.formatted(Html.escape(base), Html.escape(head), entries.size(),
-                Html.lineStatsSummary(lineStats.added(), lineStats.modified(), lineStats.removed()));
-        String body = summary + TreeIndex.renderDiff(entries) + &quot;&lt;hr&gt;\n&quot; + Html.indexReviewScript();
-        return Html.doc(&quot;Code Review - &quot; + repoName, &quot;Code Review: &quot; + Html.escape(repoName), &quot;&quot;, body, &quot;&quot;);
-    }
-
-    private static boolean isBinaryLike(String path) {
-        String p = path.toLowerCase();
-        for (String ext : Defaults.BINARY_EXTENSIONS) {
-            if (p.endsWith(ext)) return true;
-        }
-        return false;
-    }
-
-    private static Path getRepoRoot(Path path) throws Exception {
-        IO.ExecResult res = IO.exec(List.of(&quot;git&quot;, &quot;rev-parse&quot;, &quot;--show-toplevel&quot;), path);
-        if (res.exitCode() == 0) {
-            String s = res.stdout().trim();
-            if (!s.isEmpty()) return Path.of(s);
-        }
-        return null;
-    }
-
-    private static List&lt;ChangedFile&gt; getChangedFiles(Path repoRoot, String base, String head) throws Exception {
-        IO.ExecResult res = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, base + &quot;...&quot; + head), repoRoot);
-        if (res.exitCode() != 0) {
-            res = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, base, head), repoRoot);
-        }
-        if (res.exitCode() != 0) {
-            throw new RuntimeException(&quot;git diff failed: &quot; + res.stderr());
-        }
-
-        List&lt;ChangedFile&gt; out = new ArrayList&lt;&gt;();
-        for (String line : res.stdout().split(&quot;\\R&quot;)) {
-            if (line == null || line.isBlank()) continue;
-            String[] parts = line.split(&quot;\\t&quot;, 3);
-            String status = parts.length &gt; 0 ? parts[0] : &quot;&quot;;
-            if (status.startsWith(&quot;R&quot;) &amp;&amp; parts.length &gt; 2) {
-                out.add(new ChangedFile(parts[2], status, parts[1]));
-            } else {
-                String p = parts.length &gt; 1 ? parts[1] : &quot;&quot;;
-                out.add(new ChangedFile(p, status, p));
-            }
-        }
-        return out;
-    }
-
-    private static List&lt;ChangedFile&gt; getWorktreeChangedFiles(Path repoRoot, String base) throws Exception {
-        IO.ExecResult staged = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, &quot;-M&quot;, &quot;--cached&quot;, base), repoRoot);
-        IO.ExecResult unstaged = IO.exec(List.of(&quot;git&quot;, &quot;diff&quot;, &quot;--name-status&quot;, &quot;-M&quot;, base), repoRoot);
-        if (staged.exitCode() != 0 &amp;&amp; unstaged.exitCode() != 0) {
-            throw new RuntimeException(&quot;git diff failed: &quot; + (unstaged.stderr().isBlank() ? staged.stderr() : unstaged.stderr()));
-        }
-
-        Map&lt;String, ChangedFile&gt; merged = new HashMap&lt;&gt;();
-        for (ChangedFile cf : parseNameStatus(staged.stdout())) {
-            if (cf.path != null &amp;&amp; !cf.path.isBlank()) merged.put(cf.path, cf);
-        }
-        for (ChangedFile cf : parseNameStatus(unstaged.stdout())) {
-            if (cf.path != null &amp;&amp; !cf.path.isBlank()) merged.put(cf.path, cf);
-        }
-        return new ArrayList&lt;&gt;(merged.values());
-    }
-
-    private static List&lt;ChangedFile&gt; parseNameStatus(String stdout) {
-        List&lt;ChangedFile&gt; out = new ArrayList&lt;&gt;();
-        if (stdout == null || stdout.isBlank()) return out;
-        for (String line : stdout.split(&quot;\\R&quot;)) {
-            if (line == null || line.isBlank()) continue;
-            String[] parts = line.split(&quot;\\t&quot;, 3);
-            String status = parts.length &gt; 0 ? parts[0] : &quot;&quot;;
-            if (status.startsWith(&quot;R&quot;) &amp;&amp; parts.length &gt; 2) {
-                out.add(new ChangedFile(parts[2], status, parts[1]));
-            } else {
-                String p = parts.length &gt; 1 ? parts[1] : &quot;&quot;;
-                out.add(new ChangedFile(p, status, p));
-            }
-        }
-        return out;
-    }
-
-    private static String getFileContent(Path repoRoot, String rev, String path) {
-        if (path == null || path.isBlank()) return &quot;&quot;;
-        try {
-            IO.ExecResult res = IO.exec(List.of(&quot;git&quot;, &quot;show&quot;, rev + &quot;:&quot; + path), repoRoot);
-            if (res.exitCode() == 0) return res.stdout();
-        } catch (Exception ignored) {
-        }
-        return &quot;&quot;;
-    }
-
-    private static String readWorktreeFile(Path repoRoot, String path) {
-        if (path == null || path.isBlank()) return &quot;&quot;;
-        try {
-            Path p = repoRoot.resolve(path);
-            if (Files.exists(p) &amp;&amp; Files.isRegularFile(p)) {
-                return IO.readText(p);
-            }
-        } catch (Exception ignored) {
-        }
-        return &quot;&quot;;
-    }
-
-    private static final class ChangedFile {
-        final String path;
-        final String status;
-        final String oldPath;
-
-        ChangedFile(String path, String status, String oldPath) {
-            this.path = path;
-            this.status = status == null ? &quot;&quot; : status;
-            this.oldPath = oldPath == null ? (path == null ? &quot;&quot; : path) : oldPath;
-        }
-    }
+<script>
+(function(){
+var KEY='codereviewer-line-comments-v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
+function save(m){try{localStorage.setItem(KEY,JSON.stringify(m));}catch(e){}}
+function viewTag(view){
+  if(view==='old') return '[old] ';
+  if(view==='new') return '[new] ';
+  return '';
 }
-</code></pre>
+function formatComments(map){
+  var items=[];
+  Object.keys(map||{}).forEach(function(key){
+    var idx=key.indexOf(':');
+    var view=idx<0?'source':key.slice(0,idx);
+    var path=idx<0?key:key.slice(idx+1);
+    var lines=map[key]||{};
+    Object.keys(lines).forEach(function(ln){
+      var text=String(lines[ln]||'').replace(/\s+$/,'');
+      if(!text.trim()) return;
+      items.push({path:path, view:view, line:parseInt(ln,10)||0, text:text});
+    });
+  });
+  var order={source:0,old:1,new:2};
+  items.sort(function(a,b){
+    if(a.path<b.path) return -1;
+    if(a.path>b.path) return 1;
+    var va=Object.prototype.hasOwnProperty.call(order,a.view)?order[a.view]:9;
+    var vb=Object.prototype.hasOwnProperty.call(order,b.view)?order[b.view]:9;
+    if(va!==vb) return va-vb;
+    return a.line-b.line;
+  });
+  var body=items.map(function(it){
+    var parts=it.text.split(/\r?\n/);
+    var first=it.path+':'+it.line+': '+viewTag(it.view)+parts[0];
+    var rest=parts.slice(1).map(function(l){return '  '+l;});
+    return [first].concat(rest).join('\n');
+  }).join('\n');
+  var n=items.length;
+  var noun=n===1?'item':'items';
+  var out='Review comments\n'+n+' '+noun+'. Each line is path:line: comment.\n\n';
+  if(body) out+=body+'\n';
+  return out;
+}
+function download(text){
+  var blob=new Blob([text],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='review-comments.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},0);
+}
+function setComment(path, view, line, text){
+  var m=load();
+  var key=view+':'+path;
+  if(!m[key]) m[key]={};
+  if(text) m[key][String(line)]=text;
+  else delete m[key][String(line)];
+  if(!Object.keys(m[key]).length) delete m[key];
+  save(m);
+}
+function bindSource(table){
+  var path=table.getAttribute('data-file-path')||'';
+  var view=table.getAttribute('data-view')||'source';
+  var stored=(load()[view+':'+path])||{};
+  table.querySelectorAll('tr.source-line[data-line]').forEach(function(row){
+    var line=row.getAttribute('data-line');
+    var editor=table.querySelector('tr.comment-row[data-line="'+line+'"]');
+    var btn=row.querySelector('.ln-btn');
+    var ta=editor?editor.querySelector('textarea'):null;
+    if(stored[line]){
+      if(ta) ta.value=stored[line];
+      row.classList.add('has-comment');
+      if(editor) editor.removeAttribute('hidden');
+    }
+    if(btn && editor){
+      btn.addEventListener('click', function(){
+        if(editor.hasAttribute('hidden')){
+          editor.removeAttribute('hidden');
+          if(ta) ta.focus();
+        } else {
+          editor.setAttribute('hidden','');
+        }
+      });
+    }
+    if(ta){
+      ta.addEventListener('input', function(){
+        var text=ta.value.replace(/\s+$/,'');
+        if(text.trim()){
+          setComment(path, view, line, text);
+          row.classList.add('has-comment');
+        } else {
+          setComment(path, view, line, '');
+          row.classList.remove('has-comment');
+        }
+      });
+    }
+  });
+}
+function bindDownload(){
+  var btn=document.getElementById('download-review-comments');
+  if(!btn || btn.getAttribute('data-bound')) return;
+  btn.setAttribute('data-bound','1');
+  btn.addEventListener('click', function(){ download(formatComments(load())); });
+}
+document.addEventListener('DOMContentLoaded', function(){
+  var table=document.querySelector('table.source');
+  if(table) bindSource(table);
+  bindDownload();
+});
+})();
+</script>
+
 </body>
 </html>

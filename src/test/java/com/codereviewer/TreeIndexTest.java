@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TreeIndexTest {
@@ -21,6 +22,8 @@ class TreeIndexTest {
         assertTrue(html.contains("data-folder-path=\"src/util/\""));
         assertTrue(html.contains("onclick=\"codereviewerExpandAll()\""));
         assertTrue(html.contains("onclick=\"codereviewerCollapseAll()\""));
+        assertTrue(html.contains("id=\"download-review-comments\""));
+        assertFalse(html.contains("combine-review-comments"));
     }
 
     @Test
@@ -40,5 +43,7 @@ class TreeIndexTest {
         assertTrue(html.contains("data-folder-path=\"src/main/\""));
         assertTrue(html.contains("onclick=\"codereviewerExpandAll()\""));
         assertTrue(html.contains("onclick=\"codereviewerCollapseAll()\""));
+        assertTrue(html.contains("id=\"download-review-comments\""));
+        assertFalse(html.contains("combine-review-comments"));
     }
 }

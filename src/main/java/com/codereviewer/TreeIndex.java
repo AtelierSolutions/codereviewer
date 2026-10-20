@@ -15,6 +15,7 @@ final class TreeIndex {
                 <div class="toolbar">
                   <button type="button" onclick="codereviewerExpandAll()">Expand all</button>
                   <button type="button" onclick="codereviewerCollapseAll()">Collapse all</button>
+                  <button type="button" id="download-review-comments">Download review comments</button>
                 </div>
                 """;
     }

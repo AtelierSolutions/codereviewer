@@ -11,7 +11,7 @@ Inspired by [OpenJDK's webrev](https://openjdk.org/projects/code-tools/webrev/) 
 - **Subversion support**: Generate diffs between revisions with the same per-file views
 - **Offline-friendly**: Self-contained HTML output—no server required; share as a zip or folder
 
-Note: the Java port keeps output self-contained; it ships with basic code styling and can be extended to full client-side syntax highlighting by swapping in a full `highlight.js` build in `Defaults.HIGHLIGHT_JS_MIN`.
+Note: the Java port keeps output self-contained. Java, HTML, and XML source pages are syntax-colored when the review is generated. Other languages use the same layout with plain code styling.
 
 ## Installation
 
@@ -115,13 +115,15 @@ python codereviewer.py ./git-repo -o ./review --plain
 
 On **`index.html`** (Python and Java): file rows use alternating light gray and light blue backgrounds so each file lines up with its links. Click a row **outside** a link or button to cycle review highlight: unmarked, then yellow, red, green, then clear again. That state is saved in the browser under the `localStorage` key `codereviewer-index-review-v1`, so it survives refresh while you keep the same output folder path. Folder expand/collapse is likewise persisted under `codereviewer-index-tree-v1` (collapsed folders only; default remains expanded), including after you open a file and return via **Back to index**. Expand all / Collapse all update that stored state as well.
 
+Each generated source page numbers every line. Click a line number to leave a comment. Comments stay in the browser under `codereviewer-line-comments-v1` and remain on that line after a reload. **Download review comments**, on a source page or on `index.html`, writes one `review-comments.txt` from every comment stored in that browser: a list of `path:line: comment` items to send to the author. Old and new revisions are tagged `[old]` and `[new]`.
+
 ### Git/SVN Diff Mode
 
 - `index.html` — Summary with links to each changed file's views, plus **line statistics** (added / modified / removed) estimated from the unified patch: within each file, paired `+` and `-` lines count toward **modified**, and any surplus counts toward **added** or **removed**.
 - `changes.patch` — Full unified diff
 - Per-file:
-  - `path/to/file.py-.html` — Old version (syntax highlighted)
-  - `path/to/file.py.html` — New version (syntax highlighted)
+  - `path/to/file.py-.html` — Old version (syntax highlighted, per-line comments tagged `[old]` in the review file)
+  - `path/to/file.py.html` — New version (syntax highlighted, per-line comments tagged `[new]` in the review file)
   - `path/to/file.py.udiff.html` — Unified diff view
   - `path/to/file.py.sdiff.html` — Side-by-side diff view
 

@@ -76,14 +76,14 @@ final class GitMode {
                 if (!oldContent.isEmpty()) {
                     Path oldOutRel = Path.of(pathPosix + "-.html");
                     String oldHtml = Html.sourcePage(relPath.toString(), "Old (" + base + ")", oldContent,
-                            Lang.languageClassFor(relPath), Html.hrefToIndex(oldOutRel));
+                            Lang.languageClassFor(relPath), Html.hrefToIndex(oldOutRel), "old");
                     IO.writeText(outputDir.resolve(oldOutRel), oldHtml);
                     entry.put("old", pathPosix + "-.html");
                 }
                 if (!newContent.isEmpty()) {
                     Path newOutRel = Path.of(pathPosix + ".html");
                     String newHtml = Html.sourcePage(relPath.toString(), "New (" + head + ")", newContent,
-                            Lang.languageClassFor(relPath), Html.hrefToIndex(newOutRel));
+                            Lang.languageClassFor(relPath), Html.hrefToIndex(newOutRel), "new");
                     IO.writeText(outputDir.resolve(newOutRel), newHtml);
                     entry.put("new", pathPosix + ".html");
                 }
@@ -127,7 +127,8 @@ final class GitMode {
                 </div>
                 """.formatted(Html.escape(base), Html.escape(head), entries.size(),
                 Html.lineStatsSummary(lineStats.added(), lineStats.modified(), lineStats.removed()));
-        String body = summary + TreeIndex.renderDiff(entries) + "<hr>\n" + Html.indexReviewScript();
+        String body = summary + TreeIndex.renderDiff(entries) + "<hr>\n" + Html.indexReviewScript()
+                + Html.lineCommentScript();
         return Html.doc("Code Review - " + repoName, "Code Review: " + Html.escape(repoName), "", body, "");
     }
 

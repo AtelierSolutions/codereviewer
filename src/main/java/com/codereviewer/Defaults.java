@@ -72,6 +72,23 @@ final class Defaults {
             .tree button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
             .tree button:hover { background: #f1f3f5; }
 
+            /* Per-line source comments */
+            table.source { border-collapse: collapse; width: 100%; background: #fff; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85em; }
+            table.source td { vertical-align: top; }
+            table.source td.ln { width: 1%; white-space: nowrap; text-align: right; border-right: 1px solid #e6e6e6; background: #fafbfc; }
+            table.source button.ln-btn { border: 0; background: transparent; color: #666; font: inherit; font-family: "Consolas", "Monaco", "Courier New", monospace; cursor: pointer; padding: 0 0.65em; min-width: 3em; text-align: right; }
+            table.source button.ln-btn:hover { color: #0066cc; background: #eef5fb; }
+            table.source tr.has-comment > td.ln { background: #e3f2fd; }
+            table.source tr.has-comment > td.ln button.ln-btn { color: #1565c0; font-weight: 700; }
+            table.source td.code { padding: 0 0.75em; white-space: pre; background: #fff; }
+            table.source td.code code { white-space: pre; font-family: "Consolas", "Monaco", "Courier New", monospace; }
+            table.source td.code code.hljs { padding: 0; display: inline; background: transparent; }
+            table.source tr.comment-row td { background: #fff8e1; padding: 0.35em 0.75em 0.5em; }
+            table.source tr.comment-row textarea { width: 100%; box-sizing: border-box; min-height: 3.2em; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 0.95em; border: 1px solid #e0c36a; border-radius: 4px; padding: 0.4em 0.5em; }
+            .review-actions { margin: 0.75em 0; display: flex; gap: 0.75em; flex-wrap: wrap; align-items: center; }
+            .review-actions button { border: 1px solid #bbb; background: #fff; border-radius: 4px; padding: 0.25em 0.6em; cursor: pointer; }
+            .review-actions button:hover { background: #f1f3f5; }
+
             /* highlight.js base styling */
             pre code.hljs { display: block; overflow-x: auto; padding: 1em; }
             code.hljs { padding: 3px 5px }
@@ -90,22 +107,13 @@ final class Defaults {
             .hljs-deletion { background-color: #ffeef0; }
             """;
 
-    // Kept small: offline + self-contained (no external fetch). Enough for common languages + diffs.
-    // Note: highlight.js supports "language-diff" as well.
+    // Java, HTML, and XML source pages are colored by Syntax when the review is generated.
+    // This script only marks code blocks so the stylesheet colors apply. It must not rewrite
+    // inner HTML: generated pages already contain escaped text and hljs-* spans.
     static final String HIGHLIGHT_JS_MIN = """
-            /*! highlight.js v11.9.0 (minified subset placeholder)
-             * This project embeds a tiny lexer-free fallback: it only adds CSS classes if present.
-             * For full highlighting, replace this with a full highlight.js build if desired.
-             */
             (function(){function ready(fn){if(document.readyState!=='loading'){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
-            function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
             ready(function(){
-              document.querySelectorAll('pre code').forEach(function(block){
-                // If code is already HTML-escaped by generator, do nothing; otherwise escape to keep output safe.
-                // Generator always escapes, so this is mostly defensive.
-                if(block.innerHTML.indexOf('<') !== -1 && block.innerHTML.indexOf('&lt;') === -1){
-                  block.innerHTML = escapeHtml(block.textContent || '');
-                }
+              document.querySelectorAll('pre code, table.source td.code code').forEach(function(block){
                 block.classList.add('hljs');
               });
             });})();
